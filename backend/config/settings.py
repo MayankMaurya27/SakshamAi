@@ -1,0 +1,88 @@
+"""Application settings loaded from environment variables."""
+
+from functools import lru_cache
+from pathlib import Path
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    """Central configuration for Saksham AI backend."""
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
+    # Application
+    app_name: str = "Saksham AI Backend"
+    debug: bool = False
+
+    # Paths (relative to backend/ directory)
+    base_dir: Path = Path(__file__).resolve().parent.parent
+    data_dir: Path = base_dir / "data"
+    uploads_dir: Path = data_dir / "uploads"
+    faiss_dir: Path = data_dir / "faiss"
+    audio_dir: Path = data_dir / "audio"
+    saksham_kb_dir: Path = data_dir / "saksham_kb"
+    database_url: str = "sqlite:///./data/saksham.db"
+
+    # Ollama
+    ollama_base_url: str = "http://localhost:11434"
+    ollama_model: str = "llama3.2:1b"
+    ollama_timeout_seconds: float = 120.0
+
+    # Embeddings
+    embedding_model: str = "intfloat/multilingual-e5-small"
+
+    # FAISS index files
+    user_index_path: Path = faiss_dir / "user_index.faiss"
+    user_index_meta_path: Path = faiss_dir / "user_index_meta.json"
+    saksham_index_path: Path = faiss_dir / "saksham_index.faiss"
+    saksham_index_meta_path: Path = faiss_dir / "saksham_index_meta.json"
+    saksham_kb_hash_path: Path = faiss_dir / "saksham_kb_hash.txt"
+
+    # Piper TTS
+    piper_binary: str = "piper"
+    piper_model_path: str = ""
+
+    # Retrieval
+    top_k: int = 5
+    chunk_size_tokens: int = 700
+    chunk_overlap_tokens: int = 100
+
+    def ensure_directories(self) -> None:
+        """Create required data directories if they do not exist."""
+        for directory in (
+            self.data_dir,
+            self.uploads_dir,
+            self.faiss_dir,
+            self.audio_dir,
+            self.saksham_kb_dir,
+        ):
+            directory.mkdir(parents=True, exist_ok=True)
+
+        for class_level in range(6, 11):
+            (self.saksham_kb_dir / f"class{class_level}").mkdir(parents=True, exist_ok=True)
+
+    @property
+    def resolved_database_url(self) -> str:
+        """Return database URL with absolute path for SQLite."""
+        if self.database_url.startswith("sqlite:///"):
+            if self.database_url.startswith("sqlite:///./"):
+                relative = self.database_url.replace("sqlite:///./", "")
+                db_path = self.base_dir / relative
+            else:
+                db_path = Path(self.database_url.replace("sqlite:///", ""))
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+            return f"sqlite:///{db_path}"
+        return self.database_url
+
+
+@lru_cache
+def get_settings() -> Settings:
+    """Return cached settings instance."""
+    settings = Settings()
+    settings.ensure_directories()
+    return settings

@@ -1,0 +1,96 @@
+"""Utilities for Saksham curriculum PDF discovery and naming."""
+
+import re
+from dataclasses import dataclass
+from pathlib import Path
+
+
+@dataclass
+class ChapterInfo:
+    """Metadata for a curriculum chapter PDF."""
+
+    class_level: int
+    subject: str
+    chapter_id: str
+    chapter_title: str
+    source_file: str
+    pdf_path: Path
+
+
+def slugify(text: str) -> str:
+    """Convert text to a URL-safe chapter identifier."""
+    text = Path(text).stem if text.lower().endswith(".pdf") else text
+    text = text.lower().strip()
+    text = re.sub(r"[^\w\s-]", "", text)
+    text = re.sub(r"[\s_-]+", "_", text)
+    return text.strip("_")
+
+
+def normalize_subject(folder_name: str) -> str:
+    """Convert folder name to display subject (e.g. science -> Science)."""
+    return folder_name.replace("_", " ").strip().title()
+
+
+def title_from_filename(filename: str) -> str:
+    """Derive human-readable chapter title from PDF filename."""
+    return Path(filename).stem.strip()
+
+
+def chapter_matches(meta: dict, class_level: int, subject: str, chapter_ref: str) -> bool:
+    """Return True if metadata matches class, subject, and chapter reference."""
+    if meta.get("class") != class_level:
+        return False
+    if meta.get("subject", "").lower() != subject.lower():
+        return False
+
+    ref = chapter_ref.strip().lower()
+    chapter_id = meta.get("chapter_id", "").lower()
+    chapter_title = meta.get("chapter_title", "").lower()
+    topic = meta.get("topic", "").lower()
+    ref_slug = slugify(chapter_ref)
+
+    return (
+        ref in {chapter_id, chapter_title, topic}
+        or ref_slug == chapter_id
+        or ref_slug == slugify(chapter_title)
+    )
+
+
+def discover_chapter_pdfs(kb_dir: Path) -> list[ChapterInfo]:
+    """Discover chapter PDFs under class{N}/{subject}/*.pdf layout."""
+    chapters: list[ChapterInfo] = []
+    if not kb_dir.exists():
+        return chapters
+
+    for pdf_path in sorted(kb_dir.rglob("*.pdf")):
+        relative = pdf_path.relative_to(kb_dir)
+        parts = relative.parts
+        if len(parts) < 3:
+            continue
+
+        class_dir, subject_dir = parts[0], parts[1]
+        if not class_dir.startswith("class"):
+            continue
+
+        try:
+            class_level = int(class_dir.replace("class", ""))
+        except ValueError:
+            continue
+
+        subject = normalize_subject(subject_dir)
+        filename = parts[-1]
+        chapter_title = title_from_filename(filename)
+        chapter_id = slugify(filename)
+
+        chapters.append(
+            ChapterInfo(
+                class_level=class_level,
+                subject=subject,
+                chapter_id=chapter_id,
+                chapter_title=chapter_title,
+                source_file=filename,
+                pdf_path=pdf_path,
+            )
+        )
+
+    return chapters

@@ -1,0 +1,540 @@
+{
+  "version": 1,
+  "chapters": [
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "electricity_magnetic_and_heating_effects",
+      "chapter_title": "Electricity- Magnetic and Heating Effects",
+      "source_file": "Electricity- Magnetic and Heating Effects.pdf",
+      "page_count": 16,
+      "word_count": 4906,
+      "chunk_count": 11
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "exploring_forces",
+      "chapter_title": "Exploring Forces",
+      "source_file": "Exploring Forces.pdf",
+      "page_count": 18,
+      "word_count": 5626,
+      "chunk_count": 13
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "exploring_the_investigative_world_of_science",
+      "chapter_title": "Exploring the Investigative World of Science",
+      "source_file": "Exploring the Investigative World of Science.pdf",
+      "page_count": 7,
+      "word_count": 2194,
+      "chunk_count": 5
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "health_the_ultimate_treasure",
+      "chapter_title": "Health- The Ultimate Treasure",
+      "source_file": "Health- The Ultimate Treasure.pdf",
+      "page_count": 18,
+      "word_count": 5110,
+      "chunk_count": 11
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "how_nature_works_in_harmony",
+      "chapter_title": "How Nature Works in Harmony",
+      "source_file": "How Nature Works in Harmony.pdf",
+      "page_count": 20,
+      "word_count": 5901,
+      "chunk_count": 13
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "keeping_time_with_the_skies",
+      "chapter_title": "Keeping Time with the Skies",
+      "source_file": "Keeping Time with the Skies.pdf",
+      "page_count": 20,
+      "word_count": 7157,
+      "chunk_count": 16
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "light_mirrors_and_lenses",
+      "chapter_title": "Light- Mirrors and Lenses",
+      "source_file": "Light- Mirrors and Lenses.pdf",
+      "page_count": 18,
+      "word_count": 5400,
+      "chunk_count": 12
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "nature_of_matter_elements_compounds_and_mixtures",
+      "chapter_title": "Nature of Matter - Elements, Compounds, and Mixtures",
+      "source_file": "Nature of Matter - Elements, Compounds, and Mixtures .pdf",
+      "page_count": 18,
+      "word_count": 5437,
+      "chunk_count": 12
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "our_home_earth_a_unique_life_sustaining_planet",
+      "chapter_title": "Our Home- Earth, a Unique Life Sustaining Planet",
+      "source_file": "Our Home- Earth, a Unique Life Sustaining Planet .pdf",
+      "page_count": 19,
+      "word_count": 6697,
+      "chunk_count": 15
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "particulate_nature_of_matter",
+      "chapter_title": "Particulate Nature of Matter",
+      "source_file": "Particulate Nature of Matter .pdf",
+      "page_count": 18,
+      "word_count": 4879,
+      "chunk_count": 11
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "pressure_winds_storms_and_cyclones",
+      "chapter_title": "Pressure, Winds, Storms, and Cyclones",
+      "source_file": "Pressure, Winds, Storms, and Cyclones.pdf",
+      "page_count": 18,
+      "word_count": 5919,
+      "chunk_count": 13
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "the_amazing_world_of_solutes_solvents_and_solutions",
+      "chapter_title": "The Amazing World of Solutes, Solvents, and Solutions",
+      "source_file": "The Amazing World of Solutes, Solvents, and Solutions.pdf",
+      "page_count": 18,
+      "word_count": 5808,
+      "chunk_count": 13
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "the_invisible_living_world_beyond_our_naked_eye",
+      "chapter_title": "The Invisible Living World- Beyond Our Naked Eye",
+      "source_file": "The Invisible Living World- Beyond Our Naked Eye.pdf",
+      "page_count": 20,
+      "word_count": 6661,
+      "chunk_count": 15
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "physical_and_chemical_changes",
+      "chapter_title": "Physical and Chemical Changes",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/science/physical_and_chemical_changes.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "acids_bases_and_salts",
+      "chapter_title": "Acids Bases and Salts",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/science/acids_bases_and_salts.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "nutrition_in_animals",
+      "chapter_title": "Nutrition in Animals",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/science/nutrition_in_animals.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "nutrition_in_plants",
+      "chapter_title": "Nutrition in Plants",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/science/nutrition_in_plants.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "heat",
+      "chapter_title": "Heat",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/science/heat.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "fractions_and_decimals",
+      "chapter_title": "Fractions and Decimals",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/mathematics/fractions_and_decimals.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "integers",
+      "chapter_title": "Integers",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/mathematics/integers.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "data_handling",
+      "chapter_title": "Data Handling",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/mathematics/data_handling.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "simple_equations",
+      "chapter_title": "Simple Equations",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/mathematics/simple_equations.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "lines_and_angles",
+      "chapter_title": "Lines and Angles",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/mathematics/lines_and_angles.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "is_matter_around_us_pure",
+      "chapter_title": "Is Matter Around Us Pure",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/science/is_matter_around_us_pure.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "motion",
+      "chapter_title": "Motion",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/science/motion.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "matter_in_our_surroundings",
+      "chapter_title": "Matter in Our Surroundings",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/science/matter_in_our_surroundings.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "force_and_laws_of_motion",
+      "chapter_title": "Force and Laws of Motion",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/science/force_and_laws_of_motion.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "atoms_and_molecules",
+      "chapter_title": "Atoms and Molecules",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/science/atoms_and_molecules.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "polynomials",
+      "chapter_title": "Polynomials",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/mathematics/polynomials.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "number_systems",
+      "chapter_title": "Number Systems",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/mathematics/number_systems.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "statistics",
+      "chapter_title": "Statistics",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/mathematics/statistics.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "coordinate_geometry",
+      "chapter_title": "Coordinate Geometry",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/mathematics/coordinate_geometry.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "linear_equations_in_two_variables",
+      "chapter_title": "Linear Equations in Two Variables",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/mathematics/linear_equations_in_two_variables.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "understanding_quadrilaterals",
+      "chapter_title": "Understanding Quadrilaterals",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class8/mathematics/understanding_quadrilaterals.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "rational_numbers",
+      "chapter_title": "Rational Numbers",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class8/mathematics/rational_numbers.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "exponents_and_powers",
+      "chapter_title": "Exponents and Powers",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class8/mathematics/exponents_and_powers.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "squares_and_square_roots",
+      "chapter_title": "Squares and Square Roots",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class8/mathematics/squares_and_square_roots.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "linear_equations",
+      "chapter_title": "Linear Equations",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class8/mathematics/linear_equations.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "separation_of_substances",
+      "chapter_title": "Separation of Substances",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/science/separation_of_substances.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "living_and_non_living_things",
+      "chapter_title": "Living and Non-living Things",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/science/living_and_non-living_things.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "food_and_nutrition",
+      "chapter_title": "Food and Nutrition",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/science/food_and_nutrition.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "components_of_food",
+      "chapter_title": "Components of Food",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/science/components_of_food.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "fibre_to_fabric",
+      "chapter_title": "Fibre to Fabric",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/science/fibre_to_fabric.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "whole_numbers",
+      "chapter_title": "Whole Numbers",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/mathematics/whole_numbers.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "basic_geometrical_ideas",
+      "chapter_title": "Basic Geometrical Ideas",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/mathematics/basic_geometrical_ideas.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "integers",
+      "chapter_title": "Integers",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/mathematics/integers.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "knowing_our_numbers",
+      "chapter_title": "Knowing Our Numbers",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/mathematics/knowing_our_numbers.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "data_handling",
+      "chapter_title": "Data Handling",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/mathematics/data_handling.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "acids_bases_and_salts",
+      "chapter_title": "Acids Bases and Salts",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/science/acids_bases_and_salts.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "electricity",
+      "chapter_title": "Electricity",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/science/electricity.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "life_processes",
+      "chapter_title": "Life Processes",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/science/life_processes.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "light_reflection_and_refraction",
+      "chapter_title": "Light Reflection and Refraction",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/science/light_reflection_and_refraction.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "chemical_reactions",
+      "chapter_title": "Chemical Reactions",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/science/chemical_reactions.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "polynomials",
+      "chapter_title": "Polynomials",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/mathematics/polynomials.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "quadratic_equations",
+      "chapter_title": "Quadratic Equations",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/mathematics/quadratic_equations.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "arithmetic_progressions",
+      "chapter_title": "Arithmetic Progressions",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/mathematics/arithmetic_progressions.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "real_numbers",
+      "chapter_title": "Real Numbers",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/mathematics/real_numbers.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "pair_of_linear_equations",
+      "chapter_title": "Pair of Linear Equations",
+      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/mathematics/pair_of_linear_equations.json",
+      "chunk_count": 1,
+      "legacy_json": true
+    }
+  ]
+}

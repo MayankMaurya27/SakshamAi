@@ -1,0 +1,54 @@
+"""Unit tests for knowledge service."""
+
+from config.settings import Settings
+from services.knowledge_service import (
+    compute_curriculum_hash,
+    list_chapters,
+    list_classes,
+    list_subjects,
+    load_manifest,
+)
+from services.curriculum_utils import discover_chapter_pdfs
+
+
+def test_class8_science_pdfs_exist():
+    """Class 8 Science should have chapter PDFs."""
+    settings = Settings()
+    chapters = discover_chapter_pdfs(settings.saksham_kb_dir)
+    science_8 = [c for c in chapters if c.class_level == 8 and c.subject == "Science"]
+    assert len(science_8) >= 13
+
+
+def test_manifest_or_discover():
+    """Manifest or PDF discovery should list Class 8 Science chapters."""
+    manifest = load_manifest()
+    chapters = manifest.get("chapters", [])
+    science_8_manifest = [
+        c for c in chapters if c.get("class") == 8 and c.get("subject") == "Science"
+    ]
+    if science_8_manifest:
+        assert len(science_8_manifest) >= 13
+    else:
+        listed = list_chapters(8, "Science")
+        assert len(listed) >= 13
+
+
+def test_list_taxonomy_from_manifest():
+    """Taxonomy should include Class 8 Science when PDFs are present."""
+    classes = list_classes()
+    assert 8 in classes
+
+    subjects = list_subjects(8)
+    assert "Science" in subjects
+
+    chapters = list_chapters(8, "Science")
+    assert len(chapters) >= 13
+    assert all("chapter_id" in c and "chapter_title" in c for c in chapters)
+
+
+def test_curriculum_hash_stable():
+    """Curriculum hash should be stable for unchanged PDFs."""
+    hash1 = compute_curriculum_hash()
+    hash2 = compute_curriculum_hash()
+    assert hash1 == hash2
+    assert len(hash1) == 64

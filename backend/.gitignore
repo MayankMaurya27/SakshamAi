@@ -1,0 +1,21 @@
+# Saksham AI backend
+
+# Curriculum source PDFs (large — keep locally, ship pre-built FAISS index to Jetson)
+data/saksham_kb/**/*.pdf
+
+# Runtime / generated data
+data/uploads/
+data/saksham.db
+data/faiss/user_index.faiss
+data/faiss/user_index_meta.json
+
+# Virtual environment
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Environment
+.env
