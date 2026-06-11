@@ -11,12 +11,13 @@ from services.knowledge_service import (
 from services.curriculum_utils import discover_chapter_pdfs
 
 
-def test_class8_science_pdfs_exist():
-    """Class 8 Science should have chapter PDFs."""
+def test_class8_science_curriculum_available():
+    """Class 8 Science should be available via manifest or PDFs."""
     settings = Settings()
-    chapters = discover_chapter_pdfs(settings.saksham_kb_dir)
-    science_8 = [c for c in chapters if c.class_level == 8 and c.subject == "Science"]
-    assert len(science_8) >= 13
+    pdf_chapters = discover_chapter_pdfs(settings.saksham_kb_dir)
+    science_8_pdfs = [c for c in pdf_chapters if c.class_level == 8 and c.subject == "Science"]
+    science_8_manifest = list_chapters(8, "Science")
+    assert len(science_8_pdfs) >= 13 or len(science_8_manifest) >= 13
 
 
 def test_manifest_or_discover():

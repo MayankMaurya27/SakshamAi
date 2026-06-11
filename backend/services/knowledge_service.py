@@ -120,19 +120,33 @@ def ingest_chapter_pdf(chapter: ChapterInfo, saksham_index) -> dict[str, Any]:
     }
 
 
+def _prebuilt_index_available() -> bool:
+    """Return True if a pre-built Saksham index and manifest exist on disk."""
+    return (
+        settings.saksham_index_path.exists()
+        and settings.saksham_index_meta_path.exists()
+        and manifest_path().exists()
+    )
+
+
 def build_saksham_index(force: bool = False) -> None:
     """
     Build or rebuild saksham FAISS index from curriculum PDFs and legacy JSON topics.
 
-    Skips rebuild if PDF hash unchanged and index exists (unless force=True).
+    At runtime, if a pre-built index already exists, it is loaded and PDFs are not
+    required (suitable for Jetson deployment). Rebuild only when --force is used,
+    or when no pre-built index exists yet.
     """
+    if not force and _prebuilt_index_available():
+        get_saksham_index()
+        logger.info(
+            "Using pre-built Saksham index (%d vectors); PDFs not required at runtime",
+            get_saksham_index().total_vectors,
+        )
+        return
+
     current_hash = compute_curriculum_hash()
     hash_path = settings.saksham_kb_hash_path
-
-    if not force and settings.saksham_index_path.exists() and current_hash:
-        if hash_path.exists() and hash_path.read_text().strip() == current_hash:
-            logger.info("Saksham curriculum index is up to date, skipping rebuild")
-            return
 
     chapters = discover_chapter_pdfs(settings.saksham_kb_dir)
     legacy_topics = _load_legacy_json_topics()

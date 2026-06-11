@@ -4,9 +4,18 @@ import logging
 
 from sqlalchemy.orm import Session
 
+from ai.activity_formatter import ActivityIntent, detect_activity_intent, try_format_activity_answer
+from ai.answer_formatter import format_student_answer
+from ai.bio_formatter import is_bio_question, try_format_bio_answer
+from ai.context_cleaner import clean_context_text
 from ai.llm import get_llm
 from ai.prompt_builder import build_fallback_prompt, build_prompt, format_retrieved_chunks
-from ai.retriever import retrieve_document_context, retrieve_saksham_context
+from ai.retriever import (
+    extract_content_refs,
+    extract_query_terms,
+    retrieve_document_context,
+    retrieve_saksham_context,
+)
 from config.constants import LearningMode, SourceType
 from exceptions import DocumentNotFoundError, ValidationError
 from services.accessibility_service import resolve_mode
@@ -70,8 +79,7 @@ def answer_question(
                 "class_level, subject, and chapter (or topic) are required for saksham source."
             )
 
-        chapter_meta = validate_saksham_chapter(class_level, subject, chapter_ref)
-        effective_mode = LearningMode.LEARN_FROM_SAKSHAM
+        validate_saksham_chapter(class_level, subject, chapter_ref)
 
         contexts = retrieve_saksham_context(
             question,
@@ -84,17 +92,60 @@ def answer_question(
         logger.info("No retrieval results; returning fallback response")
         return build_fallback_prompt()
 
-    chunk_texts = [ctx.text for ctx in contexts]
+    activity_refs = [
+        ref for ref in extract_content_refs(question) if ref.lower().startswith("activity")
+    ]
+    activity_passage: str | None = None
+    activity_intent = ActivityIntent.FOCUS
+
+    if activity_refs:
+        activity_passage = clean_context_text(contexts[0].text)
+        activity_intent = detect_activity_intent(question)
+        if activity_intent != ActivityIntent.FOCUS:
+            structured = try_format_activity_answer(
+                activity_passage,
+                activity_refs[0],
+                intent=activity_intent,
+            )
+            if structured:
+                logger.info(
+                    "Returning structured %s answer for %s",
+                    activity_intent.value,
+                    activity_refs[0],
+                )
+                return structured
+
+    if activity_passage and activity_intent == ActivityIntent.FOCUS:
+        chunk_texts = [activity_passage]
+    else:
+        chunk_texts = [clean_context_text(ctx.text) for ctx in contexts]
     retrieved_context = format_retrieved_chunks(chunk_texts)
+
+    if not activity_refs and is_bio_question(question):
+        bio_answer = try_format_bio_answer(
+            retrieved_context,
+            extract_query_terms(question),
+        )
+        if bio_answer:
+            logger.info("Returning structured biography answer from textbook profile")
+            return bio_answer
+
+    topic_label = chapter_ref or ""
+    if source == SourceType.DOCUMENT and document_id is not None and not topic_label:
+        from database.repositories import DocumentRepository
+
+        doc = DocumentRepository(db).get_by_id(document_id)
+        topic_label = doc.filename if doc else "Uploaded document"
 
     prompt = build_prompt(
         effective_mode,
         retrieved_context=retrieved_context,
         question=question,
-        topic=chapter_ref or "",
+        topic=topic_label,
         grade=class_level or 8,
     )
 
-    answer = get_llm().generate(prompt)
+    raw_answer = get_llm().generate(prompt)
+    answer = format_student_answer(raw_answer)
     logger.info("Generated answer for source=%s mode=%s", source.value, effective_mode.value)
     return answer

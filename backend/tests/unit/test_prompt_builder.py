@@ -20,7 +20,7 @@ def test_build_prompt_learn_mode():
     assert GLOBAL_SYSTEM_PROMPT in prompt
     assert "Force is a push or pull." in prompt
     assert "What is force?" in prompt
-    assert "Explain the concept clearly" in prompt
+    assert "Answer the question directly" in prompt
 
 
 def test_build_prompt_all_modes():
@@ -67,3 +67,17 @@ def test_format_retrieved_chunks():
 def test_format_retrieved_chunks_empty():
     """Empty chunks should return empty string."""
     assert format_retrieved_chunks([]) == ""
+
+
+def test_build_prompt_saksham_includes_question():
+    """Saksham mode should answer directly without forced activity headings."""
+    prompt = build_prompt(
+        LearningMode.LEARN_FROM_SAKSHAM,
+        retrieved_context="Communicable diseases spread through air and contact.",
+        question="How are communicable diseases caused and spread?",
+        topic="Health: The Ultimate Treasure",
+        grade=8,
+    )
+    assert "How are communicable diseases caused and spread?" in prompt
+    assert "directly and comprehensively" in prompt
+    assert "Do not use Aim, Procedure, Observation" in prompt

@@ -42,6 +42,7 @@ class OllamaLLM:
             "model": self.model,
             "prompt": prompt,
             "stream": False,
+            "options": {"temperature": settings.ollama_temperature},
         }
 
         start = time.time()

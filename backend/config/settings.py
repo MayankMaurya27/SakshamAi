@@ -32,9 +32,15 @@ class Settings(BaseSettings):
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3.2:1b"
     ollama_timeout_seconds: float = 120.0
+    ollama_temperature: float = 0.1
 
     # Embeddings
     embedding_model: str = "intfloat/multilingual-e5-small"
+    # Optional absolute path to a bundled model dir (Jetson); overrides HF cache lookup
+    embedding_model_path: Path | None = None
+    # Use local cache only (required for offline/Jetson — avoids HuggingFace network retries)
+    embedding_local_files_only: bool = True
+    preload_embedding_model: bool = True
 
     # FAISS index files
     user_index_path: Path = faiss_dir / "user_index.faiss"

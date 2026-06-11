@@ -17,6 +17,7 @@ from api.simplify import router as simplify_router
 from api.summary import router as summary_router
 from api.upload import router as upload_router
 from api.responses import error_response
+from ai.embeddings import preload_embedding_model
 from config.settings import get_settings
 from database.db import init_db
 from exceptions import SakshamError
@@ -36,6 +37,7 @@ async def lifespan(app: FastAPI):
     settings.ensure_directories()
     init_db()
     build_saksham_index()
+    preload_embedding_model()
     logger.info("Saksham AI backend started")
     yield
     logger.info("Saksham AI backend shutting down")
