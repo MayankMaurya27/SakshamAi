@@ -38,3 +38,4 @@ def test_try_format_bio_answer_meghnad_saha():
 def test_is_bio_question():
     assert is_bio_question("who was Meghnad Saha")
     assert not is_bio_question("How are communicable diseases spread?")
+    assert not is_bio_question("What was the French Revolution?")

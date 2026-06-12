@@ -6,6 +6,8 @@ import logging
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 from ai.faiss_manager import FaissManager, get_saksham_index, reset_saksham_index, save_saksham_index
 import ai.faiss_manager as faiss_manager_module
 from config.settings import get_settings
@@ -59,37 +61,6 @@ def compute_curriculum_hash() -> str:
     return hasher.hexdigest()
 
 
-def _load_legacy_json_topics() -> list[dict[str, Any]]:
-    """Load legacy JSON topic files (classes without PDF curriculum yet)."""
-    topics: list[dict[str, Any]] = []
-    kb_dir = settings.saksham_kb_dir
-    if not kb_dir.exists():
-        return topics
-
-    pdf_chapter_ids = {
-        (c.class_level, c.subject.lower(), c.chapter_id)
-        for c in discover_chapter_pdfs(kb_dir)
-    }
-
-    for json_file in kb_dir.rglob("*.json"):
-        if json_file.name == "manifest.json":
-            continue
-        try:
-            data = json.loads(json_file.read_text(encoding="utf-8"))
-            class_level = data.get("class")
-            subject = data.get("subject", "")
-            topic = data.get("topic", "")
-            chapter_id = slugify(topic)
-            if (class_level, subject.lower(), chapter_id) in pdf_chapter_ids:
-                continue
-            data["_file_path"] = str(json_file)
-            topics.append(data)
-        except (json.JSONDecodeError, OSError) as exc:
-            logger.warning("Failed to load topic file %s: %s", json_file, exc)
-
-    return topics
-
-
 def ingest_chapter_pdf(chapter: ChapterInfo, saksham_index) -> dict[str, Any]:
     """Extract, chunk, and index a single chapter PDF."""
     text, page_count = extract_text(str(chapter.pdf_path))
@@ -120,6 +91,121 @@ def ingest_chapter_pdf(chapter: ChapterInfo, saksham_index) -> dict[str, Any]:
     }
 
 
+def _chapter_key(
+    class_level: int | None,
+    subject: str | None,
+    chapter_id: str | None,
+) -> tuple[int, str, str] | None:
+    """Normalize chapter identity for manifest and index lookups."""
+    if class_level is None or not subject or not chapter_id:
+        return None
+    return (class_level, subject.lower(), chapter_id.lower())
+
+
+def _discovered_chapter_keys(chapters: list[ChapterInfo]) -> set[tuple[int, str, str]]:
+    """Return identity keys for all PDFs discovered on disk."""
+    keys: set[tuple[int, str, str]] = set()
+    for chapter in chapters:
+        key = _chapter_key(chapter.class_level, chapter.subject, chapter.chapter_id)
+        if key:
+            keys.add(key)
+    return keys
+
+
+def _is_deployable_without_pdf(chapter: dict[str, Any]) -> bool:
+    """
+    Return True for chapters intentionally shipped without source PDFs.
+
+    Only Class 8 Science uses pre-built index content with PDFs removed at deploy
+    time. Other subjects should re-index when PDFs are renamed or replaced.
+    """
+    return (
+        chapter.get("class") == 8
+        and chapter.get("subject", "").lower() == "science"
+        and not chapter.get("legacy_json")
+    )
+
+
+def _preserve_chapters_without_pdfs(
+    old_index: FaissManager,
+    discovered_keys: set[tuple[int, str, str]],
+    old_manifest: dict[str, Any],
+) -> list[tuple[np.ndarray, dict[str, Any]]]:
+    """
+    Export indexed vectors for deployable chapters whose PDFs are no longer on disk.
+
+    This keeps pre-built Class 8 Science content available after PDFs are removed
+    for deployment, without retaining stale entries when PDFs are renamed elsewhere.
+    """
+    if old_index.index is None or old_index.total_vectors == 0:
+        return []
+
+    preserve_keys = {
+        key
+        for chapter in old_manifest.get("chapters", [])
+        if (key := _chapter_key(
+            chapter.get("class"),
+            chapter.get("subject"),
+            chapter.get("chapter_id"),
+        ))
+        and key not in discovered_keys
+        and _is_deployable_without_pdf(chapter)
+    }
+
+    preserved: list[tuple[np.ndarray, dict[str, Any]]] = []
+    for faiss_id, meta in old_index.id_map.items():
+        key = _chapter_key(meta.get("class"), meta.get("subject"), meta.get("chapter_id"))
+        if key is None or key not in preserve_keys:
+            continue
+        vector = old_index.index.reconstruct(faiss_id)
+        preserved.append((np.asarray(vector, dtype=np.float32), dict(meta)))
+
+    return preserved
+
+
+def _restore_preserved_vectors(
+    saksham_index: FaissManager,
+    preserved: list[tuple[np.ndarray, dict[str, Any]]],
+) -> int:
+    """Add preserved chapter vectors back into a freshly built index."""
+    if not preserved:
+        return 0
+
+    vectors = np.vstack([vector.reshape(1, -1) for vector, _ in preserved])
+    metadata = [meta for _, meta in preserved]
+    saksham_index.add_vectors(vectors, metadata)
+    return len(preserved)
+
+
+def _preserved_manifest_entries(
+    old_manifest: dict[str, Any],
+    discovered_keys: set[tuple[int, str, str]],
+) -> list[dict[str, Any]]:
+    """Keep manifest rows for deployable chapters indexed without source PDFs."""
+    entries: list[dict[str, Any]] = []
+    for chapter in old_manifest.get("chapters", []):
+        key = _chapter_key(
+            chapter.get("class"),
+            chapter.get("subject"),
+            chapter.get("chapter_id"),
+        )
+        if (
+            key
+            and key not in discovered_keys
+            and _is_deployable_without_pdf(chapter)
+        ):
+            entries.append(chapter)
+    return entries
+
+
+def _stored_curriculum_hash() -> str:
+    """Read the last indexed curriculum hash, if present."""
+    hash_path = settings.saksham_kb_hash_path
+    if not hash_path.exists():
+        return ""
+    return hash_path.read_text(encoding="utf-8").strip()
+
+
 def _prebuilt_index_available() -> bool:
     """Return True if a pre-built Saksham index and manifest exist on disk."""
     return (
@@ -131,13 +217,24 @@ def _prebuilt_index_available() -> bool:
 
 def build_saksham_index(force: bool = False) -> None:
     """
-    Build or rebuild saksham FAISS index from curriculum PDFs and legacy JSON topics.
+    Build or rebuild saksham FAISS index from curriculum PDFs.
 
-    At runtime, if a pre-built index already exists, it is loaded and PDFs are not
-    required (suitable for Jetson deployment). Rebuild only when --force is used,
-    or when no pre-built index exists yet.
+    At runtime, if a pre-built index already exists and curriculum PDFs are unchanged,
+    it is loaded and PDFs are not required (suitable for Jetson deployment).
+
+    Rebuild when --force is used, when no pre-built index exists, or when new PDFs
+    are added. Chapters already indexed but whose PDFs were removed are preserved.
     """
-    if not force and _prebuilt_index_available():
+    current_hash = compute_curriculum_hash()
+    stored_hash = _stored_curriculum_hash()
+    hash_path = settings.saksham_kb_hash_path
+
+    if (
+        not force
+        and _prebuilt_index_available()
+        and current_hash
+        and current_hash == stored_hash
+    ):
         get_saksham_index()
         logger.info(
             "Using pre-built Saksham index (%d vectors); PDFs not required at runtime",
@@ -145,14 +242,19 @@ def build_saksham_index(force: bool = False) -> None:
         )
         return
 
-    current_hash = compute_curriculum_hash()
-    hash_path = settings.saksham_kb_hash_path
-
     chapters = discover_chapter_pdfs(settings.saksham_kb_dir)
-    legacy_topics = _load_legacy_json_topics()
+    discovered_keys = _discovered_chapter_keys(chapters)
 
-    if not chapters and not legacy_topics:
-        logger.warning("No curriculum PDFs or legacy JSON topics found to index")
+    old_index = get_saksham_index() if _prebuilt_index_available() else None
+    old_manifest = load_manifest() if manifest_path().exists() else {"chapters": []}
+    preserved_vectors = (
+        _preserve_chapters_without_pdfs(old_index, discovered_keys, old_manifest)
+        if old_index is not None
+        else []
+    )
+
+    if not chapters and not preserved_vectors:
+        logger.warning("No curriculum PDFs or preserved chapters to index")
         return
 
     reset_saksham_index()
@@ -178,32 +280,15 @@ def build_saksham_index(force: bool = False) -> None:
         except Exception as exc:
             logger.error("Failed to index %s: %s", chapter.source_file, exc)
 
-    for topic_data in legacy_topics:
-        content = topic_data.get("content", "")
-        if not content:
-            continue
-        topic = topic_data.get("topic", "")
-        chunks = create_chunks(content)
-        metadata_base = {
-            "class": topic_data.get("class"),
-            "subject": topic_data.get("subject", ""),
-            "chapter_id": slugify(topic),
-            "chapter_title": topic,
-            "topic": topic,
-            "source": "saksham_kb_legacy",
-        }
-        index_document(chunks, saksham_index, metadata_base=metadata_base)
-        total_chunks += len(chunks)
-        manifest_entries.append(
-            {
-                "class": topic_data.get("class"),
-                "subject": topic_data.get("subject", ""),
-                "chapter_id": slugify(topic),
-                "chapter_title": topic,
-                "source_file": topic_data.get("_file_path", ""),
-                "chunk_count": len(chunks),
-                "legacy_json": True,
-            }
+    preserved_manifest = _preserved_manifest_entries(old_manifest, discovered_keys)
+    if preserved_manifest:
+        restored = _restore_preserved_vectors(saksham_index, preserved_vectors)
+        manifest_entries.extend(preserved_manifest)
+        total_chunks += restored
+        logger.info(
+            "Preserved %d chapters (%d vectors) without source PDFs",
+            len(preserved_manifest),
+            restored,
         )
 
     save_saksham_index()

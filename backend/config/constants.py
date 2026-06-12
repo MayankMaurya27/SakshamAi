@@ -26,6 +26,13 @@ class SourceType(str, Enum):
     SAKSHAM = "saksham"
 
 
+class AnswerProfile(str, Enum):
+    """How tightly the LLM must stick to retrieved textbook text."""
+
+    STRICT = "strict"
+    GUIDED = "guided"
+
+
 class AccessibilityProfile(str, Enum):
     """Accessibility profile overrides for prompt selection."""
 

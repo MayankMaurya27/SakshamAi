@@ -56,6 +56,24 @@ def chapter_matches(meta: dict, class_level: int, subject: str, chapter_ref: str
     )
 
 
+def _subject_from_path_parts(parts: tuple[str, ...]) -> str | None:
+    """
+    Resolve subject from a PDF path under class{N}/...
+
+    Supports:
+    - class8/science/Chapter.pdf -> Science
+    - class8/social science/Chapter.pdf -> Social Science
+    - class9/social science/history/Chapter.pdf -> History
+    """
+    if len(parts) < 2:
+        return None
+
+    subject_dir = parts[1].lower().replace("_", " ")
+    if subject_dir == "social science" and len(parts) >= 4:
+        return normalize_subject(parts[2])
+    return normalize_subject(parts[1])
+
+
 def discover_chapter_pdfs(kb_dir: Path) -> list[ChapterInfo]:
     """Discover chapter PDFs under class{N}/{subject}/*.pdf layout."""
     chapters: list[ChapterInfo] = []
@@ -68,7 +86,7 @@ def discover_chapter_pdfs(kb_dir: Path) -> list[ChapterInfo]:
         if len(parts) < 3:
             continue
 
-        class_dir, subject_dir = parts[0], parts[1]
+        class_dir = parts[0]
         if not class_dir.startswith("class"):
             continue
 
@@ -77,7 +95,10 @@ def discover_chapter_pdfs(kb_dir: Path) -> list[ChapterInfo]:
         except ValueError:
             continue
 
-        subject = normalize_subject(subject_dir)
+        subject = _subject_from_path_parts(parts)
+        if subject is None:
+            continue
+
         filename = parts[-1]
         chapter_title = title_from_filename(filename)
         chapter_id = slugify(filename)

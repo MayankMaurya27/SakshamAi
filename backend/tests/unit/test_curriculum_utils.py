@@ -35,8 +35,27 @@ def test_chapter_matches():
 
 
 def test_discover_chapter_pdfs():
-    """Should discover chapter PDFs when present, or none after PDF-only deploy."""
+    """Should discover chapter PDFs when present."""
     kb_dir = Path(__file__).resolve().parent.parent.parent / "data" / "saksham_kb"
     chapters = discover_chapter_pdfs(kb_dir)
-    science_8 = [c for c in chapters if c.class_level == 8 and c.subject == "Science"]
-    assert len(science_8) >= 0
+    assert len(chapters) >= 100
+
+
+def test_discover_nested_social_science_subjects():
+    """Class 9/10 social science PDFs in subfolders should map to History, etc."""
+    kb_dir = Path(__file__).resolve().parent.parent.parent / "data" / "saksham_kb"
+    chapters = discover_chapter_pdfs(kb_dir)
+
+    history_9 = [c for c in chapters if c.class_level == 9 and c.subject == "History"]
+    economics_10 = [c for c in chapters if c.class_level == 10 and c.subject == "Economics"]
+    social_6 = [c for c in chapters if c.class_level == 6 and c.subject == "Social Science"]
+
+    assert len(history_9) >= 1
+    assert len(economics_10) >= 1
+    assert len(social_6) >= 1
+    assert not any(
+        c.class_level in (9, 10) and c.subject == "Social Science"
+        for c in chapters
+        if "social science" in str(c.pdf_path).lower()
+        and len(c.pdf_path.relative_to(kb_dir).parts) >= 4
+    )

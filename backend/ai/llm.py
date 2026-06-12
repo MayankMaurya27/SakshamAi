@@ -42,7 +42,10 @@ class OllamaLLM:
             "model": self.model,
             "prompt": prompt,
             "stream": False,
-            "options": {"temperature": settings.ollama_temperature},
+            "options": {
+                "temperature": settings.ollama_temperature,
+                "num_ctx": settings.ollama_num_ctx,
+            },
         }
 
         start = time.time()

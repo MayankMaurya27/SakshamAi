@@ -38,9 +38,32 @@ def _profile_start(text_lower: str, name_pos: int) -> int:
     return best
 
 
+_CONCEPT_HINTS = (
+    "revolution",
+    "war",
+    "movement",
+    "empire",
+    "dynasty",
+    "independence",
+    "democracy",
+    "constitution",
+    "economy",
+    "development",
+    "government",
+    "rebellion",
+    "colonialism",
+    "nationalism",
+)
+
+
 def is_bio_question(question: str) -> bool:
-    """Return True when the student is asking about a person or profile."""
-    return bool(_BIO_QUESTION_PATTERN.search(question))
+    """Return True when the student is asking about a person, not an event or concept."""
+    if not _BIO_QUESTION_PATTERN.search(question):
+        return False
+    q = question.lower()
+    if any(hint in q for hint in _CONCEPT_HINTS):
+        return False
+    return True
 
 
 def try_format_bio_answer(context_text: str, query_terms: list[str]) -> str | None:

@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     ollama_model: str = "llama3.2:1b"
     ollama_timeout_seconds: float = 120.0
     ollama_temperature: float = 0.1
+    ollama_num_ctx: int = 8192
 
     # Embeddings
     embedding_model: str = "intfloat/multilingual-e5-small"
@@ -55,6 +56,9 @@ class Settings(BaseSettings):
 
     # Retrieval
     top_k: int = 5
+    top_k_guided: int = 7
+    max_llm_context_chars: int = 3200
+    max_llm_context_chars_guided: int = 7000
     chunk_size_tokens: int = 700
     chunk_overlap_tokens: int = 100
 

@@ -98,6 +98,7 @@ def extract_query_terms(question: str) -> list[str]:
 
     def add(term: str) -> None:
         cleaned = term.strip(" ?.,!\"'")
+        cleaned = re.sub(r"^(?:the|a|an)\s+", "", cleaned, flags=re.I)
         if len(cleaned) < 3:
             return
         if cleaned.lower() in _QUERY_STOP_WORDS:
@@ -124,15 +125,74 @@ def extract_query_terms(question: str) -> list[str]:
     return terms
 
 
+_CONTENT_EXTRA_STOP = frozenset(
+    {
+        "help",
+        "helps",
+        "helped",
+        "many",
+        "much",
+        "more",
+        "most",
+        "some",
+        "such",
+        "also",
+        "only",
+        "just",
+        "like",
+        "very",
+        "well",
+        "come",
+        "came",
+        "make",
+        "made",
+        "take",
+        "taken",
+        "give",
+        "given",
+        "get",
+        "got",
+        "less",
+        "greater",
+        "become",
+        "became",
+    }
+)
+
+
+def _extract_content_phrases(question: str) -> list[str]:
+    """Extract multi-word phrases from a question for focused chapter retrieval."""
+    words = re.findall(r"[a-zA-Z']+", question.lower())
+    content_words = [
+        word
+        for word in words
+        if word not in _QUERY_STOP_WORDS
+        and word not in _CONTENT_EXTRA_STOP
+        and len(word) > 2
+    ]
+
+    phrases: list[str] = []
+    seen: set[str] = set()
+    for size in (3, 2):
+        for index in range(len(content_words) - size + 1):
+            phrase = " ".join(content_words[index : index + size])
+            if phrase not in seen:
+                seen.add(phrase)
+                phrases.append(phrase)
+    return phrases
+
+
 def get_search_terms(question: str) -> list[str]:
-    """Merge textbook references with named-entity terms for keyword retrieval."""
+    """Merge textbook references with named-entity and content phrases for retrieval."""
     content_refs = extract_content_refs(question)
     query_terms = extract_query_terms(question)
+    phrases = _extract_content_phrases(question)
     ref_keys = {ref.lower() for ref in content_refs}
     merged = list(content_refs)
-    for term in query_terms:
+    for term in query_terms + phrases:
         if term.lower() not in ref_keys:
             merged.append(term)
+            ref_keys.add(term.lower())
     return merged
 
 
@@ -356,10 +416,21 @@ def _extract_focused_snippet(
     return text[start:end].strip()
 
 
+@dataclass
+class ChunkContext:
+    """Retrieved chunk with metadata."""
+
+    text: str
+    score: float
+    faiss_id: int
+    metadata: dict
+
+
 def _keyword_match_score(text: str, refs: list[str]) -> float:
-    """Score how strongly a chunk matches explicit textbook references."""
+    """Score how strongly a chunk matches explicit textbook references or phrases."""
     text_lower = text.lower()
     best = 0.0
+    matched_phrases = 0
     for ref in sorted(refs, key=len, reverse=True):
         if ref.lower() not in text_lower:
             continue
@@ -371,10 +442,143 @@ def _keyword_match_score(text: str, refs: list[str]) -> float:
         elif ref_lower.startswith("exercise"):
             best = max(best, 2.0)
         elif " " in ref_lower:
-            best = max(best, 3.5)
+            matched_phrases += 1
+            best = max(best, 3.5 + min(matched_phrases - 1, 2) * 0.5)
         else:
             best = max(best, 1.5)
     return best
+
+
+def _is_strong_keyword_match(score: float, search_terms: list[str], text: str) -> bool:
+    """Return True when a keyword hit is specific enough to include in context."""
+    if score >= 2.5:
+        return True
+    text_lower = text.lower()
+    return any(" " in term and term.lower() in text_lower for term in search_terms)
+
+
+def _prepend_phrase_matched_chunks(
+    contexts: list[ChunkContext],
+    candidates: list[tuple[int, str, int, dict]],
+    search_terms: list[str],
+    seen_keys: set[str],
+    max_boost: int = 2,
+) -> list[ChunkContext]:
+    """Prepend chunks that contain the most specific question phrases."""
+    phrase_terms = sorted(
+        [term for term in search_terms if " " in term.strip()],
+        key=len,
+        reverse=True,
+    )
+    boosted: list[ChunkContext] = []
+
+    for phrase in phrase_terms:
+        if len(boosted) >= max_boost:
+            break
+        phrase_lower = phrase.lower()
+        best: tuple[int, str, int, dict] | None = None
+
+        for chunk_index, text, faiss_id, meta in candidates:
+            if not text or phrase_lower not in text.lower():
+                continue
+            key = text[:200]
+            if key in seen_keys:
+                continue
+            if best is None or chunk_index < best[0]:
+                best = (chunk_index, text, faiss_id, meta)
+
+        if best is None:
+            continue
+
+        chunk_index, text, faiss_id, meta = best
+        key = text[:200]
+        seen_keys.add(key)
+        boosted.append(
+            ChunkContext(
+                text=text,
+                score=4.0,
+                faiss_id=faiss_id,
+                metadata={
+                    **meta,
+                    "match_type": "phrase",
+                    "phrase": phrase,
+                    "chunk_index": chunk_index,
+                },
+            )
+        )
+
+    if not boosted:
+        return contexts
+    return boosted + contexts
+
+
+def _merge_semantic_and_keyword_contexts(
+    semantic_items: list[tuple[int, float, str, dict]],
+    keyword_contexts: list[ChunkContext],
+    search_terms: list[str],
+    k: int,
+    use_keyword_only: bool,
+) -> list[ChunkContext]:
+    """Prefer semantic matches, then add specific keyword hits without generic noise."""
+    contexts: list[ChunkContext] = []
+    seen_keys: set[str] = set()
+
+    if use_keyword_only:
+        for ctx in keyword_contexts:
+            focused_text = _extract_focused_snippet(ctx.text, search_terms)
+            key = focused_text[:200]
+            if key in seen_keys:
+                continue
+            seen_keys.add(key)
+            contexts.append(
+                ChunkContext(
+                    text=focused_text,
+                    score=ctx.score,
+                    faiss_id=ctx.faiss_id,
+                    metadata=ctx.metadata,
+                )
+            )
+            if len(contexts) >= k:
+                break
+        return contexts
+
+    for faiss_id, score, text, meta in semantic_items:
+        if len(contexts) >= k:
+            break
+        if not text or _is_low_quality_chunk(text):
+            continue
+        key = text[:200]
+        if key in seen_keys:
+            continue
+        seen_keys.add(key)
+        contexts.append(
+            ChunkContext(
+                text=text,
+                score=score,
+                faiss_id=faiss_id,
+                metadata={**meta, "match_type": "semantic"},
+            )
+        )
+
+    for ctx in keyword_contexts:
+        if len(contexts) >= k:
+            break
+        if not _is_strong_keyword_match(ctx.score, search_terms, ctx.text):
+            continue
+        key = ctx.text[:200]
+        if key in seen_keys:
+            continue
+        seen_keys.add(key)
+        contexts.append(
+            ChunkContext(
+                text=ctx.text,
+                score=ctx.score,
+                faiss_id=ctx.faiss_id,
+                metadata=ctx.metadata,
+            )
+        )
+
+    return contexts
 
 
 def _has_strong_keyword_match(contexts: list["ChunkContext"]) -> bool:
@@ -382,14 +586,26 @@ def _has_strong_keyword_match(contexts: list["ChunkContext"]) -> bool:
     return any(ctx.score >= 3.0 for ctx in contexts)
 
 
-@dataclass
-class ChunkContext:
-    """Retrieved chunk with metadata."""
+def _should_use_keyword_only_retrieval(
+    content_refs: list[str],
+    question: str,
+) -> bool:
+    """
+    Use keyword-only retrieval for activities, figures, or person biographies.
 
-    text: str
-    score: float
-    faiss_id: int
-    metadata: dict
+    General chapter questions (e.g. 'What was the French Revolution?') should use
+    semantic search so the LLM gets a small relevant slice, not every mention of
+  a phrase copied from the textbook.
+    """
+    if any(
+        ref.lower().startswith(("activity", "fig", "exercise"))
+        for ref in content_refs
+    ):
+        return True
+
+    from ai.bio_formatter import is_bio_question
+
+    return is_bio_question(question)
 
 
 def _get_ordered_document_chunks(
@@ -479,40 +695,12 @@ def retrieve_document_context(
 
     contexts: list[ChunkContext] = []
     seen_keys: set[str] = set()
-    has_strong_keyword_match = _has_strong_keyword_match(keyword_contexts)
+    use_keyword_only = _has_strong_keyword_match(
+        keyword_contexts
+    ) and _should_use_keyword_only_retrieval(content_refs, question)
 
-    for ctx in keyword_contexts:
-        focused_text = (
-            _extract_focused_snippet(ctx.text, search_terms)
-            if has_strong_keyword_match
-            else ctx.text
-        )
-        key = focused_text[:200]
-        if key in seen_keys:
-            continue
-        seen_keys.add(key)
-        contexts.append(
-            ChunkContext(
-                text=focused_text,
-                score=ctx.score,
-                faiss_id=ctx.faiss_id,
-                metadata=ctx.metadata,
-            )
-        )
-        if len(contexts) >= k:
-            break
-
-    if has_strong_keyword_match and contexts:
-        logger.info(
-            "Retrieved %d focused document chunks (keyword-only, document_id=%s)",
-            len(contexts),
-            document_id,
-        )
-        return contexts
-
+    semantic_items: list[tuple[int, float, str, dict]] = []
     for faiss_id, score, meta in results:
-        if len(contexts) >= k:
-            break
         chunk = chunk_by_faiss.get(faiss_id)
         if chunk is None:
             continue
@@ -521,18 +709,42 @@ def retrieve_document_context(
         text = chunk.chunk_text
         if _is_low_quality_chunk(text):
             continue
-        key = text[:200]
-        if key in seen_keys:
-            continue
-        seen_keys.add(key)
-        contexts.append(
-            ChunkContext(
-                text=text,
-                score=score,
-                faiss_id=faiss_id,
-                metadata=meta,
-            )
+        semantic_items.append((faiss_id, score, text, meta))
+
+    contexts = _merge_semantic_and_keyword_contexts(
+        semantic_items,
+        keyword_contexts,
+        search_terms,
+        k,
+        use_keyword_only,
+    )
+
+    if use_keyword_only and contexts:
+        logger.info(
+            "Retrieved %d focused document chunks (keyword-only, document_id=%s)",
+            len(contexts),
+            document_id,
         )
+        return contexts
+
+    if search_terms and document_id is not None:
+        candidates = [
+            (
+                record.chunk_index,
+                record.chunk_text,
+                record.faiss_id,
+                {"match_type": "phrase", "document_id": document_id},
+            )
+            for record in chunk_repo.get_by_document_id(document_id)
+            if record.chunk_text and not _is_low_quality_chunk(record.chunk_text)
+        ]
+        seen_keys = {ctx.text[:200] for ctx in contexts}
+        contexts = _prepend_phrase_matched_chunks(
+            contexts,
+            candidates,
+            search_terms,
+            seen_keys,
+        )[:k]
 
     logger.info("Retrieved %d document chunks (document_id=%s)", len(contexts), document_id)
     return contexts
@@ -555,6 +767,43 @@ def _get_chapter_chunk_texts(
 
     chunks.sort(key=lambda x: x[0])
     return [text for _, text in chunks]
+
+
+def _augment_contexts_with_chapter_intro(
+    contexts: list[ChunkContext],
+    ordered_chunks: list[tuple[int, str, int]],
+    intro_count: int = 2,
+) -> list[ChunkContext]:
+    """Prepend early chapter chunks so broad questions include causes and background."""
+    if not ordered_chunks or intro_count <= 0:
+        return contexts
+
+    seen_keys = {ctx.text[:200] for ctx in contexts}
+    intro_contexts: list[ChunkContext] = []
+
+    for chunk_index, text, faiss_id in ordered_chunks[:intro_count]:
+        if not text or _is_low_quality_chunk(text):
+            continue
+        key = text[:200]
+        if key in seen_keys:
+            continue
+        seen_keys.add(key)
+        intro_contexts.append(
+            ChunkContext(
+                text=text,
+                score=2.5,
+                faiss_id=faiss_id,
+                metadata={
+                    "match_type": "chapter_intro",
+                    "chunk_index": chunk_index,
+                },
+            )
+        )
+
+    if not intro_contexts:
+        return contexts
+
+    return intro_contexts + contexts
 
 
 def retrieve_saksham_context(
@@ -632,33 +881,26 @@ def retrieve_saksham_context(
         query_vector, chapter_filter, top_k=max(k * 2, k)
     )
 
-    contexts: list[ChunkContext] = []
-    seen_keys: set[str] = set()
+    use_keyword_only = _has_strong_keyword_match(
+        keyword_contexts
+    ) and _should_use_keyword_only_retrieval(content_refs, question)
 
-    has_strong_keyword_match = _has_strong_keyword_match(keyword_contexts)
-
-    for ctx in keyword_contexts:
-        focused_text = (
-            _extract_focused_snippet(ctx.text, search_terms)
-            if has_strong_keyword_match
-            else ctx.text
-        )
-        key = focused_text[:200]
-        if key in seen_keys:
+    semantic_items: list[tuple[int, float, str, dict]] = []
+    for faiss_id, score, meta in results:
+        text = meta.get("chunk_text", "")
+        if not text or _is_low_quality_chunk(text):
             continue
-        seen_keys.add(key)
-        contexts.append(
-            ChunkContext(
-                text=focused_text,
-                score=ctx.score,
-                faiss_id=ctx.faiss_id,
-                metadata=ctx.metadata,
-            )
-        )
-        if len(contexts) >= k:
-            break
+        semantic_items.append((faiss_id, score, text, meta))
 
-    if has_strong_keyword_match and contexts:
+    contexts = _merge_semantic_and_keyword_contexts(
+        semantic_items,
+        keyword_contexts,
+        search_terms,
+        k,
+        use_keyword_only,
+    )
+
+    if use_keyword_only and contexts:
         logger.info(
             "Retrieved %d focused saksham chunks (keyword-only, class=%s, chapter=%s)",
             len(contexts),
@@ -667,24 +909,29 @@ def retrieve_saksham_context(
         )
         return contexts
 
-    for faiss_id, score, meta in results:
-        if len(contexts) >= k:
-            break
-        text = meta.get("chunk_text", "")
-        if not text or _is_low_quality_chunk(text):
-            continue
-        key = text[:200]
-        if key in seen_keys:
-            continue
-        seen_keys.add(key)
-        contexts.append(
-            ChunkContext(
-                text=text,
-                score=score,
-                faiss_id=faiss_id,
-                metadata=meta,
+    if search_terms:
+        candidates: list[tuple[int, str, int, dict]] = []
+        for faiss_id, meta in saksham_index.id_map.items():
+            if not chapter_filter(meta):
+                continue
+            text = meta.get("chunk_text", "")
+            if not text or _is_low_quality_chunk(text):
+                continue
+            candidates.append(
+                (
+                    meta.get("chunk_index", faiss_id),
+                    text,
+                    faiss_id,
+                    meta,
+                )
             )
-        )
+        seen_keys = {ctx.text[:200] for ctx in contexts}
+        contexts = _prepend_phrase_matched_chunks(
+            contexts,
+            candidates,
+            search_terms,
+            seen_keys,
+        )[:k]
 
     if contexts:
         logger.info(

@@ -2,6 +2,1946 @@
   "version": 1,
   "chapters": [
     {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "areas_related_to_circles",
+      "chapter_title": "Areas Related to Circles",
+      "source_file": "Areas Related to Circles.pdf",
+      "page_count": 7,
+      "word_count": 1743,
+      "chunk_count": 4
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "arithmetic_progressions",
+      "chapter_title": "Arithmetic Progressions",
+      "source_file": "Arithmetic Progressions.pdf",
+      "page_count": 24,
+      "word_count": 8301,
+      "chunk_count": 18
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "circles",
+      "chapter_title": "Circles",
+      "source_file": "Circles.pdf",
+      "page_count": 10,
+      "word_count": 2891,
+      "chunk_count": 7
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "coordinate_geometry",
+      "chapter_title": "Coordinate Geometry",
+      "source_file": "Coordinate Geometry.pdf",
+      "page_count": 14,
+      "word_count": 4673,
+      "chunk_count": 10
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "introduction_to_trigonometry",
+      "chapter_title": "Introduction to Trigonometry",
+      "source_file": "Introduction to Trigonometry.pdf",
+      "page_count": 20,
+      "word_count": 5946,
+      "chunk_count": 13
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "pair_of_linear_equations_in_two_variables",
+      "chapter_title": "Pair of Linear Equations in Two Variables",
+      "source_file": "Pair of Linear Equations in Two Variables.pdf",
+      "page_count": 14,
+      "word_count": 4635,
+      "chunk_count": 10
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "polynomials",
+      "chapter_title": "Polynomials",
+      "source_file": "Polynomials.pdf",
+      "page_count": 14,
+      "word_count": 3919,
+      "chunk_count": 9
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "probability",
+      "chapter_title": "Probability",
+      "source_file": "Probability.pdf",
+      "page_count": 16,
+      "word_count": 5260,
+      "chunk_count": 12
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "quadratic_equations",
+      "chapter_title": "Quadratic Equations",
+      "source_file": "Quadratic Equations.pdf",
+      "page_count": 11,
+      "word_count": 3829,
+      "chunk_count": 9
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "real_numbers",
+      "chapter_title": "Real Numbers",
+      "source_file": "Real Numbers.pdf",
+      "page_count": 9,
+      "word_count": 3196,
+      "chunk_count": 7
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "some_applications_of_trigonometry",
+      "chapter_title": "Some Applications of Trigonometry",
+      "source_file": "Some Applications of Trigonometry.pdf",
+      "page_count": 11,
+      "word_count": 3081,
+      "chunk_count": 7
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "statistics",
+      "chapter_title": "Statistics",
+      "source_file": "Statistics.pdf",
+      "page_count": 31,
+      "word_count": 8096,
+      "chunk_count": 18
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "surface_areas_and_volumes",
+      "chapter_title": "Surface Areas and Volumes",
+      "source_file": "Surface Areas and Volumes.pdf",
+      "page_count": 10,
+      "word_count": 3334,
+      "chunk_count": 8
+    },
+    {
+      "class": 10,
+      "subject": "Mathematics",
+      "chapter_id": "triangles",
+      "chapter_title": "Triangles",
+      "source_file": "Triangles.pdf",
+      "page_count": 26,
+      "word_count": 6264,
+      "chunk_count": 14
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "acids_bases_and_salts",
+      "chapter_title": "Acids, Bases and Salts",
+      "source_file": "Acids, Bases and Salts.pdf",
+      "page_count": 20,
+      "word_count": 6964,
+      "chunk_count": 15
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "carbon_and_its_compounds",
+      "chapter_title": "Carbon and its Compounds",
+      "source_file": "Carbon and its Compounds.pdf",
+      "page_count": 21,
+      "word_count": 7912,
+      "chunk_count": 17
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "chemical_reactions_and_equations",
+      "chapter_title": "Chemical Reactions and Equations",
+      "source_file": "Chemical Reactions and Equations.pdf",
+      "page_count": 16,
+      "word_count": 5513,
+      "chunk_count": 12
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "control_and_coordination",
+      "chapter_title": "Control and Coordination",
+      "source_file": "Control and Coordination.pdf",
+      "page_count": 13,
+      "word_count": 5283,
+      "chunk_count": 12
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "electricity",
+      "chapter_title": "Electricity",
+      "source_file": "Electricity.pdf",
+      "page_count": 24,
+      "word_count": 8478,
+      "chunk_count": 19
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "heredity_and_evolution",
+      "chapter_title": "Heredity and Evolution",
+      "source_file": "Heredity and Evolution.pdf",
+      "page_count": 6,
+      "word_count": 2732,
+      "chunk_count": 6
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "how_do_organisms_reproduce",
+      "chapter_title": "How do Organisms Reproduce",
+      "source_file": "How do Organisms Reproduce.pdf",
+      "page_count": 15,
+      "word_count": 6380,
+      "chunk_count": 14
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "life_processes",
+      "chapter_title": "Life Processes",
+      "source_file": "Life Processes.pdf",
+      "page_count": 21,
+      "word_count": 9012,
+      "chunk_count": 20
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "light_reflection_and_refraction",
+      "chapter_title": "Light – Reflection and Refraction",
+      "source_file": "Light – Reflection and Refraction.pdf",
+      "page_count": 27,
+      "word_count": 10796,
+      "chunk_count": 24
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "magnetic_effects_of_electric_current",
+      "chapter_title": "Magnetic Effects of Electric Current",
+      "source_file": "Magnetic Effects of Electric Current.pdf",
+      "page_count": 13,
+      "word_count": 5266,
+      "chunk_count": 12
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "metals_and_non_metals",
+      "chapter_title": "Metals and Non-metals",
+      "source_file": "Metals and Non-metals.pdf",
+      "page_count": 21,
+      "word_count": 7541,
+      "chunk_count": 17
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "our_environment",
+      "chapter_title": "Our Environment",
+      "source_file": "Our Environment.pdf",
+      "page_count": 10,
+      "word_count": 3499,
+      "chunk_count": 8
+    },
+    {
+      "class": 10,
+      "subject": "Science",
+      "chapter_id": "the_human_eye_and_the_colourful_world",
+      "chapter_title": "The Human Eye and the Colourful World",
+      "source_file": "The Human Eye and the Colourful World.pdf",
+      "page_count": 10,
+      "word_count": 4521,
+      "chunk_count": 10
+    },
+    {
+      "class": 10,
+      "subject": "Economics",
+      "chapter_id": "consumer_rights",
+      "chapter_title": "Consumer Rights",
+      "source_file": "Consumer Rights.pdf",
+      "page_count": 19,
+      "word_count": 7291,
+      "chunk_count": 16
+    },
+    {
+      "class": 10,
+      "subject": "Economics",
+      "chapter_id": "development",
+      "chapter_title": "Development",
+      "source_file": "Development.pdf",
+      "page_count": 16,
+      "word_count": 6534,
+      "chunk_count": 14
+    },
+    {
+      "class": 10,
+      "subject": "Economics",
+      "chapter_id": "globalisation_and_the_indian_economy",
+      "chapter_title": "Globalisation and the Indian Economy",
+      "source_file": "Globalisation and the Indian Economy.pdf",
+      "page_count": 20,
+      "word_count": 7745,
+      "chunk_count": 17
+    },
+    {
+      "class": 10,
+      "subject": "Economics",
+      "chapter_id": "money_and_credit",
+      "chapter_title": "Money and Credit",
+      "source_file": "Money and Credit.pdf",
+      "page_count": 16,
+      "word_count": 6731,
+      "chunk_count": 15
+    },
+    {
+      "class": 10,
+      "subject": "Economics",
+      "chapter_id": "sectors_of_the_indian_economy",
+      "chapter_title": "Sectors of the Indian Economy",
+      "source_file": "Sectors of the Indian Economy.pdf",
+      "page_count": 20,
+      "word_count": 8911,
+      "chunk_count": 20
+    },
+    {
+      "class": 10,
+      "subject": "Geography",
+      "chapter_id": "agriculture",
+      "chapter_title": "Agriculture",
+      "source_file": "Agriculture.pdf",
+      "page_count": 12,
+      "word_count": 4007,
+      "chunk_count": 9
+    },
+    {
+      "class": 10,
+      "subject": "Geography",
+      "chapter_id": "forest_and_wildlife_resources",
+      "chapter_title": "Forest and Wildlife Resources",
+      "source_file": "Forest and Wildlife Resources.pdf",
+      "page_count": 6,
+      "word_count": 2048,
+      "chunk_count": 5
+    },
+    {
+      "class": 10,
+      "subject": "Geography",
+      "chapter_id": "lifelines_of_national_economy",
+      "chapter_title": "Lifelines of National Economy",
+      "source_file": "Lifelines of National Economy.pdf",
+      "page_count": 13,
+      "word_count": 4288,
+      "chunk_count": 10
+    },
+    {
+      "class": 10,
+      "subject": "Geography",
+      "chapter_id": "manufacturing_industries",
+      "chapter_title": "Manufacturing Industries",
+      "source_file": "Manufacturing Industries.pdf",
+      "page_count": 13,
+      "word_count": 3883,
+      "chunk_count": 9
+    },
+    {
+      "class": 10,
+      "subject": "Geography",
+      "chapter_id": "minerals_and_energy_resources",
+      "chapter_title": "Minerals and Energy Resources",
+      "source_file": "Minerals and Energy Resources.pdf",
+      "page_count": 16,
+      "word_count": 5044,
+      "chunk_count": 11
+    },
+    {
+      "class": 10,
+      "subject": "Geography",
+      "chapter_id": "resources_and_development",
+      "chapter_title": "Resources and Development",
+      "source_file": "Resources and Development.pdf",
+      "page_count": 12,
+      "word_count": 4379,
+      "chunk_count": 10
+    },
+    {
+      "class": 10,
+      "subject": "Geography",
+      "chapter_id": "water_resources",
+      "chapter_title": "Water Resources",
+      "source_file": "Water Resources.pdf",
+      "page_count": 11,
+      "word_count": 3629,
+      "chunk_count": 8
+    },
+    {
+      "class": 10,
+      "subject": "History",
+      "chapter_id": "nationalism_in_india",
+      "chapter_title": "Nationalism in India",
+      "source_file": "Nationalism in India.pdf",
+      "page_count": 22,
+      "word_count": 8590,
+      "chunk_count": 19
+    },
+    {
+      "class": 10,
+      "subject": "History",
+      "chapter_id": "print_culture_and_the_modern_world",
+      "chapter_title": "Print Culture and the Modern World",
+      "source_file": "Print Culture and the Modern World.pdf",
+      "page_count": 26,
+      "word_count": 9305,
+      "chunk_count": 20
+    },
+    {
+      "class": 10,
+      "subject": "History",
+      "chapter_id": "the_age_of_industrialisation",
+      "chapter_title": "The Age of Industrialisation",
+      "source_file": "The Age of Industrialisation.pdf",
+      "page_count": 24,
+      "word_count": 8510,
+      "chunk_count": 19
+    },
+    {
+      "class": 10,
+      "subject": "History",
+      "chapter_id": "the_making_of_a_global_world",
+      "chapter_title": "The Making of a Global World",
+      "source_file": "The Making of a Global World.pdf",
+      "page_count": 28,
+      "word_count": 9508,
+      "chunk_count": 21
+    },
+    {
+      "class": 10,
+      "subject": "History",
+      "chapter_id": "the_rise_of_nationalism_in_europe",
+      "chapter_title": "The Rise of Nationalism in Europe",
+      "source_file": "The Rise of Nationalism in Europe.pdf",
+      "page_count": 28,
+      "word_count": 9306,
+      "chunk_count": 20
+    },
+    {
+      "class": 10,
+      "subject": "Political Science",
+      "chapter_id": "gender_religion_and_caste",
+      "chapter_title": "(Gender, Religion and Caste)",
+      "source_file": "(Gender, Religion and Caste).pdf",
+      "page_count": 17,
+      "word_count": 5747,
+      "chunk_count": 13
+    },
+    {
+      "class": 10,
+      "subject": "Political Science",
+      "chapter_id": "federalism",
+      "chapter_title": "Federalism",
+      "source_file": "Federalism.pdf",
+      "page_count": 16,
+      "word_count": 5420,
+      "chunk_count": 12
+    },
+    {
+      "class": 10,
+      "subject": "Political Science",
+      "chapter_id": "outcomes_of_democracy",
+      "chapter_title": "Outcomes of Democracy",
+      "source_file": "Outcomes of Democracy.pdf",
+      "page_count": 12,
+      "word_count": 4067,
+      "chunk_count": 9
+    },
+    {
+      "class": 10,
+      "subject": "Political Science",
+      "chapter_id": "political_parties",
+      "chapter_title": "Political Parties",
+      "source_file": "Political Parties.pdf",
+      "page_count": 17,
+      "word_count": 6029,
+      "chunk_count": 13
+    },
+    {
+      "class": 10,
+      "subject": "Political Science",
+      "chapter_id": "power_sharing",
+      "chapter_title": "Power Sharing",
+      "source_file": "Power Sharing.pdf",
+      "page_count": 12,
+      "word_count": 4302,
+      "chunk_count": 10
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "data_handling_and_presentation",
+      "chapter_title": "Data Handling and Presentation",
+      "source_file": "Data Handling and Presentation.pdf",
+      "page_count": 44,
+      "word_count": 9055,
+      "chunk_count": 20
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "fractions",
+      "chapter_title": "Fractions",
+      "source_file": "Fractions.pdf",
+      "page_count": 50,
+      "word_count": 10315,
+      "chunk_count": 23
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "lines_and_angles",
+      "chapter_title": "Lines and Angles",
+      "source_file": "Lines and Angles.pdf",
+      "page_count": 53,
+      "word_count": 9746,
+      "chunk_count": 21
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "number_play",
+      "chapter_title": "NUMBER PLAY",
+      "source_file": "NUMBER PLAY.pdf",
+      "page_count": 32,
+      "word_count": 7388,
+      "chunk_count": 16
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "perimeter_and_area",
+      "chapter_title": "PERIMETER AND AREA",
+      "source_file": "PERIMETER AND AREA.pdf",
+      "page_count": 29,
+      "word_count": 6311,
+      "chunk_count": 14
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "prime_time",
+      "chapter_title": "PRIME TIME",
+      "source_file": "PRIME TIME.pdf",
+      "page_count": 33,
+      "word_count": 9334,
+      "chunk_count": 21
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "playing_with_constructions",
+      "chapter_title": "Playing with Constructions",
+      "source_file": "Playing with Constructions.pdf",
+      "page_count": 38,
+      "word_count": 5818,
+      "chunk_count": 13
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "symmetry",
+      "chapter_title": "SYMMETRY",
+      "source_file": "SYMMETRY.pdf",
+      "page_count": 40,
+      "word_count": 5287,
+      "chunk_count": 12
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "the_other_side_of_zero",
+      "chapter_title": "THE OTHER SIDE OF ZERO",
+      "source_file": "THE OTHER SIDE OF ZERO.pdf",
+      "page_count": 56,
+      "word_count": 11353,
+      "chunk_count": 25
+    },
+    {
+      "class": 6,
+      "subject": "Mathematics",
+      "chapter_id": "fegp101xpatterns_in_mathematics",
+      "chapter_title": "fegp101xPATTERNS IN  MATHEMATICS",
+      "source_file": "fegp101xPATTERNS IN  MATHEMATICS.pdf",
+      "page_count": 17,
+      "word_count": 3703,
+      "chunk_count": 8
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "a_journey_through_states_of_water",
+      "chapter_title": "A Journey through States of Water",
+      "source_file": "A Journey through States of Water.pdf",
+      "page_count": 20,
+      "word_count": 5015,
+      "chunk_count": 11
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "beyond_earth",
+      "chapter_title": "Beyond Earth",
+      "source_file": "Beyond Earth.pdf",
+      "page_count": 24,
+      "word_count": 5360,
+      "chunk_count": 12
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "diversity_in_the_living_world",
+      "chapter_title": "Diversity in the Living World",
+      "source_file": "Diversity in the Living World.pdf",
+      "page_count": 26,
+      "word_count": 6090,
+      "chunk_count": 14
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "exploring_magnets",
+      "chapter_title": "Exploring Magnets",
+      "source_file": "Exploring Magnets.pdf",
+      "page_count": 18,
+      "word_count": 3669,
+      "chunk_count": 8
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "living_creatures_exploring_their_characteristics",
+      "chapter_title": "Living Creatures- Exploring their Characteristics",
+      "source_file": "Living Creatures- Exploring their Characteristics.pdf",
+      "page_count": 24,
+      "word_count": 5808,
+      "chunk_count": 13
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "materials_around_us",
+      "chapter_title": "Materials Around Us",
+      "source_file": "Materials Around Us.pdf",
+      "page_count": 22,
+      "word_count": 4606,
+      "chunk_count": 10
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "measurement_of_length_and_motion",
+      "chapter_title": "Measurement of Length and Motion",
+      "source_file": "Measurement of Length and Motion.pdf",
+      "page_count": 22,
+      "word_count": 4294,
+      "chunk_count": 10
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "methods_of_separation_in_everyday_life",
+      "chapter_title": "Methods of Separation in Everyday Life",
+      "source_file": "Methods of Separation in Everyday Life.pdf",
+      "page_count": 20,
+      "word_count": 4536,
+      "chunk_count": 10
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "mindful_eating_a_path_to_a_healthy_body",
+      "chapter_title": "Mindful Eating- A Path to a Healthy Body",
+      "source_file": "Mindful Eating- A Path to a Healthy Body.pdf",
+      "page_count": 26,
+      "word_count": 5539,
+      "chunk_count": 12
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "natures_treasures",
+      "chapter_title": "Nature’s Treasures",
+      "source_file": "Nature’s Treasures.pdf",
+      "page_count": 24,
+      "word_count": 5352,
+      "chunk_count": 12
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "temperature_and_its_measurement",
+      "chapter_title": "Temperature and its Measurement",
+      "source_file": "Temperature and its Measurement.pdf",
+      "page_count": 20,
+      "word_count": 4019,
+      "chunk_count": 9
+    },
+    {
+      "class": 6,
+      "subject": "Science",
+      "chapter_id": "the_wonderful_world_of_science",
+      "chapter_title": "The Wonderful World of Science",
+      "source_file": "The Wonderful World of Science.pdf",
+      "page_count": 8,
+      "word_count": 1594,
+      "chunk_count": 4
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "economic_activities_around_us",
+      "chapter_title": "Economic Activities Around Us",
+      "source_file": "Economic Activities Around Us.pdf",
+      "page_count": 14,
+      "word_count": 2402,
+      "chunk_count": 6
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "family_and_community",
+      "chapter_title": "Family and Community",
+      "source_file": "Family and Community.pdf",
+      "page_count": 12,
+      "word_count": 2387,
+      "chunk_count": 6
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "grassroots_democracy_part_1_governance",
+      "chapter_title": "Grassroots Democracy – Part 1 Governance",
+      "source_file": "Grassroots Democracy – Part 1 Governance.pdf",
+      "page_count": 14,
+      "word_count": 2642,
+      "chunk_count": 6
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "grassroots_democracy_part_2_local_government_in_rural_areas",
+      "chapter_title": "Grassroots Democracy – Part 2 Local Government in Rural Areas",
+      "source_file": "Grassroots Democracy – Part 2 Local Government in Rural Areas.pdf",
+      "page_count": 10,
+      "word_count": 2040,
+      "chunk_count": 5
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "grassroots_democracy_part_3_local_government_in_urban_areas",
+      "chapter_title": "Grassroots Democracy – Part 3 Local Government in Urban Areas",
+      "source_file": "Grassroots Democracy – Part 3 Local Government in Urban Areas.pdf",
+      "page_count": 10,
+      "word_count": 1766,
+      "chunk_count": 4
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "india_that_is_bharat",
+      "chapter_title": "India, That Is Bharat",
+      "source_file": "India, That Is Bharat.pdf",
+      "page_count": 10,
+      "word_count": 1681,
+      "chunk_count": 4
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "indias_cultural_roots",
+      "chapter_title": "India’s Cultural Roots",
+      "source_file": "India’s Cultural Roots.pdf",
+      "page_count": 20,
+      "word_count": 4546,
+      "chunk_count": 10
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "introduction_why_social_science",
+      "chapter_title": "Introduction Why Social Science?",
+      "source_file": "Introduction Why Social Science?.pdf",
+      "page_count": 26,
+      "word_count": 5559,
+      "chunk_count": 12
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "landforms_and_life",
+      "chapter_title": "Landforms and Life",
+      "source_file": "Landforms and Life.pdf",
+      "page_count": 18,
+      "word_count": 3503,
+      "chunk_count": 8
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "oceans_and_continents",
+      "chapter_title": "Oceans and Continents",
+      "source_file": "Oceans and Continents.pdf",
+      "page_count": 14,
+      "word_count": 2756,
+      "chunk_count": 6
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "the_beginnings_of_indian_civilisation",
+      "chapter_title": "The Beginnings of Indian Civilisation",
+      "source_file": "The Beginnings of Indian Civilisation.pdf",
+      "page_count": 20,
+      "word_count": 3678,
+      "chunk_count": 8
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "the_value_of_work",
+      "chapter_title": "The Value of Work",
+      "source_file": "The Value of Work.pdf",
+      "page_count": 12,
+      "word_count": 1914,
+      "chunk_count": 4
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "timeline_and_sources_of_history",
+      "chapter_title": "Timeline and Sources of History",
+      "source_file": "Timeline and Sources of History.pdf",
+      "page_count": 16,
+      "word_count": 3235,
+      "chunk_count": 7
+    },
+    {
+      "class": 6,
+      "subject": "Social Science",
+      "chapter_id": "unity_in_diversity_or_many_in_the_one",
+      "chapter_title": "Unity in Diversity, or ‘Many in the One’",
+      "source_file": "Unity in Diversity, or ‘Many in the One’.pdf",
+      "page_count": 12,
+      "word_count": 2429,
+      "chunk_count": 6
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "a_peek_beyond_the_point",
+      "chapter_title": "A PEEK BEYOND THE POINT",
+      "source_file": "A PEEK BEYOND THE POINT.pdf",
+      "page_count": 55,
+      "word_count": 9872,
+      "chunk_count": 22
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "a_tale_of_three_intersecting_lines",
+      "chapter_title": "A TALE OF THREE INTERSECTING LINES",
+      "source_file": "A TALE OF THREE INTERSECTING LINES.pdf",
+      "page_count": 34,
+      "word_count": 7533,
+      "chunk_count": 17
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "another_peek_beyond_the_point",
+      "chapter_title": "ANOTHER PEEK BEYOND THE POINT",
+      "source_file": "ANOTHER PEEK BEYOND THE POINT.pdf",
+      "page_count": 30,
+      "word_count": 6959,
+      "chunk_count": 15
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "arithmetic_expressions",
+      "chapter_title": "ARITHMETIC EXPRESSIONS",
+      "source_file": "ARITHMETIC EXPRESSIONS.pdf",
+      "page_count": 40,
+      "word_count": 11471,
+      "chunk_count": 25
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "connecting_the_dots",
+      "chapter_title": "CONNECTING THE DOTS",
+      "source_file": "CONNECTING THE DOTS.pdf",
+      "page_count": 39,
+      "word_count": 9586,
+      "chunk_count": 21
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "constructions_and_tilings",
+      "chapter_title": "CONSTRUCTIONS AND TILINGS",
+      "source_file": "CONSTRUCTIONS AND TILINGS.pdf",
+      "page_count": 28,
+      "word_count": 4870,
+      "chunk_count": 11
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "expressions_using_letternumbers",
+      "chapter_title": "EXPRESSIONS USING LETTERNUMBERS",
+      "source_file": "EXPRESSIONS USING LETTERNUMBERS.pdf",
+      "page_count": 41,
+      "word_count": 10816,
+      "chunk_count": 24
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "finding_common_ground",
+      "chapter_title": "FINDING COMMON GROUND",
+      "source_file": "FINDING COMMON GROUND.pdf",
+      "page_count": 20,
+      "word_count": 6207,
+      "chunk_count": 14
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "finding_the_unknown",
+      "chapter_title": "FINDING THE UNKNOWN",
+      "source_file": "FINDING THE UNKNOWN.pdf",
+      "page_count": 35,
+      "word_count": 6808,
+      "chunk_count": 15
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "geometric_twins",
+      "chapter_title": "GEOMETRIC TWINS",
+      "source_file": "GEOMETRIC TWINS.pdf",
+      "page_count": 23,
+      "word_count": 3991,
+      "chunk_count": 9
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "large_numbers_around_us",
+      "chapter_title": "LARGE NUMBERS AROUND US",
+      "source_file": "LARGE NUMBERS AROUND US.pdf",
+      "page_count": 38,
+      "word_count": 8642,
+      "chunk_count": 19
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "number_play",
+      "chapter_title": "NUMBER PLAY",
+      "source_file": "NUMBER PLAY.pdf",
+      "page_count": 32,
+      "word_count": 7795,
+      "chunk_count": 17
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "operations_with_integers",
+      "chapter_title": "OPERATIONS WITH INTEGERS",
+      "source_file": "OPERATIONS WITH INTEGERS.pdf",
+      "page_count": 23,
+      "word_count": 6419,
+      "chunk_count": 14
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "parallel_and_intersecting_lines",
+      "chapter_title": "PARALLEL AND INTERSECTING LINES",
+      "source_file": "PARALLEL AND INTERSECTING LINES.pdf",
+      "page_count": 34,
+      "word_count": 5532,
+      "chunk_count": 12
+    },
+    {
+      "class": 7,
+      "subject": "Mathematics",
+      "chapter_id": "working_with_fractions",
+      "chapter_title": "WORKING WITH FRACTIONS",
+      "source_file": "WORKING WITH FRACTIONS.pdf",
+      "page_count": 39,
+      "word_count": 8200,
+      "chunk_count": 18
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "adolescence_a_stage_of_growth_and_change",
+      "chapter_title": "Adolescence- A Stage of Growth and Change",
+      "source_file": "Adolescence- A Stage of Growth and Change.pdf",
+      "page_count": 16,
+      "word_count": 4159,
+      "chunk_count": 9
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "changes_around_us_5_physical_and_chemical",
+      "chapter_title": "Changes Around Us- 5 Physical and Chemical",
+      "source_file": "Changes Around Us- 5 Physical and Chemical.pdf",
+      "page_count": 16,
+      "word_count": 4133,
+      "chunk_count": 9
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "earth_moon_and_the_sun",
+      "chapter_title": "Earth, Moon, and the Sun",
+      "source_file": "Earth, Moon, and the Sun.pdf",
+      "page_count": 20,
+      "word_count": 5959,
+      "chunk_count": 13
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "electricity_circuits_and_their_components",
+      "chapter_title": "Electricity- Circuits and their Components",
+      "source_file": "Electricity- Circuits and their Components.pdf",
+      "page_count": 18,
+      "word_count": 4644,
+      "chunk_count": 10
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "exploring_substances_acidic_basic_and_neutral",
+      "chapter_title": "Exploring Substances- Acidic, Basic, and Neutral",
+      "source_file": "Exploring Substances- Acidic, Basic, and Neutral.pdf",
+      "page_count": 16,
+      "word_count": 4251,
+      "chunk_count": 10
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "heat_transfer_in_nature",
+      "chapter_title": "Heat Transfer in Nature",
+      "source_file": "Heat Transfer in Nature .pdf",
+      "page_count": 16,
+      "word_count": 4883,
+      "chunk_count": 11
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "life_processes_in_animals",
+      "chapter_title": "Life Processes in Animals",
+      "source_file": "Life Processes in Animals.pdf",
+      "page_count": 16,
+      "word_count": 5139,
+      "chunk_count": 11
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "life_processes_in_plants",
+      "chapter_title": "Life Processes in Plants",
+      "source_file": "Life Processes in Plants.pdf",
+      "page_count": 16,
+      "word_count": 4728,
+      "chunk_count": 11
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "light_shadows_and_reflections",
+      "chapter_title": "Light- Shadows and Reflections",
+      "source_file": "Light- Shadows and Reflections.pdf",
+      "page_count": 16,
+      "word_count": 4876,
+      "chunk_count": 11
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "measurement_of_time_and_motion",
+      "chapter_title": "Measurement of Time and Motion",
+      "source_file": "Measurement of Time and Motion.pdf",
+      "page_count": 16,
+      "word_count": 4793,
+      "chunk_count": 11
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "the_ever_evolving_world_of_science",
+      "chapter_title": "The Ever-Evolving World of Science",
+      "source_file": "The Ever-Evolving World of Science.pdf",
+      "page_count": 6,
+      "word_count": 1597,
+      "chunk_count": 4
+    },
+    {
+      "class": 7,
+      "subject": "Science",
+      "chapter_id": "the_world_of_metals_4_and_non_metals",
+      "chapter_title": "The World of Metals 4 and Non-metals",
+      "source_file": "The World of Metals 4 and Non-metals.pdf",
+      "page_count": 16,
+      "word_count": 4613,
+      "chunk_count": 10
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "banks_and_the_magic_of_finance",
+      "chapter_title": "Banks and the Magic of Finance",
+      "source_file": "Banks and the Magic of Finance.pdf",
+      "page_count": 20,
+      "word_count": 4627,
+      "chunk_count": 10
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "climates_of_india",
+      "chapter_title": "Climates of India",
+      "source_file": "Climates of India.pdf",
+      "page_count": 22,
+      "word_count": 4910,
+      "chunk_count": 11
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "empires_and_kingdoms_6th_to_10th_centuries",
+      "chapter_title": "Empires and Kingdoms- 6th to 10th Centuries",
+      "source_file": "Empires and Kingdoms- 6th to 10th Centuries.pdf",
+      "page_count": 36,
+      "word_count": 9490,
+      "chunk_count": 21
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "from_barter_to_money",
+      "chapter_title": "From Barter to Money",
+      "source_file": "From Barter to Money.pdf",
+      "page_count": 18,
+      "word_count": 3659,
+      "chunk_count": 8
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "from_the_rulers_to_the_ruled_types_of_governments",
+      "chapter_title": "From the Rulers to the Ruled- Types of Governments",
+      "source_file": "From the Rulers to the Ruled- Types of Governments.pdf",
+      "page_count": 24,
+      "word_count": 5995,
+      "chunk_count": 13
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "geographical_diversity_of_india",
+      "chapter_title": "Geographical Diversity of India",
+      "source_file": "Geographical Diversity of India.pdf",
+      "page_count": 26,
+      "word_count": 4856,
+      "chunk_count": 11
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "how_the_land_becomes_sacred",
+      "chapter_title": "How the Land Becomes Sacred",
+      "source_file": "How the Land Becomes Sacred .pdf",
+      "page_count": 18,
+      "word_count": 4194,
+      "chunk_count": 9
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "india_and_her_neighbours",
+      "chapter_title": "India and Her Neighbours",
+      "source_file": "India and Her Neighbours.pdf",
+      "page_count": 32,
+      "word_count": 6982,
+      "chunk_count": 15
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "india_a_home_to_many",
+      "chapter_title": "India, a Home to Many",
+      "source_file": "India, a Home to Many.pdf",
+      "page_count": 18,
+      "word_count": 4074,
+      "chunk_count": 9
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "infrastructure_engine_of_indias_development",
+      "chapter_title": "Infrastructure- Engine of India’s Development",
+      "source_file": "Infrastructure- Engine of India’s Development.pdf",
+      "page_count": 24,
+      "word_count": 4333,
+      "chunk_count": 10
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "new_beginnings_cities_and_states",
+      "chapter_title": "New Beginnings- Cities and States",
+      "source_file": "New Beginnings- Cities and States.pdf",
+      "page_count": 16,
+      "word_count": 3130,
+      "chunk_count": 7
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "the_age_of_reorganisation",
+      "chapter_title": "The Age of Reorganisation",
+      "source_file": "The Age of Reorganisation.pdf",
+      "page_count": 28,
+      "word_count": 5213,
+      "chunk_count": 12
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "the_constitution_of_india_an_introduction",
+      "chapter_title": "The Constitution of India — An Introduction",
+      "source_file": "The Constitution of India — An Introduction.pdf",
+      "page_count": 20,
+      "word_count": 4537,
+      "chunk_count": 10
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "the_gupta_era_an_age_of_tireless_creativity",
+      "chapter_title": "The Gupta Era- An Age of Tireless Creativity",
+      "source_file": "The Gupta Era- An Age of Tireless Creativity.pdf",
+      "page_count": 22,
+      "word_count": 4867,
+      "chunk_count": 11
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "the_rise_of_empires",
+      "chapter_title": "The Rise of Empires",
+      "source_file": "The Rise of Empires.pdf",
+      "page_count": 34,
+      "word_count": 6855,
+      "chunk_count": 15
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "the_state_the_government_and_you",
+      "chapter_title": "The State, the Government, and You",
+      "source_file": "The State, the Government, and You.pdf",
+      "page_count": 26,
+      "word_count": 6020,
+      "chunk_count": 13
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "the_story_of_indian_farming",
+      "chapter_title": "The Story of Indian Farming",
+      "source_file": "The Story of Indian Farming.pdf",
+      "page_count": 28,
+      "word_count": 6506,
+      "chunk_count": 14
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "turning_tides_11thand_12th_centuries",
+      "chapter_title": "Turning Tides- 11thand 12th Centuries",
+      "source_file": "Turning Tides- 11thand 12th Centuries.pdf",
+      "page_count": 28,
+      "word_count": 7041,
+      "chunk_count": 16
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "understanding_markets",
+      "chapter_title": "Understanding Markets",
+      "source_file": "Understanding Markets.pdf",
+      "page_count": 26,
+      "word_count": 5344,
+      "chunk_count": 12
+    },
+    {
+      "class": 7,
+      "subject": "Social Science",
+      "chapter_id": "understanding_the_weather",
+      "chapter_title": "Understanding the Weather",
+      "source_file": "Understanding the Weather.pdf",
+      "page_count": 18,
+      "word_count": 3722,
+      "chunk_count": 8
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "a_square_and_a_cube",
+      "chapter_title": "A SQUARE AND A CUBE",
+      "source_file": "A SQUARE AND A CUBE.pdf",
+      "page_count": 22,
+      "word_count": 6287,
+      "chunk_count": 14
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "a_story_of_numbers",
+      "chapter_title": "A STORY OF NUMBERS",
+      "source_file": "A STORY OF NUMBERS.pdf",
+      "page_count": 46,
+      "word_count": 9942,
+      "chunk_count": 22
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "algebra_play",
+      "chapter_title": "ALGEBRA PLAY",
+      "source_file": "ALGEBRA PLAY.pdf",
+      "page_count": 13,
+      "word_count": 3354,
+      "chunk_count": 8
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "area",
+      "chapter_title": "AREA",
+      "source_file": "AREA.pdf",
+      "page_count": 29,
+      "word_count": 5210,
+      "chunk_count": 12
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "exploring_some_geometric_themes",
+      "chapter_title": "EXPLORING SOME GEOMETRIC THEMES",
+      "source_file": "EXPLORING SOME GEOMETRIC THEMES.pdf",
+      "page_count": 33,
+      "word_count": 5960,
+      "chunk_count": 13
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "fractions_in_disguise",
+      "chapter_title": "FRACTIONS IN DISGUISE",
+      "source_file": "FRACTIONS IN DISGUISE.pdf",
+      "page_count": 32,
+      "word_count": 9667,
+      "chunk_count": 21
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "number_play",
+      "chapter_title": "NUMBER PLAY",
+      "source_file": "NUMBER PLAY.pdf",
+      "page_count": 37,
+      "word_count": 11478,
+      "chunk_count": 25
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "power_play",
+      "chapter_title": "POWER PLAY",
+      "source_file": "POWER PLAY.pdf",
+      "page_count": 38,
+      "word_count": 10728,
+      "chunk_count": 24
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "proportional_reasoning_1",
+      "chapter_title": "PROPORTIONAL REASONING-1",
+      "source_file": "PROPORTIONAL REASONING-1.pdf",
+      "page_count": 30,
+      "word_count": 8558,
+      "chunk_count": 19
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "proportional_reasoning2",
+      "chapter_title": "PROPORTIONAL REASONING–2",
+      "source_file": "PROPORTIONAL REASONING–2 .pdf",
+      "page_count": 15,
+      "word_count": 4571,
+      "chunk_count": 10
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "quadrilaterals",
+      "chapter_title": "QUADRILATERALS",
+      "source_file": "QUADRILATERALS.pdf",
+      "page_count": 39,
+      "word_count": 8676,
+      "chunk_count": 19
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "tales_by_dots_and_lines",
+      "chapter_title": "TALES BY DOTS AND LINES",
+      "source_file": "TALES BY DOTS AND LINES.pdf",
+      "page_count": 32,
+      "word_count": 7322,
+      "chunk_count": 16
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "the_baudhayanapythagoras_theorem",
+      "chapter_title": "THE BAUDHĀYANAPYTHAGORAS THEOREM",
+      "source_file": "THE BAUDHĀYANAPYTHAGORAS THEOREM.pdf",
+      "page_count": 22,
+      "word_count": 4987,
+      "chunk_count": 11
+    },
+    {
+      "class": 8,
+      "subject": "Mathematics",
+      "chapter_id": "we_distribute_yet_things_multiply",
+      "chapter_title": "WE DISTRIBUTE, YET THINGS MULTIPLY",
+      "source_file": "WE DISTRIBUTE, YET THINGS MULTIPLY.pdf",
+      "page_count": 35,
+      "word_count": 9474,
+      "chunk_count": 21
+    },
+    {
+      "class": 8,
+      "subject": "Social Science",
+      "chapter_id": "factors_of_production",
+      "chapter_title": "Factors of Production",
+      "source_file": "Factors of Production.pdf",
+      "page_count": 21,
+      "word_count": 4698,
+      "chunk_count": 11
+    },
+    {
+      "class": 8,
+      "subject": "Social Science",
+      "chapter_id": "natural_resources_and_their_use",
+      "chapter_title": "Natural Resources and Their Use",
+      "source_file": "Natural Resources and Their Use.pdf",
+      "page_count": 20,
+      "word_count": 4960,
+      "chunk_count": 11
+    },
+    {
+      "class": 8,
+      "subject": "Social Science",
+      "chapter_id": "reshaping_indias_political_map",
+      "chapter_title": "Reshaping India’s Political Map",
+      "source_file": "Reshaping India’s Political Map.pdf",
+      "page_count": 40,
+      "word_count": 8634,
+      "chunk_count": 19
+    },
+    {
+      "class": 8,
+      "subject": "Social Science",
+      "chapter_id": "the_colonial_era_in_india",
+      "chapter_title": "The Colonial Era in India",
+      "source_file": "The Colonial Era in India.pdf",
+      "page_count": 34,
+      "word_count": 8348,
+      "chunk_count": 18
+    },
+    {
+      "class": 8,
+      "subject": "Social Science",
+      "chapter_id": "the_parliamentary_system_legislature_and_executive",
+      "chapter_title": "The Parliamentary System- Legislature and Executive",
+      "source_file": "The Parliamentary System- Legislature and Executive.pdf",
+      "page_count": 24,
+      "word_count": 5777,
+      "chunk_count": 13
+    },
+    {
+      "class": 8,
+      "subject": "Social Science",
+      "chapter_id": "the_rise_of_the_marathas",
+      "chapter_title": "The Rise of the Marathas",
+      "source_file": "The Rise of the Marathas.pdf",
+      "page_count": 22,
+      "word_count": 5189,
+      "chunk_count": 12
+    },
+    {
+      "class": 8,
+      "subject": "Social Science",
+      "chapter_id": "universal_franchise_and_indias_electoral_system",
+      "chapter_title": "Universal Franchise and India’s Electoral System",
+      "source_file": "Universal Franchise and India’s Electoral System .pdf",
+      "page_count": 22,
+      "word_count": 4759,
+      "chunk_count": 11
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "exploring_algebric_identities",
+      "chapter_title": "Exploring Algebric Identities",
+      "source_file": "Exploring Algebric Identities.pdf",
+      "page_count": 24,
+      "word_count": 7319,
+      "chunk_count": 16
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "introduction_to_linear_polynomials",
+      "chapter_title": "Introduction to Linear Polynomials",
+      "source_file": "Introduction to Linear Polynomials.pdf",
+      "page_count": 25,
+      "word_count": 6753,
+      "chunk_count": 15
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "im_up_and_down_and_round_and_round",
+      "chapter_title": "I’m Up and Down, and Round and Round",
+      "source_file": "I’m Up and Down, and Round and Round.pdf",
+      "page_count": 26,
+      "word_count": 7589,
+      "chunk_count": 17
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "measuring_space_perimeter_and_area",
+      "chapter_title": "Measuring Space Perimeter and Area",
+      "source_file": "Measuring Space Perimeter and Area.pdf",
+      "page_count": 37,
+      "word_count": 10676,
+      "chunk_count": 23
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "orienting_yourself_the_use_of_coordinates",
+      "chapter_title": "Orienting Yourself The Use of coordinates",
+      "source_file": "Orienting Yourself The Use of coordinates.pdf",
+      "page_count": 15,
+      "word_count": 4044,
+      "chunk_count": 9
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "predicting_what_comes_next_exploring_sequences",
+      "chapter_title": "Predicting What Comes Next Exploring Sequences",
+      "source_file": "Predicting What Comes Next Exploring Sequences.pdf",
+      "page_count": 27,
+      "word_count": 7980,
+      "chunk_count": 18
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "the_mathematics_of_maybe_introduction_to_probability",
+      "chapter_title": "The Mathematics of Maybe Introduction to Probability",
+      "source_file": "The Mathematics of Maybe Introduction to Probability.pdf",
+      "page_count": 19,
+      "word_count": 5601,
+      "chunk_count": 12
+    },
+    {
+      "class": 9,
+      "subject": "Mathematics",
+      "chapter_id": "the_world_of_numbers",
+      "chapter_title": "The World of Numbers",
+      "source_file": "The World of Numbers.pdf",
+      "page_count": 27,
+      "word_count": 7512,
+      "chunk_count": 17
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "atomic_foundations_and_matter",
+      "chapter_title": "Atomic Foundations and matter",
+      "source_file": "Atomic Foundations and matter.pdf",
+      "page_count": 22,
+      "word_count": 8024,
+      "chunk_count": 18
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "atomic_structure",
+      "chapter_title": "Atomic Structure",
+      "source_file": "Atomic Structure.pdf",
+      "page_count": 7,
+      "word_count": 3017,
+      "chunk_count": 7
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "cell",
+      "chapter_title": "Cell",
+      "source_file": "Cell.pdf",
+      "page_count": 20,
+      "word_count": 8038,
+      "chunk_count": 18
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "exploring_mixtures_and_their_separation",
+      "chapter_title": "Exploring Mixtures and Their Separation",
+      "source_file": "Exploring Mixtures and Their Separation.pdf",
+      "page_count": 22,
+      "word_count": 8279,
+      "chunk_count": 18
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "forces_and_laws_of_motion",
+      "chapter_title": "Forces and Laws of Motion",
+      "source_file": "Forces and Laws of Motion.pdf",
+      "page_count": 22,
+      "word_count": 10406,
+      "chunk_count": 23
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "journey_inside_atoms",
+      "chapter_title": "Journey Inside atoms",
+      "source_file": "Journey Inside atoms.pdf",
+      "page_count": 22,
+      "word_count": 8242,
+      "chunk_count": 18
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "motion",
+      "chapter_title": "Motion",
+      "source_file": "Motion.pdf",
+      "page_count": 24,
+      "word_count": 10843,
+      "chunk_count": 24
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "patterns_in_life",
+      "chapter_title": "Patterns in Life",
+      "source_file": "Patterns in Life.pdf",
+      "page_count": 24,
+      "word_count": 8817,
+      "chunk_count": 19
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "sound",
+      "chapter_title": "Sound",
+      "source_file": "Sound.pdf",
+      "page_count": 24,
+      "word_count": 9292,
+      "chunk_count": 20
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "tissues",
+      "chapter_title": "Tissues",
+      "source_file": "Tissues.pdf",
+      "page_count": 20,
+      "word_count": 7524,
+      "chunk_count": 17
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "work_energy_and_simple_machines",
+      "chapter_title": "Work, Energy and Simple Machines",
+      "source_file": "Work, Energy and Simple Machines.pdf",
+      "page_count": 24,
+      "word_count": 11437,
+      "chunk_count": 25
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "earth",
+      "chapter_title": "earth",
+      "source_file": "earth.pdf",
+      "page_count": 21,
+      "word_count": 8710,
+      "chunk_count": 19
+    },
+    {
+      "class": 9,
+      "subject": "Science",
+      "chapter_id": "reproduction",
+      "chapter_title": "reproduction",
+      "source_file": "reproduction.pdf",
+      "page_count": 20,
+      "word_count": 8555,
+      "chunk_count": 19
+    },
+    {
+      "class": 9,
+      "subject": "Economics",
+      "chapter_id": "food_security_in_india",
+      "chapter_title": "Food Security in India",
+      "source_file": "Food Security in India.pdf",
+      "page_count": 13,
+      "word_count": 5140,
+      "chunk_count": 11
+    },
+    {
+      "class": 9,
+      "subject": "Economics",
+      "chapter_id": "people_as_resource",
+      "chapter_title": "People as Resource",
+      "source_file": "People as Resource.pdf",
+      "page_count": 13,
+      "word_count": 5240,
+      "chunk_count": 12
+    },
+    {
+      "class": 9,
+      "subject": "Economics",
+      "chapter_id": "poverty_as_a_challenge",
+      "chapter_title": "Poverty as a challenge",
+      "source_file": "Poverty as a challenge.pdf",
+      "page_count": 13,
+      "word_count": 4990,
+      "chunk_count": 11
+    },
+    {
+      "class": 9,
+      "subject": "Economics",
+      "chapter_id": "the_story_of_village_palampur",
+      "chapter_title": "The Story of Village Palampur",
+      "source_file": "The Story of Village Palampur.pdf",
+      "page_count": 15,
+      "word_count": 5920,
+      "chunk_count": 13
+    },
+    {
+      "class": 9,
+      "subject": "Geography",
+      "chapter_id": "climate",
+      "chapter_title": "CLIMATE",
+      "source_file": "CLIMATE.pdf",
+      "page_count": 13,
+      "word_count": 4425,
+      "chunk_count": 10
+    },
+    {
+      "class": 9,
+      "subject": "Geography",
+      "chapter_id": "drainage",
+      "chapter_title": "DRAINAGE",
+      "source_file": "DRAINAGE.pdf",
+      "page_count": 9,
+      "word_count": 3362,
+      "chunk_count": 8
+    },
+    {
+      "class": 9,
+      "subject": "Geography",
+      "chapter_id": "india_size_and_location",
+      "chapter_title": "INDIA – SIZE AND LOCATION",
+      "source_file": "INDIA – SIZE AND LOCATION.pdf",
+      "page_count": 6,
+      "word_count": 1442,
+      "chunk_count": 3
+    },
+    {
+      "class": 9,
+      "subject": "Geography",
+      "chapter_id": "natural_vegetation_and_wildlife",
+      "chapter_title": "NATURAL VEGETATION AND WILDLIFE",
+      "source_file": "NATURAL VEGETATION AND WILDLIFE.pdf",
+      "page_count": 9,
+      "word_count": 2730,
+      "chunk_count": 6
+    },
+    {
+      "class": 9,
+      "subject": "Geography",
+      "chapter_id": "physical_features_of_india",
+      "chapter_title": "PHYSICAL FEATURES OF INDIA",
+      "source_file": "PHYSICAL FEATURES OF INDIA.pdf",
+      "page_count": 10,
+      "word_count": 3079,
+      "chunk_count": 7
+    },
+    {
+      "class": 9,
+      "subject": "Geography",
+      "chapter_id": "population",
+      "chapter_title": "POPULATION",
+      "source_file": "POPULATION.pdf",
+      "page_count": 11,
+      "word_count": 3121,
+      "chunk_count": 7
+    },
+    {
+      "class": 9,
+      "subject": "History",
+      "chapter_id": "forest_society_and_colonialism",
+      "chapter_title": "Forest Society and Colonialism",
+      "source_file": "Forest Society and Colonialism.pdf",
+      "page_count": 22,
+      "word_count": 6968,
+      "chunk_count": 15
+    },
+    {
+      "class": 9,
+      "subject": "History",
+      "chapter_id": "nazism_and_the_rise_of_hitler",
+      "chapter_title": "Nazism and the Rise of Hitler",
+      "source_file": "Nazism and the Rise of Hitler.pdf",
+      "page_count": 26,
+      "word_count": 8269,
+      "chunk_count": 18
+    },
+    {
+      "class": 9,
+      "subject": "History",
+      "chapter_id": "pastoralists_in_the_modern_world",
+      "chapter_title": "Pastoralists in the Modern World",
+      "source_file": "Pastoralists in the Modern World.pdf",
+      "page_count": 22,
+      "word_count": 6844,
+      "chunk_count": 15
+    },
+    {
+      "class": 9,
+      "subject": "History",
+      "chapter_id": "socialism_in_europe_and_the_russian_revolution",
+      "chapter_title": "Socialism in Europe and the Russian Revolution",
+      "source_file": "Socialism in Europe and the Russian Revolution.pdf",
+      "page_count": 24,
+      "word_count": 8836,
+      "chunk_count": 19
+    },
+    {
+      "class": 9,
+      "subject": "History",
+      "chapter_id": "the_french_revoulution",
+      "chapter_title": "The French Revoulution",
+      "source_file": "The French Revoulution.pdf",
+      "page_count": 24,
+      "word_count": 8489,
+      "chunk_count": 19
+    },
+    {
+      "class": 9,
+      "subject": "Political Science",
+      "chapter_id": "constitutional_design",
+      "chapter_title": "CONSTITUTIONAL DESIGN",
+      "source_file": "CONSTITUTIONAL DESIGN.pdf",
+      "page_count": 16,
+      "word_count": 6887,
+      "chunk_count": 15
+    },
+    {
+      "class": 9,
+      "subject": "Political Science",
+      "chapter_id": "democratic_rights",
+      "chapter_title": "DEMOCRATIC RIGHTS",
+      "source_file": "DEMOCRATIC RIGHTS.pdf",
+      "page_count": 17,
+      "word_count": 8252,
+      "chunk_count": 18
+    },
+    {
+      "class": 9,
+      "subject": "Political Science",
+      "chapter_id": "electoral_politics",
+      "chapter_title": "Electoral POLITICS",
+      "source_file": "Electoral POLITICS.pdf",
+      "page_count": 22,
+      "word_count": 8790,
+      "chunk_count": 19
+    },
+    {
+      "class": 9,
+      "subject": "Political Science",
+      "chapter_id": "what_is_dmocracy",
+      "chapter_title": "What is Dmocracy",
+      "source_file": "What is Dmocracy.pdf",
+      "page_count": 17,
+      "word_count": 7674,
+      "chunk_count": 17
+    },
+    {
+      "class": 9,
+      "subject": "Political Science",
+      "chapter_id": "working_of_institutions",
+      "chapter_title": "Working of Institutions",
+      "source_file": "Working of Institutions.pdf",
+      "page_count": 18,
+      "word_count": 7972,
+      "chunk_count": 18
+    },
+    {
       "class": 8,
       "subject": "Science",
       "chapter_id": "electricity_magnetic_and_heating_effects",
@@ -130,411 +2070,6 @@
       "page_count": 20,
       "word_count": 6661,
       "chunk_count": 15
-    },
-    {
-      "class": 7,
-      "subject": "Science",
-      "chapter_id": "physical_and_chemical_changes",
-      "chapter_title": "Physical and Chemical Changes",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/science/physical_and_chemical_changes.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 7,
-      "subject": "Science",
-      "chapter_id": "acids_bases_and_salts",
-      "chapter_title": "Acids Bases and Salts",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/science/acids_bases_and_salts.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 7,
-      "subject": "Science",
-      "chapter_id": "nutrition_in_animals",
-      "chapter_title": "Nutrition in Animals",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/science/nutrition_in_animals.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 7,
-      "subject": "Science",
-      "chapter_id": "nutrition_in_plants",
-      "chapter_title": "Nutrition in Plants",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/science/nutrition_in_plants.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 7,
-      "subject": "Science",
-      "chapter_id": "heat",
-      "chapter_title": "Heat",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/science/heat.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 7,
-      "subject": "Mathematics",
-      "chapter_id": "fractions_and_decimals",
-      "chapter_title": "Fractions and Decimals",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/mathematics/fractions_and_decimals.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 7,
-      "subject": "Mathematics",
-      "chapter_id": "integers",
-      "chapter_title": "Integers",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/mathematics/integers.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 7,
-      "subject": "Mathematics",
-      "chapter_id": "data_handling",
-      "chapter_title": "Data Handling",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/mathematics/data_handling.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 7,
-      "subject": "Mathematics",
-      "chapter_id": "simple_equations",
-      "chapter_title": "Simple Equations",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/mathematics/simple_equations.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 7,
-      "subject": "Mathematics",
-      "chapter_id": "lines_and_angles",
-      "chapter_title": "Lines and Angles",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class7/mathematics/lines_and_angles.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 9,
-      "subject": "Science",
-      "chapter_id": "is_matter_around_us_pure",
-      "chapter_title": "Is Matter Around Us Pure",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/science/is_matter_around_us_pure.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 9,
-      "subject": "Science",
-      "chapter_id": "motion",
-      "chapter_title": "Motion",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/science/motion.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 9,
-      "subject": "Science",
-      "chapter_id": "matter_in_our_surroundings",
-      "chapter_title": "Matter in Our Surroundings",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/science/matter_in_our_surroundings.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 9,
-      "subject": "Science",
-      "chapter_id": "force_and_laws_of_motion",
-      "chapter_title": "Force and Laws of Motion",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/science/force_and_laws_of_motion.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 9,
-      "subject": "Science",
-      "chapter_id": "atoms_and_molecules",
-      "chapter_title": "Atoms and Molecules",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/science/atoms_and_molecules.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 9,
-      "subject": "Mathematics",
-      "chapter_id": "polynomials",
-      "chapter_title": "Polynomials",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/mathematics/polynomials.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 9,
-      "subject": "Mathematics",
-      "chapter_id": "number_systems",
-      "chapter_title": "Number Systems",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/mathematics/number_systems.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 9,
-      "subject": "Mathematics",
-      "chapter_id": "statistics",
-      "chapter_title": "Statistics",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/mathematics/statistics.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 9,
-      "subject": "Mathematics",
-      "chapter_id": "coordinate_geometry",
-      "chapter_title": "Coordinate Geometry",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/mathematics/coordinate_geometry.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 9,
-      "subject": "Mathematics",
-      "chapter_id": "linear_equations_in_two_variables",
-      "chapter_title": "Linear Equations in Two Variables",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class9/mathematics/linear_equations_in_two_variables.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 8,
-      "subject": "Mathematics",
-      "chapter_id": "understanding_quadrilaterals",
-      "chapter_title": "Understanding Quadrilaterals",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class8/mathematics/understanding_quadrilaterals.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 8,
-      "subject": "Mathematics",
-      "chapter_id": "rational_numbers",
-      "chapter_title": "Rational Numbers",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class8/mathematics/rational_numbers.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 8,
-      "subject": "Mathematics",
-      "chapter_id": "exponents_and_powers",
-      "chapter_title": "Exponents and Powers",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class8/mathematics/exponents_and_powers.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 8,
-      "subject": "Mathematics",
-      "chapter_id": "squares_and_square_roots",
-      "chapter_title": "Squares and Square Roots",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class8/mathematics/squares_and_square_roots.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 8,
-      "subject": "Mathematics",
-      "chapter_id": "linear_equations",
-      "chapter_title": "Linear Equations",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class8/mathematics/linear_equations.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 6,
-      "subject": "Science",
-      "chapter_id": "separation_of_substances",
-      "chapter_title": "Separation of Substances",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/science/separation_of_substances.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 6,
-      "subject": "Science",
-      "chapter_id": "living_and_non_living_things",
-      "chapter_title": "Living and Non-living Things",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/science/living_and_non-living_things.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 6,
-      "subject": "Science",
-      "chapter_id": "food_and_nutrition",
-      "chapter_title": "Food and Nutrition",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/science/food_and_nutrition.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 6,
-      "subject": "Science",
-      "chapter_id": "components_of_food",
-      "chapter_title": "Components of Food",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/science/components_of_food.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 6,
-      "subject": "Science",
-      "chapter_id": "fibre_to_fabric",
-      "chapter_title": "Fibre to Fabric",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/science/fibre_to_fabric.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 6,
-      "subject": "Mathematics",
-      "chapter_id": "whole_numbers",
-      "chapter_title": "Whole Numbers",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/mathematics/whole_numbers.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 6,
-      "subject": "Mathematics",
-      "chapter_id": "basic_geometrical_ideas",
-      "chapter_title": "Basic Geometrical Ideas",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/mathematics/basic_geometrical_ideas.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 6,
-      "subject": "Mathematics",
-      "chapter_id": "integers",
-      "chapter_title": "Integers",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/mathematics/integers.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 6,
-      "subject": "Mathematics",
-      "chapter_id": "knowing_our_numbers",
-      "chapter_title": "Knowing Our Numbers",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/mathematics/knowing_our_numbers.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 6,
-      "subject": "Mathematics",
-      "chapter_id": "data_handling",
-      "chapter_title": "Data Handling",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class6/mathematics/data_handling.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 10,
-      "subject": "Science",
-      "chapter_id": "acids_bases_and_salts",
-      "chapter_title": "Acids Bases and Salts",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/science/acids_bases_and_salts.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 10,
-      "subject": "Science",
-      "chapter_id": "electricity",
-      "chapter_title": "Electricity",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/science/electricity.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 10,
-      "subject": "Science",
-      "chapter_id": "life_processes",
-      "chapter_title": "Life Processes",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/science/life_processes.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 10,
-      "subject": "Science",
-      "chapter_id": "light_reflection_and_refraction",
-      "chapter_title": "Light Reflection and Refraction",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/science/light_reflection_and_refraction.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 10,
-      "subject": "Science",
-      "chapter_id": "chemical_reactions",
-      "chapter_title": "Chemical Reactions",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/science/chemical_reactions.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 10,
-      "subject": "Mathematics",
-      "chapter_id": "polynomials",
-      "chapter_title": "Polynomials",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/mathematics/polynomials.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 10,
-      "subject": "Mathematics",
-      "chapter_id": "quadratic_equations",
-      "chapter_title": "Quadratic Equations",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/mathematics/quadratic_equations.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 10,
-      "subject": "Mathematics",
-      "chapter_id": "arithmetic_progressions",
-      "chapter_title": "Arithmetic Progressions",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/mathematics/arithmetic_progressions.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 10,
-      "subject": "Mathematics",
-      "chapter_id": "real_numbers",
-      "chapter_title": "Real Numbers",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/mathematics/real_numbers.json",
-      "chunk_count": 1,
-      "legacy_json": true
-    },
-    {
-      "class": 10,
-      "subject": "Mathematics",
-      "chapter_id": "pair_of_linear_equations",
-      "chapter_title": "Pair of Linear Equations",
-      "source_file": "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/class10/mathematics/pair_of_linear_equations.json",
-      "chunk_count": 1,
-      "legacy_json": true
     }
   ]
 }
