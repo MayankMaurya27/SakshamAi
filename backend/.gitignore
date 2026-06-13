@@ -8,6 +8,7 @@ data/uploads/
 data/saksham.db
 data/faiss/user_index.faiss
 data/faiss/user_index_meta.json
+data/models/
 
 # Virtual environment
 .venv/

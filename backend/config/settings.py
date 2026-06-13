@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     faiss_dir: Path = data_dir / "faiss"
     audio_dir: Path = data_dir / "audio"
     saksham_kb_dir: Path = data_dir / "saksham_kb"
+    models_dir: Path = data_dir / "models"
     database_url: str = "sqlite:///./data/saksham.db"
 
     # Ollama
@@ -49,18 +50,29 @@ class Settings(BaseSettings):
     saksham_index_path: Path = faiss_dir / "saksham_index.faiss"
     saksham_index_meta_path: Path = faiss_dir / "saksham_index_meta.json"
     saksham_kb_hash_path: Path = faiss_dir / "saksham_kb_hash.txt"
+    saksham_bm25_index_path: Path = faiss_dir / "saksham_bm25_index.json"
 
     # Piper TTS
     piper_binary: str = "piper"
     piper_model_path: str = ""
 
-    # Retrieval
+    # Retrieval / hybrid search
     top_k: int = 5
     top_k_guided: int = 7
     max_llm_context_chars: int = 3200
     max_llm_context_chars_guided: int = 7000
     chunk_size_tokens: int = 700
     chunk_overlap_tokens: int = 100
+    retrieval_candidate_count: int = 20
+    rrf_k: int = 60
+    bm25_enabled: bool = True
+    hybrid_retrieval_enabled: bool = True
+    rerank_enabled: bool = True
+    rerank_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    rerank_model_path: Path | None = None
+    rerank_local_files_only: bool = True
+    rerank_top_k: int = 7
+    saksham_index_version: str = "v2-section-hybrid"
 
     def ensure_directories(self) -> None:
         """Create required data directories if they do not exist."""
@@ -70,6 +82,7 @@ class Settings(BaseSettings):
             self.faiss_dir,
             self.audio_dir,
             self.saksham_kb_dir,
+            self.models_dir,
         ):
             directory.mkdir(parents=True, exist_ok=True)
 

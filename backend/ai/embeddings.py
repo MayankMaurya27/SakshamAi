@@ -154,6 +154,12 @@ def set_embedding_model(model: EmbeddingModel) -> None:
     _embedding_instance = model
 
 
+def reset_embedding_model_for_testing() -> None:
+    """Clear cached embedding model so the next call loads the real/default model."""
+    global _embedding_instance
+    _embedding_instance = None
+
+
 def preload_embedding_model() -> None:
     """Load embedding model at startup to avoid delay on first request."""
     if not settings.preload_embedding_model:

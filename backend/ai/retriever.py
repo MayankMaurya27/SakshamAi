@@ -6,8 +6,11 @@ from dataclasses import dataclass
 
 from sqlalchemy.orm import Session
 
+from ai.bm25_store import get_bm25_store
 from ai.embeddings import embed_text
 from ai.faiss_manager import get_saksham_index, get_user_index
+from ai.hybrid_search import reciprocal_rank_fusion
+from ai.reranker import get_reranker
 from config.settings import get_settings
 from database.repositories import ChunkRepository
 from services.curriculum_utils import chapter_matches
@@ -806,6 +809,137 @@ def _augment_contexts_with_chapter_intro(
     return intro_contexts + contexts
 
 
+def _resolve_chapter_id(
+    class_level: int,
+    subject: str,
+    chapter_ref: str,
+    chapter_filter,
+    saksham_index,
+) -> str:
+    """Resolve stable chapter_id for BM25 lookup."""
+    from services.knowledge_service import get_chapter_from_manifest
+
+    chapter = get_chapter_from_manifest(class_level, subject, chapter_ref)
+    if chapter and chapter.get("chapter_id"):
+        return str(chapter["chapter_id"])
+
+    for _, meta in saksham_index.id_map.items():
+        if chapter_filter(meta) and meta.get("chapter_id"):
+            return str(meta["chapter_id"])
+    return chapter_ref.strip().lower().replace(" ", "_")
+
+
+def _hybrid_retrieve_chapter(
+    question: str,
+    class_level: int,
+    subject: str,
+    chapter_ref: str,
+    chapter_filter,
+    saksham_index,
+    search_terms: list[str],
+    k: int,
+) -> list[ChunkContext]:
+    """
+    Hybrid retrieval: semantic + BM25 + RRF + optional reranker.
+
+    Designed for offline Jetson deployment with pre-built indexes.
+    """
+    candidate_k = max(settings.retrieval_candidate_count, k * 2)
+    chapter_id = _resolve_chapter_id(
+        class_level, subject, chapter_ref, chapter_filter, saksham_index
+    )
+
+    query_vector = embed_text(question, is_query=True)
+    semantic_results = saksham_index.search_filtered(
+        query_vector, chapter_filter, top_k=candidate_k
+    )
+    semantic_ranked = [faiss_id for faiss_id, _, _ in semantic_results]
+
+    ranked_lists = [semantic_ranked]
+    if settings.bm25_enabled:
+        bm25_hits = get_bm25_store().search_chapter(
+            class_level,
+            subject,
+            chapter_id,
+            question,
+            top_k=candidate_k,
+        )
+        if bm25_hits:
+            ranked_lists.append([faiss_id for faiss_id, _, _ in bm25_hits])
+        elif settings.saksham_bm25_index_path.exists() is False:
+            logger.debug("BM25 sidecar missing; using semantic retrieval only")
+
+    fused = reciprocal_rank_fusion(ranked_lists, k=settings.rrf_k)
+    fused_ids = [faiss_id for faiss_id, _ in fused]
+
+    if search_terms:
+        candidates: list[tuple[int, str, int, dict]] = []
+        for faiss_id, meta in saksham_index.id_map.items():
+            if not chapter_filter(meta):
+                continue
+            text = meta.get("chunk_text", "")
+            if not text or _is_low_quality_chunk(text):
+                continue
+            candidates.append(
+                (
+                    meta.get("chunk_index", faiss_id),
+                    text,
+                    faiss_id,
+                    meta,
+                )
+            )
+        seen_ids = set(fused_ids)
+        phrase_contexts = _prepend_phrase_matched_chunks(
+            [],
+            candidates,
+            search_terms,
+            set(),
+            max_boost=2,
+        )
+        for ctx in phrase_contexts:
+            if ctx.faiss_id not in seen_ids:
+                fused_ids.insert(0, ctx.faiss_id)
+                seen_ids.add(ctx.faiss_id)
+
+    rerank_candidates: list[tuple[int, str]] = []
+    for faiss_id in fused_ids[:candidate_k]:
+        meta = saksham_index.id_map.get(faiss_id, {})
+        text = meta.get("chunk_text", "")
+        if not text or _is_low_quality_chunk(text):
+            continue
+        rerank_candidates.append((faiss_id, text))
+
+    if settings.rerank_enabled and len(rerank_candidates) > k:
+        reranked = get_reranker().rerank(question, rerank_candidates, top_k=k)
+    else:
+        reranked = [
+            (faiss_id, 1.0, text)
+            for faiss_id, text in rerank_candidates[:k]
+        ]
+
+    contexts: list[ChunkContext] = []
+    for faiss_id, score, text in reranked:
+        meta = saksham_index.id_map.get(faiss_id, {})
+        contexts.append(
+            ChunkContext(
+                text=text,
+                score=score,
+                faiss_id=faiss_id,
+                metadata={**meta, "match_type": "hybrid"},
+            )
+        )
+
+    logger.info(
+        "Hybrid retrieval: %d results (semantic=%d, bm25=%s, rerank=%s, chapter=%s)",
+        len(contexts),
+        len(semantic_ranked),
+        len(ranked_lists) > 1,
+        settings.rerank_enabled,
+        chapter_id,
+    )
+    return contexts
+
+
 def retrieve_saksham_context(
     question: str,
     class_level: int,
@@ -884,6 +1018,24 @@ def retrieve_saksham_context(
     use_keyword_only = _has_strong_keyword_match(
         keyword_contexts
     ) and _should_use_keyword_only_retrieval(content_refs, question)
+
+    if (
+        settings.hybrid_retrieval_enabled
+        and not use_keyword_only
+        and not activity_refs
+    ):
+        contexts = _hybrid_retrieve_chapter(
+            question,
+            class_level,
+            subject,
+            chapter_ref,
+            chapter_filter,
+            saksham_index,
+            search_terms,
+            k,
+        )
+        if contexts:
+            return contexts
 
     semantic_items: list[tuple[int, float, str, dict]] = []
     for faiss_id, score, meta in results:

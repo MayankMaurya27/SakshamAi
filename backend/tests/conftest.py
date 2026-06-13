@@ -10,7 +10,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from ai.embeddings import MockEmbeddings, set_embedding_model
+from ai.embeddings import MockEmbeddings, reset_embedding_model_for_testing, set_embedding_model
 from ai.faiss_manager import FaissManager, reset_indexes_for_testing
 from ai.llm import MockLLM, set_llm
 from config.settings import Settings, get_settings
@@ -29,15 +29,32 @@ def test_settings() -> Settings:
         audio_dir=Path(tmp_dir) / "audio",
         saksham_kb_dir=Path(tmp_dir) / "saksham_kb",
         database_url=f"sqlite:///{tmp_dir}/test.db",
+        rerank_enabled=False,
+        bm25_enabled=False,
+        hybrid_retrieval_enabled=False,
     )
     settings.ensure_directories()
     return settings
 
 
 @pytest.fixture(autouse=True)
-def setup_mocks(monkeypatch: pytest.MonkeyPatch) -> Generator[None, None, None]:
-    """Configure mock AI services for all tests."""
+def setup_mocks(
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
+) -> Generator[None, None, None]:
+    """Configure mock AI services for unit tests; integration tests use real stack."""
     reset_indexes_for_testing()
+    is_integration = request.node.get_closest_marker("integration") is not None
+
+    if is_integration:
+        reset_embedding_model_for_testing()
+        get_settings.cache_clear()
+        yield
+        reset_indexes_for_testing()
+        reset_embedding_model_for_testing()
+        get_settings.cache_clear()
+        return
+
     set_embedding_model(MockEmbeddings(dimension=384))
     set_llm(MockLLM())
 
@@ -45,6 +62,7 @@ def setup_mocks(monkeypatch: pytest.MonkeyPatch) -> Generator[None, None, None]:
     get_settings.cache_clear()
     yield
     reset_indexes_for_testing()
+    reset_embedding_model_for_testing()
     get_settings.cache_clear()
 
 

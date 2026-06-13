@@ -8,10 +8,11 @@ from typing import Any
 
 import numpy as np
 
+from ai.bm25_store import SakshamBM25Store
 from ai.faiss_manager import FaissManager, get_saksham_index, reset_saksham_index, save_saksham_index
 import ai.faiss_manager as faiss_manager_module
 from config.settings import get_settings
-from documents.chunker import create_chunks
+from documents.chunker import create_curriculum_chunks
 from documents.indexer import index_document
 from documents.pdf_parser import extract_text
 from exceptions import ValidationError
@@ -49,11 +50,12 @@ def save_manifest(chapters: list[dict[str, Any]]) -> None:
 
 
 def compute_curriculum_hash() -> str:
-    """Hash all curriculum PDFs for staleness detection."""
+    """Hash curriculum PDFs and index version for staleness detection."""
     hasher = hashlib.sha256()
+    hasher.update(settings.saksham_index_version.encode("utf-8"))
     kb_dir = settings.saksham_kb_dir
     if not kb_dir.exists():
-        return ""
+        return hasher.hexdigest()
 
     for pdf_file in sorted(kb_dir.rglob("*.pdf")):
         hasher.update(pdf_file.read_bytes())
@@ -64,7 +66,7 @@ def compute_curriculum_hash() -> str:
 def ingest_chapter_pdf(chapter: ChapterInfo, saksham_index) -> dict[str, Any]:
     """Extract, chunk, and index a single chapter PDF."""
     text, page_count = extract_text(str(chapter.pdf_path))
-    chunks = create_chunks(text)
+    chunks = create_curriculum_chunks(text)
     if not chunks:
         raise ValidationError(f"No chunks created from {chapter.source_file}")
 
@@ -215,6 +217,21 @@ def _prebuilt_index_available() -> bool:
     )
 
 
+def _save_bm25_sidecar(saksham_index: FaissManager) -> None:
+    """Build and persist BM25 sidecar from the FAISS metadata map."""
+    if not settings.bm25_enabled:
+        return
+
+    payload = SakshamBM25Store.build_from_faiss_metadata(saksham_index.id_map)
+    store = SakshamBM25Store()
+    store.save(payload)
+    logger.info(
+        "Built BM25 sidecar with %d chapters at %s",
+        len(payload.get("chapters", {})),
+        settings.saksham_bm25_index_path,
+    )
+
+
 def build_saksham_index(force: bool = False) -> None:
     """
     Build or rebuild saksham FAISS index from curriculum PDFs.
@@ -292,6 +309,7 @@ def build_saksham_index(force: bool = False) -> None:
         )
 
     save_saksham_index()
+    _save_bm25_sidecar(saksham_index)
     save_manifest(manifest_entries)
     if current_hash:
         hash_path.write_text(current_hash, encoding="utf-8")

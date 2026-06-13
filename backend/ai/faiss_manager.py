@@ -209,3 +209,8 @@ def reset_indexes_for_testing() -> None:
     global _user_index, _saksham_index
     _user_index = None
     _saksham_index = None
+    from ai.bm25_store import reset_bm25_store_for_testing
+    from ai.reranker import reset_reranker_for_testing
+
+    reset_bm25_store_for_testing()
+    reset_reranker_for_testing()

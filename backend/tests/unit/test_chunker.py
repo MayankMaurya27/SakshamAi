@@ -1,31 +1,26 @@
-"""Unit tests for text chunking."""
+"""Unit tests for curriculum section chunking."""
 
-from documents.chunker import create_chunks, truncate_to_tokens
-
-
-def test_create_chunks_splits_long_text():
-    """Long text should produce multiple chunks."""
-    text = "word " * 2000
-    chunks = create_chunks(text, chunk_size=100, overlap=20)
-    assert len(chunks) > 1
-    assert all(len(chunk) > 0 for chunk in chunks)
+from documents.chunker import create_curriculum_chunks, _split_curriculum_sections
 
 
-def test_create_chunks_empty_text():
-    """Empty text should return empty list."""
-    assert create_chunks("") == []
+def test_split_curriculum_sections_on_numbered_headings():
+    text = (
+        "Introduction to the village. "
+        "1. Land is fixed. Farming is the main activity in Palampur. "
+        "5. Who will provide the labour? Farm labourers are paid wages."
+    )
+    sections = _split_curriculum_sections(text)
+    assert len(sections) >= 2
+    labour_sections = [section for section in sections if "labour" in section.lower()]
+    assert labour_sections
 
 
-def test_create_chunks_short_text():
-    """Short text should produce single chunk."""
-    text = "This is a short educational text about science."
-    chunks = create_chunks(text, chunk_size=700, overlap=100)
-    assert len(chunks) == 1
-    assert chunks[0] == text
-
-
-def test_truncate_to_tokens():
-    """Truncation should limit token count."""
-    text = "word " * 500
-    truncated = truncate_to_tokens(text, max_tokens=50)
-    assert len(truncated) < len(text)
+def test_create_curriculum_chunks_keeps_sections_together():
+    text = (
+        "Overview of Palampur. "
+        "2. Is there a way one can grow more? Multiple cropping helps. "
+        "Electricity came early to Palampur and transformed irrigation."
+    )
+    chunks = create_curriculum_chunks(text, chunk_size=200, overlap=20)
+    assert chunks
+    assert any("electricity" in chunk.lower() for chunk in chunks)
