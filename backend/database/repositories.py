@@ -61,6 +61,23 @@ class DocumentRepository:
         self.db.refresh(document)
         return document
 
+    def delete_by_id(self, document_id: int) -> bool:
+        """Delete a document record. Related chunks and quizzes cascade."""
+        document = self.get_by_id(document_id)
+        if document is None:
+            return False
+        self.db.delete(document)
+        self.db.commit()
+        return True
+
+    def delete_all(self) -> int:
+        """Delete all document records and related chunks/quizzes."""
+        documents = self.list_all()
+        for document in documents:
+            self.db.delete(document)
+        self.db.commit()
+        return len(documents)
+
     def to_dict(self, document: Document) -> dict[str, Any]:
         """Serialize document to dictionary."""
         key_concepts: list[Any] = []

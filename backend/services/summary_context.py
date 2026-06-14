@@ -7,10 +7,13 @@ import re
 from ai.context_cleaner import clean_context_for_llm, clean_context_text
 from config.settings import get_settings
 from services.quiz_context import (
-    filter_quiz_source_chunks,
+    is_exercise_list_chunk,
     prepare_quiz_context,
     stratified_sample_chunks,
 )
+from services.quiz_math import filter_math_quiz_chunks, is_math_subject
+
+from services.summary_factual import strip_narrative_sentences
 
 settings = get_settings()
 
@@ -104,14 +107,19 @@ def filter_summary_source_chunks(
     chunks: list[str],
     subject: str | None = None,
 ) -> list[str]:
-    """Drop exercises, activities, and low-quality chunks before summarization."""
+    """Drop exercises, activities, narratives, and low-quality chunks before summarization."""
+    source = filter_math_quiz_chunks(chunks) if is_math_subject(subject) else chunks
     filtered: list[str] = []
-    for chunk in filter_quiz_source_chunks(chunks, subject=subject):
+    for chunk in source:
+        if not chunk or not chunk.strip():
+            continue
+        if is_exercise_list_chunk(chunk):
+            continue
         if is_activity_heavy_chunk(chunk):
             continue
-        cleaned = strip_activity_passages(chunk)
-        if cleaned and len(cleaned) >= 100:
-            filtered.append(cleaned)
+        cleaned = strip_narrative_sentences(strip_activity_passages(chunk))
+        if cleaned and len(cleaned) >= 60:
+            filtered.append(clean_context_for_llm(clean_context_text(cleaned)))
     return filtered
 
 
@@ -120,9 +128,11 @@ def prepare_summary_context(
     max_chars: int | None = None,
     subject: str | None = None,
 ) -> str:
-    """Build one context string from ordered chapter/document chunks."""
+    """Build one context string from factual chapter/document chunks."""
+    usable = filter_summary_source_chunks(chunks, subject=subject)
+    source = usable if usable else chunks
     return prepare_quiz_context(
-        chunks,
+        source,
         max_chars=max_chars or settings.summary_max_context_chars,
         subject=subject,
     )
@@ -132,8 +142,13 @@ def sample_summary_windows(chunks: list[str], window_size: int = 8) -> list[list
     """Split usable chunks into overlapping windows for map-reduce summarization."""
     usable = filter_summary_source_chunks(chunks)
     if not usable:
-        usable = [strip_activity_passages(chunk) for chunk in chunks if chunk.strip()]
-        usable = [chunk for chunk in usable if len(chunk) >= 100]
+        usable = []
+        for chunk in chunks:
+            if not chunk.strip():
+                continue
+            cleaned = strip_narrative_sentences(strip_activity_passages(chunk))
+            if cleaned and len(cleaned) >= 60:
+                usable.append(clean_context_for_llm(clean_context_text(cleaned)))
 
     if len(usable) <= window_size:
         return [usable] if usable else []

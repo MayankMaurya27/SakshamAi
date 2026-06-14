@@ -1,7 +1,7 @@
 """API tests for summary generation."""
 
 from config.constants import SourceType
-from services.summary_parser import count_paragraphs
+from services.summary_parser import count_paragraphs, count_words
 
 
 def test_document_summary_requires_document_id(client):
@@ -53,6 +53,7 @@ def test_saksham_summary_returns_prose_payload(client, monkeypatch):
     assert data["chapter_id"] == "electricity"
     assert data["summary"]
     assert count_paragraphs(data["summary"]) >= 2
+    assert count_words(data["summary"]) >= 35
     assert data["format_version"] == "v2-prose"
     assert "overview" not in data
     assert "key_concepts" not in data

@@ -35,3 +35,28 @@ def test_get_document_success(client, db_session):
     assert data["success"] is True
     assert data["data"]["filename"] == "science.pdf"
     assert data["data"]["summary"] == "Science chapter summary"
+
+
+def test_delete_document_not_found(client):
+    """Deleting a missing document should return 404."""
+    response = client.delete("/document/999")
+    assert response.status_code == 404
+
+
+def test_delete_document_success(client, db_session, test_settings, monkeypatch):
+    """Deleting a document should remove its stored PDF file."""
+    uploads_dir = test_settings.uploads_dir
+    uploads_dir.mkdir(parents=True, exist_ok=True)
+    pdf_path = uploads_dir / "sample.pdf"
+    pdf_path.write_bytes(b"%PDF-1.4 test")
+
+    repo = DocumentRepository(db_session)
+    doc = repo.create(filename="sample.pdf", filepath=str(pdf_path))
+
+    monkeypatch.setattr("services.document_service.rebuild_user_index", lambda db: None)
+
+    response = client.delete(f"/document/{doc.id}")
+    assert response.status_code == 200
+    assert response.json()["data"]["deleted"] is True
+    assert not pdf_path.exists()
+    assert repo.get_by_id(doc.id) is None

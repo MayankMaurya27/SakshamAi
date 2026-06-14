@@ -190,6 +190,14 @@ def save_user_index() -> None:
         _user_index.save_index(settings.user_index_path, settings.user_index_meta_path)
 
 
+def reset_user_index() -> FaissManager:
+    """Replace the user index with a fresh empty index and persist it."""
+    global _user_index
+    _user_index = FaissManager(name="user_index")
+    _user_index.create_index()
+    return _user_index
+
+
 def save_saksham_index() -> None:
     """Persist Saksham index to disk."""
     if _saksham_index is not None:

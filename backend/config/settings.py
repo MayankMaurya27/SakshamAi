@@ -87,10 +87,14 @@ class Settings(BaseSettings):
 
     # Summary generation
     summary_cache_dir: Path = data_dir / "summary_cache"
-    summary_cache_version: str = "v2-prose"
+    summary_cache_version: str = "v2-prose-grounded"
     summary_max_context_chars: int = 6500
+    summary_max_chars: int = 5000
+    summary_min_words: int = 260
+    summary_target_words: int = 380
+    summary_min_paragraphs: int = 4
     summary_map_reduce_windows: int = 3
-    ollama_num_predict_summary: int = 1800
+    ollama_num_predict_summary: int = 3200
 
     def ensure_directories(self) -> None:
         """Create required data directories if they do not exist."""

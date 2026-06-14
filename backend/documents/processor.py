@@ -76,8 +76,12 @@ def process_upload(
     """
     Process an uploaded PDF through the full pipeline.
 
+    Summary uses the same grounded prose pipeline as Learn from Saksham via
+    `save_document_summary_from_chunks()` → `generate_summary_from_chunks()`.
+    Quiz questions still come from a separate AUTO_ANALYSIS JSON call.
+
     Returns:
-        Dict with document_id, summary, key_concepts, quiz_count.
+        Dict with document_id, summary, format_version, key_concepts, quiz_count.
     """
     if len(file_content) == 0:
         raise PDFProcessingError("Uploaded file is empty.")
@@ -85,62 +89,80 @@ def process_upload(
     safe_filename = _sanitize_filename(original_filename)
     unique_name = f"{uuid.uuid4().hex}_{safe_filename}"
     filepath = settings.uploads_dir / unique_name
-    filepath.write_bytes(file_content)
+    document = None
 
-    text, page_count = extract_text(str(filepath))
-    chunks = create_chunks(text)
+    try:
+        filepath.write_bytes(file_content)
 
-    if not chunks:
-        raise PDFProcessingError("Could not create text chunks from PDF.")
+        text, page_count = extract_text(str(filepath))
+        chunks = create_chunks(text)
 
-    user_index = get_user_index()
-    faiss_ids = index_document(
-        chunks,
-        user_index,
-        metadata_base={"source": "user_document"},
-    )
-    save_user_index()
+        if not chunks:
+            raise PDFProcessingError("Could not create text chunks from PDF.")
 
-    doc_repo = DocumentRepository(db)
-    document = doc_repo.create(filename=safe_filename, filepath=str(filepath))
+        doc_repo = DocumentRepository(db)
+        document = doc_repo.create(filename=safe_filename, filepath=str(filepath))
 
-    chunk_records = [
-        (idx, chunk_text, faiss_id)
-        for idx, (chunk_text, faiss_id) in enumerate(zip(chunks, faiss_ids))
-    ]
-    ChunkRepository(db).create_batch(document.id, chunk_records)
+        user_index = get_user_index()
+        faiss_ids = index_document(
+            chunks,
+            user_index,
+            metadata_base={"source": "user_document", "document_id": document.id},
+        )
+        save_user_index()
 
-    from services.summary_service import build_document_summary_from_chunks
+        chunk_records = [
+            (idx, chunk_text, faiss_id)
+            for idx, (chunk_text, faiss_id) in enumerate(zip(chunks, faiss_ids))
+        ]
+        ChunkRepository(db).create_batch(document.id, chunk_records)
 
-    summary_payload = build_document_summary_from_chunks(chunks, safe_filename)
-    summary = summary_payload.get("summary", "")
-    key_concepts: list = []
+        from services.summary_service import save_document_summary_from_chunks
 
-    truncated_text = truncate_to_tokens(text, MAX_AUTO_ANALYSIS_TOKENS)
-    analysis_prompt = build_prompt(
-        LearningMode.AUTO_ANALYSIS,
-        document_text=truncated_text,
-    )
-    llm_response = get_llm().generate(analysis_prompt)
-    analysis = _parse_auto_analysis(llm_response)
+        summary_result = save_document_summary_from_chunks(
+            document.id,
+            chunks,
+            db,
+            title=safe_filename,
+        )
 
-    doc_repo.update_analysis(document.id, summary, key_concepts)
+        truncated_text = truncate_to_tokens(text, MAX_AUTO_ANALYSIS_TOKENS)
+        analysis_prompt = build_prompt(
+            LearningMode.AUTO_ANALYSIS,
+            document_text=truncated_text,
+        )
+        llm_response = get_llm().generate(analysis_prompt)
+        analysis = _parse_auto_analysis(llm_response)
 
-    questions = _normalize_questions(analysis.get("questions", []))
-    if questions:
-        QuizRepository(db).create_batch(document.id, questions)
+        questions = _normalize_questions(analysis.get("questions", []))
+        if questions:
+            QuizRepository(db).create_batch(document.id, questions)
 
-    logger.info(
-        "Processed upload: document_id=%d, pages=%d, chunks=%d, quizzes=%d",
-        document.id,
-        page_count,
-        len(chunks),
-        len(questions),
-    )
+        logger.info(
+            "Processed upload: document_id=%d, pages=%d, chunks=%d, quizzes=%d",
+            document.id,
+            page_count,
+            len(chunks),
+            len(questions),
+        )
 
-    return {
-        "document_id": document.id,
-        "summary": summary,
-        "key_concepts": key_concepts,
-        "quiz_count": len(questions),
-    }
+        return {
+            "document_id": document.id,
+            "summary": summary_result.get("summary", ""),
+            "format_version": summary_result.get("format_version"),
+            "key_concepts": [],
+            "quiz_count": len(questions),
+        }
+    except Exception:
+        if document is not None:
+            from services.document_service import delete_document
+
+            try:
+                delete_document(document.id, db)
+            except Exception:
+                DocumentRepository(db).delete_by_id(document.id)
+                if filepath.exists():
+                    filepath.unlink(missing_ok=True)
+        elif filepath.exists():
+            filepath.unlink(missing_ok=True)
+        raise

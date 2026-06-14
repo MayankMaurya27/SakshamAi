@@ -76,6 +76,10 @@ def count_paragraphs(text: str) -> int:
     return len([part for part in re.split(r"\n\s*\n", text.strip()) if part.strip()])
 
 
+def count_words(text: str) -> int:
+    return len(re.findall(r"\b[\w'-]+\b", text))
+
+
 def strip_legacy_section_headers(text: str) -> str:
     """Convert old sectioned LLM output into plain paragraphs."""
     pattern = r"(?mi)^(" + "|".join(re.escape(header) for header in _SECTION_HEADERS) + r")\s*$"
@@ -110,11 +114,11 @@ def _split_long_block_into_paragraphs(text: str, sentences_per_para: int = 2) ->
     return "\n\n".join(paragraphs)
 
 
-def _dedupe_paragraphs(paragraphs: list[str]) -> list[str]:
+def _dedupe_paragraphs(paragraphs: list[str], paragraph_max_chars: int = 1200) -> list[str]:
     kept: list[str] = []
     seen: set[str] = set()
     for paragraph in paragraphs:
-        cleaned = dedupe_sentences(paragraph.strip(), max_chars=700)
+        cleaned = dedupe_sentences(paragraph.strip(), max_chars=paragraph_max_chars)
         if len(cleaned) < 30:
             continue
         key = _normalize_sentence_key(cleaned)[:120]
@@ -145,8 +149,12 @@ def _truncate_preserving_paragraphs(text: str, max_chars: int) -> str:
     return "\n\n".join(kept).strip() or text[:max_chars].strip()
 
 
-def clean_summary_text(text: str, max_chars: int = 2000) -> str:
+def clean_summary_text(text: str, max_chars: int | None = None) -> str:
     """Normalize LLM output into readable multi-paragraph prose."""
+    if max_chars is None:
+        from config.settings import get_settings
+
+        max_chars = get_settings().summary_max_chars
     cleaned = strip_legacy_section_headers(text.strip())
     cleaned = re.sub(r"[ \t]+\n", "\n", cleaned)
     cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
@@ -162,8 +170,12 @@ def clean_summary_text(text: str, max_chars: int = 2000) -> str:
     return _truncate_preserving_paragraphs(result, max_chars)
 
 
-def merge_partial_summaries(texts: list[str], max_chars: int = 2000) -> str:
+def merge_partial_summaries(texts: list[str], max_chars: int | None = None) -> str:
     """Merge window summaries without repeating similar paragraphs."""
+    if max_chars is None:
+        from config.settings import get_settings
+
+        max_chars = get_settings().summary_max_chars
     paragraphs: list[str] = []
     for text in texts:
         cleaned = clean_summary_text(text, max_chars=max_chars)

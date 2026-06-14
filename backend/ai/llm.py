@@ -284,41 +284,63 @@ class MockLLM:
                 {"question": "What should students remember?", "option_a": "Basics", "option_b": "Nothing", "option_c": "Dates", "option_d": "Names", "correct_answer": "A"}
             ]}"""
 
-        if "Write revision notes" in prompt or "Combine these" in prompt:
-            if "Combine these" in prompt or "Combine the partial revision notes" in prompt:
-                return (
-                    "Electricity is an important form of energy used in homes, schools, and industry. "
-                    "Students use it every day through lights, fans, and many appliances.\n\n"
-                    "An electric circuit is a closed path that allows electric current to flow. "
-                    "A battery or cell provides the potential difference needed to push charges through the circuit.\n\n"
-                    "Resistance opposes the flow of current in a conductor. "
-                    "Ohm's law links voltage, current, and resistance in a simple electric circuit."
-                )
+        summary_prompt_markers = (
+            "Write a complete revision summary",
+            "Write detailed revision notes",
+            "Combine the partial revision notes",
+            "Expand the draft",
+            "Write revision notes",
+        )
+        if any(marker in prompt for marker in summary_prompt_markers):
+            long_electricity = (
+                "Electricity is an important form of energy used in homes, schools, hospitals, and industry. "
+                "It is a convenient source of power for lights, fans, machines, and many everyday devices.\n\n"
+                "An electric circuit is a continuous and closed path through which electric current can flow. "
+                "A cell or battery provides the potential difference that drives charges around the circuit.\n\n"
+                "Electric current is the rate of flow of charge through a conductor. "
+                "Its SI unit is the ampere, and it is measured using an ammeter connected in series.\n\n"
+                "Resistance opposes the flow of current in a conductor. "
+                "Ohm's law states that the potential difference across a resistor equals the product of current and resistance. "
+                "Variable resistance helps control current without changing the voltage source.\n\n"
+                "Students should remember how current, voltage, and resistance are linked, "
+                "and how a closed circuit is needed for current to flow safely and usefully."
+            )
+
+            if "Expand the draft" in prompt:
+                return long_electricity
+
+            if "Combine the partial revision notes" in prompt or "Combine these" in prompt:
+                return long_electricity
 
             if "one part of a longer chapter" in prompt:
                 return (
                     "Electric current is the flow of electric charge through a conductor. "
-                    "It needs a closed path called an electric circuit.\n\n"
+                    "It needs a closed path called an electric circuit so charges can move continuously.\n\n"
                     "Potential difference is the work done to move a unit charge between two points. "
-                    "It is measured using a voltmeter."
+                    "It is measured in volts with a voltmeter connected across the two points.\n\n"
+                    "Resistance limits how much current flows for a given voltage. "
+                    "Conductors, insulators, and resistors behave differently in a circuit."
                 )
 
             if "electric circuit" in prompt.lower() or "electricity" in prompt.lower():
                 return (
-                    "An electric circuit is a continuous and closed path for electric current. "
-                    "Current flows when there is a potential difference in the circuit.\n\n"
-                    "A resistor opposes current flow, while variable resistance helps control current "
-                    "without changing the voltage source.\n\n"
-                    "Students should remember the basic definitions and how current, voltage, "
-                    "and resistance work together in a circuit."
+                    "A continuous and closed path of an electric current is called an electric circuit. "
+                    "Students need a closed path for electric current to flow safely and usefully.\n\n"
+                    "A component used to regulate current without changing the voltage source is called "
+                    "variable resistance. It helps control the amount of current in a circuit.\n\n"
+                    "A conductor having some appreciable resistance is called a resistor. "
+                    "Resistors are common components in electric circuits.\n\n"
+                    "These ideas help students remember how current, voltage, and resistance work together."
                 )
 
             return (
                 "Force is a push or pull that can change how an object moves. "
-                "It is one of the basic ideas students study in science.\n\n"
+                "It is one of the basic ideas students study in science and see in daily life.\n\n"
                 "Motion happens when an object's position changes over time. "
-                "Force can start, stop, or change the direction of motion.\n\n"
-                "Students should remember that force and motion are closely linked in everyday examples."
+                "Force can start motion, stop it, or change its speed and direction.\n\n"
+                "Newton's work linked force and motion through simple laws that help predict how objects behave. "
+                "Students should connect examples like pushing a cart or pulling a door with these ideas.\n\n"
+                "Understanding force and motion helps explain many events around us, from sports to transport."
             )
 
         if "Analyze the document" in prompt:

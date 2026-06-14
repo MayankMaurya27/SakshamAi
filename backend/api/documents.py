@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 from api.responses import error_response, success_response
 from database.db import get_db
 from database.repositories import DocumentRepository, QuizRepository
+from exceptions import DocumentNotFoundError
+from services.document_service import delete_document
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["documents"])
@@ -37,3 +39,13 @@ def get_document(document_id: int, db: Session = Depends(get_db)):
     data = doc_repo.to_dict(document)
     data["quizzes"] = quiz_repo.to_dict_list(quizzes)
     return success_response(data)
+
+
+@router.delete("/document/{document_id}")
+def remove_document(document_id: int, db: Session = Depends(get_db)):
+    """Delete an uploaded document, its PDF file, and its search index vectors."""
+    try:
+        delete_document(document_id, db)
+        return success_response({"deleted": True, "document_id": document_id})
+    except DocumentNotFoundError as exc:
+        return error_response(exc.message, status_code=404)

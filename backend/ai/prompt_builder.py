@@ -381,8 +381,9 @@ def build_quiz_prompt(
 
 
 SUMMARY_PROSE_INSTRUCTIONS = """Output format (plain text only — do NOT use JSON, headings, or bullet lists):
-Write at least 2-3 short paragraphs for a Class {grade} student.
-Add more paragraphs only if the context covers many distinct ideas.
+Write a detailed revision summary of about {target_words} words for a Class {grade} student.
+Use at least {min_paragraphs} paragraphs. Add more paragraphs if the context covers many ideas.
+Each paragraph should be 3-5 sentences and cover a distinct part of the chapter.
 Separate each paragraph with one blank line."""
 
 
@@ -392,6 +393,8 @@ def build_summary_prompt(
     grade: int = 8,
     window_hint: str = "",
     mode: str = "full",
+    target_words: int = 380,
+    min_paragraphs: int = 4,
 ) -> str:
     """Build a plain-text chapter/document summary prompt for the local LLM."""
     chapter_section = f"Chapter:\n{topic}\n\n" if topic else ""
@@ -399,19 +402,28 @@ def build_summary_prompt(
 
     if mode == "partial":
         task = (
-            "Write revision notes for this section of the chapter using ONLY the context above. "
-            "Use 2-3 short paragraphs. This is one part of a longer chapter."
+            "Write detailed revision notes for this section of the chapter using ONLY the context above. "
+            "Use at least 3-4 paragraphs and about "
+            f"{max(160, target_words // 2)} words. "
+            "Cover every main idea in this section. This is one part of a longer chapter."
         )
     elif mode == "synthesis":
         task = (
-            "Combine the partial revision notes below into one clear chapter summary. "
-            "Use at least 3 paragraphs and add more only if needed. "
-            "Remove repetition and keep the flow easy to read."
+            "Combine the partial revision notes below into one complete chapter summary. "
+            f"Use at least {min_paragraphs + 1} paragraphs and about {target_words} words. "
+            "Include all important ideas from the notes. Remove repetition and keep the flow easy to read."
+        )
+    elif mode == "expand":
+        task = (
+            "The draft summary below is too short. Expand it into a complete chapter revision summary "
+            f"of about {target_words} words in at least {min_paragraphs} paragraphs. "
+            "Add missing main ideas from the source context. Keep the draft's correct facts, but add more detail."
         )
     else:
         task = (
-            "Write revision notes for the full chapter using ONLY the context above. "
-            "Use at least 2-3 paragraphs and add more only if the chapter covers many ideas."
+            "Write a complete revision summary for the full chapter using ONLY the context above. "
+            f"Use at least {min_paragraphs} paragraphs and about {target_words} words. "
+            "Cover all major sections, definitions, and key ideas from the chapter."
         )
 
     body = f"""Context:
@@ -420,12 +432,44 @@ def build_summary_prompt(
 {chapter_section}{hint}Instructions:
 {task}
 Use your own words. Do not copy long passages.
+Use ONLY facts that appear in the context. Do NOT add outside knowledge.
+Do NOT mention story characters (Bhavisha, Dhruv, Ira, Jonali, Pallabi, Arshad, Ajay).
+Do NOT describe time machines, fictional travel, or story plots.
+Do NOT treat textbook story characters as real historical people.
 Do NOT mention activities, experiments, lab steps, or "Let us find out".
 Do NOT list exercise questions or figure captions.
 Do NOT repeat the same idea twice.
 Do NOT use headings, bullet points, or numbered lists.
 
-{SUMMARY_PROSE_INSTRUCTIONS.format(grade=grade)}"""
+{SUMMARY_PROSE_INSTRUCTIONS.format(grade=grade, target_words=target_words, min_paragraphs=min_paragraphs)}"""
+    return f"{GUIDED_SYSTEM_PROMPT.format(grade=grade)}\n\n{body}"
+
+
+def build_summary_expand_prompt(
+    draft_summary: str,
+    retrieved_context: str,
+    topic: str = "",
+    grade: int = 8,
+    target_words: int = 380,
+    min_paragraphs: int = 4,
+) -> str:
+    """Ask the LLM to expand a short draft using the source context."""
+    chapter_section = f"Chapter:\n{topic}\n\n" if topic else ""
+    body = f"""Draft summary (too short):
+{draft_summary.strip()}
+
+Source context:
+{retrieved_context}
+
+{chapter_section}Instructions:
+Expand the draft into a complete revision summary of about {target_words} words.
+Use at least {min_paragraphs} paragraphs separated by blank lines.
+Add missing main ideas from the source context only.
+Use ONLY facts supported by the source context.
+Do NOT mention story characters, time machines, or fictional narratives.
+Do NOT use headings, bullet points, or numbered lists.
+
+{SUMMARY_PROSE_INSTRUCTIONS.format(grade=grade, target_words=target_words, min_paragraphs=min_paragraphs)}"""
     return f"{GUIDED_SYSTEM_PROMPT.format(grade=grade)}\n\n{body}"
 
 

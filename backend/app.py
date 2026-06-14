@@ -21,6 +21,7 @@ from ai.embeddings import preload_embedding_model
 from config.settings import get_settings
 from database.db import init_db
 from exceptions import SakshamError
+from services.cache_version import purge_caches_on_version_change
 from services.knowledge_service import build_saksham_index
 
 logging.basicConfig(
@@ -35,6 +36,7 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     """Application startup and shutdown lifecycle."""
     settings.ensure_directories()
+    purge_caches_on_version_change(settings)
     init_db()
     build_saksham_index()
     preload_embedding_model()
