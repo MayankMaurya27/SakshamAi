@@ -183,16 +183,21 @@ Question:
 {question}
 
 Instructions:
-Use:
-- Short sentences
-- Small paragraphs
-- Simple words
+Write 4 to 6 bullet points only.
+Each bullet must be at most 12 words.
+Use simple everyday words.
+Keep NCERT terms but add a short meaning in brackets.
+Do not write long paragraphs.
 
-Avoid:
-- Long paragraphs
-- Complex terminology
+Example format:
+• Photosynthesis (how plants make food) uses sunlight.
+• Chlorophyll (green pigment) traps light energy.
 
-Structure answer with bullets.""",
+Rules:
+- One idea per bullet
+- Short sentences only
+- No story characters
+- Use only facts from the context""",
     LearningMode.VISUAL: """Context:
 {retrieved_context}
 

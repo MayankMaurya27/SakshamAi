@@ -96,6 +96,10 @@ class Settings(BaseSettings):
     summary_map_reduce_windows: int = 3
     ollama_num_predict_summary: int = 3200
 
+    # Dyslexia-friendly formatting
+    dyslexia_max_words_per_sentence: int = 15
+    dyslexia_max_bullets: int = 8
+
     def ensure_directories(self) -> None:
         """Create required data directories if they do not exist."""
         for directory in (

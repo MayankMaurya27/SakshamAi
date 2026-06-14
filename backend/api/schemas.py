@@ -17,6 +17,7 @@ class AskRequest(BaseModel):
     topic: str | None = None  # backward-compatible alias for chapter
     mode: LearningMode = LearningMode.LEARN
     accessibility_profile: AccessibilityProfile | None = None
+    include_audio: bool = False
 
 
 class AskResponse(BaseModel):
@@ -35,6 +36,8 @@ class SummaryRequest(BaseModel):
     chapter: str | None = None
     topic: str | None = None  # backward-compatible alias for chapter
     regenerate: bool = False
+    accessibility_profile: AccessibilityProfile | None = None
+    include_audio: bool = False
 
 
 class QuizRequest(BaseModel):
@@ -47,6 +50,8 @@ class QuizRequest(BaseModel):
     chapter: str | None = None
     topic: str | None = None  # backward-compatible alias for chapter
     question_count: int = Field(default=10, ge=5, le=15)
+    accessibility_profile: AccessibilityProfile | None = None
+    include_audio: bool = False
 
 
 class LearningModeRequest(BaseModel):
@@ -60,6 +65,7 @@ class LearningModeRequest(BaseModel):
     chapter: str | None = None
     topic: str | None = None  # backward-compatible alias for chapter
     accessibility_profile: AccessibilityProfile | None = None
+    include_audio: bool = False
 
 
 class AudioRequest(BaseModel):

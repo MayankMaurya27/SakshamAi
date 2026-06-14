@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saksham AI — Dyslexia Mode Demo</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1a1a1a;
+      --accent: #2563eb;
+      --panel: #f3f4f6;
+    }
+    body.dyslexia {
+      --bg: #fff8e7;
+      --text: #1f2937;
+      --panel: #fffdf5;
+      font-family: Arial, Verdana, sans-serif;
+      letter-spacing: 0.03em;
+      word-spacing: 0.05em;
+      line-height: 1.5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+    }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 8px; }
+    p.lead { color: #4b5563; margin-top: 0; }
+    form, .panel {
+      background: var(--panel);
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    label { display: block; font-weight: 600; margin: 12px 0 6px; }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font: inherit;
+    }
+    textarea { min-height: 72px; resize: vertical; }
+    .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .checks { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+    .checks label { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+    .checks input { width: auto; }
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    button.secondary { background: #6b7280; }
+    #answer {
+      white-space: pre-wrap;
+      max-width: 60ch;
+    }
+    .segment.active { background: #fde68a; border-radius: 4px; padding: 2px 4px; }
+    .meta { font-size: 0.9rem; color: #6b7280; }
+    audio { width: 100%; margin-top: 12px; }
+    .error { color: #b91c1c; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Dyslexia Mode Demo</h1>
+    <p class="lead">Tests <code>POST /ask</code> with <code>accessibility_profile: dyslexia</code>.</p>
+
+    <form id="askForm">
+      <label for="question">Question</label>
+      <textarea id="question">What is photosynthesis?</textarea>
+
+      <div class="row">
+        <div>
+          <label for="class_level">Class</label>
+          <input id="class_level" type="number" min="6" max="10" value="7" />
+        </div>
+        <div>
+          <label for="subject">Subject</label>
+          <input id="subject" value="Science" />
+        </div>
+        <div>
+          <label for="chapter">Chapter</label>
+          <input id="chapter" value="Nutrition in Plants" />
+        </div>
+      </div>
+
+      <div class="checks">
+        <label><input id="dyslexiaMode" type="checkbox" checked /> Dyslexia theme</label>
+        <label><input id="includeAudio" type="checkbox" /> include_audio</label>
+      </div>
+
+      <button type="submit">Ask with dyslexia profile</button>
+      <button type="button" class="secondary" id="readBtn">Read aloud (from response)</button>
+    </form>
+
+    <div class="panel">
+      <div class="meta" id="status">Ready.</div>
+      <div id="segments"></div>
+      <div id="answer"></div>
+      <audio id="player" controls hidden></audio>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById("askForm");
+    const dyslexiaMode = document.getElementById("dyslexiaMode");
+    const includeAudio = document.getElementById("includeAudio");
+    const statusEl = document.getElementById("status");
+    const answerEl = document.getElementById("answer");
+    const segmentsEl = document.getElementById("segments");
+    const player = document.getElementById("player");
+    let lastAccessibility = null;
+
+    function applyTheme(enabled) {
+      document.body.classList.toggle("dyslexia", enabled);
+    }
+
+    dyslexiaMode.addEventListener("change", () => applyTheme(dyslexiaMode.checked));
+    applyTheme(true);
+
+    function renderSegments(segments) {
+      segmentsEl.innerHTML = "";
+      segments.forEach((text, idx) => {
+        const span = document.createElement("div");
+        span.className = "segment";
+        span.dataset.idx = String(idx);
+        span.textContent = text;
+        segmentsEl.appendChild(span);
+      });
+    }
+
+    function highlightSegment(index) {
+      document.querySelectorAll(".segment").forEach((node) => {
+        node.classList.toggle("active", Number(node.dataset.idx) === index);
+      });
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      statusEl.textContent = "Loading...";
+      answerEl.textContent = "";
+      segmentsEl.innerHTML = "";
+      player.hidden = true;
+
+      const payload = {
+        question: document.getElementById("question").value,
+        source: "saksham",
+        class_level: Number(document.getElementById("class_level").value),
+        subject: document.getElementById("subject").value,
+        chapter: document.getElementById("chapter").value,
+        accessibility_profile: "dyslexia",
+        include_audio: includeAudio.checked,
+      };
+
+      try {
+        const response = await fetch("/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const body = await response.json();
+        if (!body.success) {
+          statusEl.innerHTML = `<span class="error">${body.error || "Request failed"}</span>`;
+          return;
+        }
+        const data = body.data;
+        answerEl.textContent = data.answer || "";
+        lastAccessibility = data.accessibility || null;
+        const segments = (lastAccessibility && lastAccessibility.reading_segments) || [];
+        renderSegments(segments);
+        statusEl.textContent = "Success. Segments: " + segments.length;
+        if (lastAccessibility && lastAccessibility.audio_path) {
+          player.src = lastAccessibility.audio_path;
+          player.hidden = false;
+        }
+      } catch (error) {
+        statusEl.innerHTML = `<span class="error">${error}</span>`;
+      }
+    });
+
+    document.getElementById("readBtn").addEventListener("click", async () => {
+      const text = answerEl.textContent.trim();
+      if (!text) return;
+      if (lastAccessibility && lastAccessibility.audio_path) {
+        player.src = lastAccessibility.audio_path;
+        player.hidden = false;
+        player.play();
+        return;
+      }
+      const response = await fetch("/audio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      const body = await response.json();
+      if (body.success && body.data.audio_path) {
+        player.src = body.data.audio_path;
+        player.hidden = false;
+        player.play();
+      }
+    });
+
+    player.addEventListener("timeupdate", () => {
+      const segments = (lastAccessibility && lastAccessibility.reading_segments) || [];
+      if (!segments.length || !player.duration) return;
+      const idx = Math.min(
+        segments.length - 1,
+        Math.floor((player.currentTime / player.duration) * segments.length)
+      );
+      highlightSegment(idx);
+    });
+  </script>
+</body>
+</html>

@@ -757,19 +757,9 @@ def _get_chapter_chunk_texts(
     class_level: int, subject: str, chapter_ref: str
 ) -> list[str]:
     """Return ordered chunk texts for a chapter from FAISS metadata."""
-    saksham_index = get_saksham_index()
-    chunks: list[tuple[int, str]] = []
+    from services.knowledge_service import get_chapter_chunk_texts
 
-    for faiss_id, meta in saksham_index.id_map.items():
-        if not chapter_matches(meta, class_level, subject, chapter_ref):
-            continue
-        chunk_text = meta.get("chunk_text", "")
-        chunk_index = meta.get("chunk_index", faiss_id)
-        if chunk_text:
-            chunks.append((chunk_index, chunk_text))
-
-    chunks.sort(key=lambda x: x[0])
-    return [text for _, text in chunks]
+    return get_chapter_chunk_texts(class_level, subject, chapter_ref)
 
 
 def _augment_contexts_with_chapter_intro(

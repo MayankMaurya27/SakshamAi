@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 
 from api.responses import error_response, success_response
 from api.schemas import SummaryRequest
-from config.constants import SourceType
 from database.db import get_db
 from exceptions import DocumentNotFoundError, SakshamError, ServiceUnavailableError, ValidationError
 from services.summary_service import generate_summary
@@ -32,6 +31,8 @@ def create_summary(
             subject=request.subject,
             chapter=request.chapter,
             topic=request.topic,
+            accessibility_profile=request.accessibility_profile,
+            include_audio=request.include_audio,
         )
         return success_response(result)
     except DocumentNotFoundError as exc:

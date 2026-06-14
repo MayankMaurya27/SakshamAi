@@ -9,12 +9,14 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from ai.dyslexia_formatter import extract_preserve_terms
 from ai.llm import get_llm
 from ai.prompt_builder import build_quiz_prompt
-from config.constants import SourceType
+from config.constants import AccessibilityProfile, SourceType
 from config.settings import get_settings
 from database.repositories import ChunkRepository, DocumentRepository
 from exceptions import DocumentNotFoundError, ValidationError
+from services.accessibility_output import build_accessibility_metadata, format_text_for_profile
 from services.knowledge_service import get_chapter_chunk_texts, validate_saksham_chapter
 from services.quiz_cache import cache_path, load_cached_quiz, save_cached_quiz
 from services.quiz_math import (
@@ -889,6 +891,53 @@ def generate_document_quiz(
     return payload
 
 
+def _format_quiz_questions_for_dyslexia(
+    questions: list[dict[str, Any]],
+    preserve_terms: set[str],
+) -> list[dict[str, Any]]:
+    formatted: list[dict[str, Any]] = []
+    for question in questions:
+        item = dict(question)
+        item["question"] = format_text_for_profile(
+            question.get("question", ""),
+            AccessibilityProfile.DYSLEXIA,
+            preserve_terms=preserve_terms,
+        )
+        for key in ("option_a", "option_b", "option_c", "option_d"):
+            item[key] = format_text_for_profile(
+                question.get(key, ""),
+                AccessibilityProfile.DYSLEXIA,
+                preserve_terms=preserve_terms,
+            )
+        formatted.append(item)
+    return formatted
+
+
+def _apply_accessibility_to_quiz_payload(
+    payload: dict[str, Any],
+    profile: AccessibilityProfile | None,
+    include_audio: bool,
+    chunk_texts: list[str] | None = None,
+) -> dict[str, Any]:
+    if profile is None:
+        return payload
+
+    preserve_terms = extract_preserve_terms("\n".join(chunk_texts or []))
+    questions = payload.get("questions", [])
+    formatted_questions = _format_quiz_questions_for_dyslexia(questions, preserve_terms)
+    payload["questions"] = formatted_questions
+
+    audio_source = ". ".join(
+        question.get("question", "") for question in formatted_questions[:5]
+    )
+    payload["accessibility"] = build_accessibility_metadata(
+        profile,
+        audio_source or payload.get("summary", "Quiz ready."),
+        include_audio=include_audio,
+    )
+    return payload
+
+
 def generate_quiz(
     source: SourceType,
     db: Session,
@@ -898,6 +947,8 @@ def generate_quiz(
     subject: str | None = None,
     chapter: str | None = None,
     topic: str | None = None,
+    accessibility_profile: AccessibilityProfile | None = None,
+    include_audio: bool = False,
 ) -> dict[str, Any]:
     """Generate a quiz for Saksham or uploaded document sources."""
     count = clamp_question_count(question_count)
@@ -908,8 +959,25 @@ def generate_quiz(
             raise ValidationError(
                 "class_level, subject, and chapter are required for saksham quiz."
             )
-        return generate_saksham_quiz(class_level, subject, chapter_ref, count)
+        payload = generate_saksham_quiz(class_level, subject, chapter_ref, count)
+        chunks = get_chapter_chunk_texts(class_level, subject, chapter_ref)
+        return _apply_accessibility_to_quiz_payload(
+            payload,
+            accessibility_profile,
+            include_audio,
+            chunks,
+        )
 
     if document_id is None:
         raise ValidationError("document_id is required for document quiz.")
-    return generate_document_quiz(document_id, db, count)
+    payload = generate_document_quiz(document_id, db, count)
+    chunks = [
+        chunk.chunk_text
+        for chunk in ChunkRepository(db).get_by_document_id(document_id)
+    ]
+    return _apply_accessibility_to_quiz_payload(
+        payload,
+        accessibility_profile,
+        include_audio,
+        chunks,
+    )

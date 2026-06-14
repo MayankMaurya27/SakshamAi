@@ -5,6 +5,7 @@ import logging
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+from api.accessibility_helpers import with_accessibility
 from api.responses import error_response, success_response
 from api.schemas import LearningModeRequest
 from config.constants import LearningMode
@@ -35,7 +36,14 @@ def simplify_explanation(
             mode=LearningMode.SIMPLIFY,
             accessibility_profile=request.accessibility_profile,
         )
-        return success_response({"simplified_answer": answer})
+        data = with_accessibility(
+            {"simplified_answer": answer},
+            "simplified_answer",
+            request.accessibility_profile,
+            include_audio=request.include_audio,
+            already_formatted=True,
+        )
+        return success_response(data)
     except DocumentNotFoundError as exc:
         return error_response(exc.message, status_code=404)
     except ValidationError as exc:

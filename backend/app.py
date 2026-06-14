@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from api.ask import router as ask_router
@@ -70,6 +71,13 @@ app.include_router(audio_router)
 app.include_router(saksham_router)
 
 app.mount("/audio", StaticFiles(directory=str(settings.audio_dir)), name="audio_files")
+app.mount("/static", StaticFiles(directory=str(settings.base_dir / "static")), name="static_files")
+
+
+@app.get("/dyslexia-demo")
+def dyslexia_demo():
+    """Redirect to the dyslexia mode demo page."""
+    return RedirectResponse(url="/static/dyslexia_demo.html")
 
 
 @app.exception_handler(SakshamError)

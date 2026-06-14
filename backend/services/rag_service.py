@@ -23,8 +23,10 @@ from ai.retriever import (
     retrieve_document_context,
     retrieve_saksham_context,
 )
-from config.constants import LearningMode, SourceType, AnswerProfile
+from ai.dyslexia_formatter import extract_preserve_terms
+from config.constants import AccessibilityProfile, LearningMode, SourceType, AnswerProfile
 from exceptions import DocumentNotFoundError, ValidationError
+from services.accessibility_output import format_text_for_profile
 from services.accessibility_service import resolve_mode
 from services.knowledge_service import validate_saksham_chapter
 
@@ -35,6 +37,24 @@ settings = get_settings()
 def _resolve_chapter(chapter: str | None, topic: str | None) -> str | None:
     """Resolve chapter from chapter or legacy topic field."""
     return chapter or topic
+
+
+def _preserve_terms_from_texts(texts: list[str]) -> set[str]:
+    return extract_preserve_terms("\n".join(texts))
+
+
+def _finalize_answer(
+    answer: str,
+    accessibility_profile,
+    preserve_terms: set[str] | None = None,
+) -> str:
+    if accessibility_profile != AccessibilityProfile.DYSLEXIA:
+        return answer
+    return format_text_for_profile(
+        answer,
+        AccessibilityProfile.DYSLEXIA,
+        preserve_terms=preserve_terms,
+    )
 
 
 def answer_question(
@@ -115,13 +135,15 @@ def answer_question(
 
     if not contexts:
         logger.info("No retrieval results; returning fallback response")
-        return build_fallback_prompt()
+        return _finalize_answer(build_fallback_prompt(), accessibility_profile)
 
+    context_texts = [clean_context_text(ctx.text) for ctx in contexts]
+    preserve_terms = _preserve_terms_from_texts(context_texts)
     activity_passage: str | None = None
     activity_intent = ActivityIntent.FOCUS
 
     if activity_refs:
-        activity_passage = clean_context_text(contexts[0].text)
+        activity_passage = context_texts[0]
         activity_intent = detect_activity_intent(question)
         if activity_intent != ActivityIntent.FOCUS:
             structured = try_format_activity_answer(
@@ -135,7 +157,7 @@ def answer_question(
                     activity_intent.value,
                     activity_refs[0],
                 )
-                return structured
+                return _finalize_answer(structured, accessibility_profile, preserve_terms)
 
     max_context_chars = context_char_limit(answer_profile, settings)
 
@@ -159,7 +181,7 @@ def answer_question(
         )
         if bio_answer:
             logger.info("Returning structured biography answer from textbook profile")
-            return bio_answer
+            return _finalize_answer(bio_answer, accessibility_profile, preserve_terms)
 
     topic_label = chapter_ref or ""
     if source == SourceType.DOCUMENT and document_id is not None and not topic_label:
@@ -187,4 +209,4 @@ def answer_question(
         answer_profile.value,
         broad_question,
     )
-    return answer
+    return _finalize_answer(answer, accessibility_profile, preserve_terms)

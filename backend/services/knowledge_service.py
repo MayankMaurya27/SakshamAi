@@ -20,6 +20,7 @@ from services.curriculum_utils import (
     ChapterInfo,
     chapter_matches,
     discover_chapter_pdfs,
+    resolve_chapter_ref,
     slugify,
 )
 
@@ -380,6 +381,7 @@ def get_chapter_from_manifest(
     class_level: int, subject: str, chapter_ref: str
 ) -> dict[str, Any] | None:
     """Find chapter metadata by id or title."""
+    chapter_ref = resolve_chapter_ref(class_level, subject, chapter_ref)
     ref = chapter_ref.strip().lower()
     ref_slug = slugify(chapter_ref)
     for chapter in _manifest_chapters():
@@ -400,6 +402,7 @@ def get_chapter_chunk_texts(
     class_level: int, subject: str, chapter_ref: str
 ) -> list[str]:
     """Return all chunk texts for a chapter from FAISS metadata (direct lookup)."""
+    chapter_ref = resolve_chapter_ref(class_level, subject, chapter_ref)
     saksham_index = get_saksham_index()
     chunks: list[tuple[int, str]] = []
 

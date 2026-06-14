@@ -7,12 +7,14 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from ai.dyslexia_formatter import extract_preserve_terms
 from ai.llm import get_llm
 from ai.prompt_builder import build_summary_expand_prompt, build_summary_prompt
-from config.constants import SourceType
+from config.constants import AccessibilityProfile, SourceType
 from config.settings import get_settings
 from database.repositories import ChunkRepository, DocumentRepository
 from exceptions import DocumentNotFoundError, ValidationError
+from services.accessibility_output import build_accessibility_metadata, format_text_for_profile
 from services.knowledge_service import (
     get_chapter_chunk_texts,
     validate_saksham_chapter,
@@ -414,6 +416,30 @@ def generate_document_summary(
     )
 
 
+def _apply_accessibility_to_payload(
+    payload: dict[str, Any],
+    profile: AccessibilityProfile | None,
+    include_audio: bool,
+    chunk_texts: list[str] | None = None,
+) -> dict[str, Any]:
+    if profile is None:
+        return payload
+
+    preserve_terms = extract_preserve_terms("\n".join(chunk_texts or []))
+    formatted = format_text_for_profile(
+        payload.get("summary", ""),
+        profile,
+        preserve_terms=preserve_terms,
+    )
+    payload["summary"] = formatted
+    payload["accessibility"] = build_accessibility_metadata(
+        profile,
+        formatted,
+        include_audio=include_audio,
+    )
+    return payload
+
+
 def generate_summary(
     source: SourceType,
     db: Session,
@@ -423,6 +449,8 @@ def generate_summary(
     subject: str | None = None,
     chapter: str | None = None,
     topic: str | None = None,
+    accessibility_profile: AccessibilityProfile | None = None,
+    include_audio: bool = False,
 ) -> dict[str, Any]:
     """Unified summary entry point for Saksham and document sources."""
     chapter_ref = _resolve_chapter(chapter, topic)
@@ -431,16 +459,33 @@ def generate_summary(
             raise ValidationError(
                 "Saksham summary requires class_level, subject, and chapter."
             )
-        return generate_saksham_summary(
+        payload = generate_saksham_summary(
             class_level,
             subject,
             chapter_ref,
             regenerate=regenerate,
         )
+        chunks = get_chapter_chunk_texts(class_level, subject, chapter_ref)
+        return _apply_accessibility_to_payload(
+            payload,
+            accessibility_profile,
+            include_audio,
+            chunks,
+        )
 
     if document_id is None:
         raise ValidationError("Document summary requires document_id.")
-    return generate_document_summary(document_id, db, regenerate=regenerate)
+    payload = generate_document_summary(document_id, db, regenerate=regenerate)
+    chunks = [
+        chunk.chunk_text
+        for chunk in ChunkRepository(db).get_by_document_id(document_id)
+    ]
+    return _apply_accessibility_to_payload(
+        payload,
+        accessibility_profile,
+        include_audio,
+        chunks,
+    )
 
 
 def get_summary(

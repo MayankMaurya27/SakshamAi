@@ -5,6 +5,7 @@ import logging
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+from api.accessibility_helpers import with_accessibility
 from api.responses import error_response, success_response
 from api.schemas import AskRequest
 from database.db import get_db
@@ -34,7 +35,14 @@ def ask_question(
             mode=request.mode,
             accessibility_profile=request.accessibility_profile,
         )
-        return success_response({"answer": answer})
+        data = with_accessibility(
+            {"answer": answer},
+            "answer",
+            request.accessibility_profile,
+            include_audio=request.include_audio,
+            already_formatted=True,
+        )
+        return success_response(data)
     except DocumentNotFoundError as exc:
         return error_response(exc.message, status_code=404)
     except ValidationError as exc:

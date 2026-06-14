@@ -36,6 +36,32 @@ def title_from_filename(filename: str) -> str:
     return Path(filename).stem.strip()
 
 
+# User-facing names that should map to a different indexed chapter (misnamed PDFs, etc.).
+CHAPTER_ALIASES: dict[tuple[int, str, str], str] = {
+    # Atomic Structure.pdf contains the grade-9 science intro ("Exploration"), not atoms.
+    # Students asking for "Atomic Structure" expect Chapter 8: Journey Inside the Atom.
+    (9, "science", "atomic structure"): "journey_inside_atoms",
+    (9, "science", "atomic_structure"): "journey_inside_atoms",
+}
+
+
+def resolve_chapter_ref(class_level: int, subject: str, chapter_ref: str) -> str:
+    """Map common chapter names to the indexed chapter_id when PDF names differ."""
+    ref = chapter_ref.strip()
+    if not ref:
+        return ref
+
+    subject_key = subject.strip().lower()
+    for key in (
+        (class_level, subject_key, ref.lower()),
+        (class_level, subject_key, slugify(ref)),
+    ):
+        target = CHAPTER_ALIASES.get(key)
+        if target:
+            return target
+    return ref
+
+
 def chapter_matches(meta: dict, class_level: int, subject: str, chapter_ref: str) -> bool:
     """Return True if metadata matches class, subject, and chapter reference."""
     if meta.get("class") != class_level:

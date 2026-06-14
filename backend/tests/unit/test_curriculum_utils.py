@@ -44,6 +44,17 @@ def test_get_chapter_from_manifest_does_not_match_unrelated_chapters():
     assert chapter["chapter_title"] == "Electricity"
 
 
+def test_resolve_chapter_ref_atomic_structure_alias():
+    """Misnamed Atomic Structure.pdf should resolve to Journey Inside the Atom."""
+    from services.curriculum_utils import resolve_chapter_ref
+    from services.knowledge_service import get_chapter_from_manifest
+
+    assert resolve_chapter_ref(9, "Science", "Atomic Structure") == "journey_inside_atoms"
+    chapter = get_chapter_from_manifest(9, "Science", "Atomic Structure")
+    assert chapter is not None
+    assert chapter["chapter_id"] == "journey_inside_atoms"
+
+
 def test_discover_chapter_pdfs():
     """Should discover chapter PDFs when present."""
     kb_dir = Path(__file__).resolve().parent.parent.parent / "data" / "saksham_kb"

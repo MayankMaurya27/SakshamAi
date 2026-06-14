@@ -32,6 +32,8 @@ def create_quiz(
             subject=request.subject,
             chapter=request.chapter,
             topic=request.topic,
+            accessibility_profile=request.accessibility_profile,
+            include_audio=request.include_audio,
         )
         return success_response(result)
     except DocumentNotFoundError as exc:
