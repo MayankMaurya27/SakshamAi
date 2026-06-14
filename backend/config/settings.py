@@ -74,6 +74,24 @@ class Settings(BaseSettings):
     rerank_top_k: int = 7
     saksham_index_version: str = "v2-section-hybrid"
 
+    # Quiz generation
+    quiz_cache_dir: Path = data_dir / "quiz_cache"
+    quiz_min_questions: int = 5
+    quiz_max_questions: int = 15
+    quiz_default_questions: int = 10
+    quiz_max_context_chars: int = 6500
+    ollama_num_predict_quiz: int = 2048
+    quiz_llm_max_attempts: int = 5
+    quiz_llm_batch_size: int = 1
+    quiz_cache_version: str = "v11-quality-gate"
+
+    # Summary generation
+    summary_cache_dir: Path = data_dir / "summary_cache"
+    summary_cache_version: str = "v2-prose"
+    summary_max_context_chars: int = 6500
+    summary_map_reduce_windows: int = 3
+    ollama_num_predict_summary: int = 1800
+
     def ensure_directories(self) -> None:
         """Create required data directories if they do not exist."""
         for directory in (
@@ -83,6 +101,8 @@ class Settings(BaseSettings):
             self.audio_dir,
             self.saksham_kb_dir,
             self.models_dir,
+            self.quiz_cache_dir,
+            self.summary_cache_dir,
         ):
             directory.mkdir(parents=True, exist_ok=True)
 

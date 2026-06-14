@@ -57,8 +57,16 @@ def test_upload_summary_quiz(client, db_session):
     assert summary_resp.status_code == 200
     assert summary_resp.json()["data"]["summary"]
 
-    quiz_resp = client.post("/quiz", json={"document_id": doc_id})
+    quiz_resp = client.post(
+        "/quiz",
+        json={
+            "source": "document",
+            "document_id": doc_id,
+            "question_count": 5,
+        },
+    )
     assert quiz_resp.status_code == 200
+    assert len(quiz_resp.json()["data"]["questions"]) == 5
 
     doc_resp = client.get(f"/document/{doc_id}")
     assert doc_resp.status_code == 200

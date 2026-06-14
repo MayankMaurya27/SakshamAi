@@ -381,16 +381,17 @@ def get_chapter_from_manifest(
 ) -> dict[str, Any] | None:
     """Find chapter metadata by id or title."""
     ref = chapter_ref.strip().lower()
+    ref_slug = slugify(chapter_ref)
     for chapter in _manifest_chapters():
         if chapter.get("class") != class_level:
             continue
         if chapter.get("subject", "").lower() != subject.lower():
             continue
-        if ref in {
-            chapter.get("chapter_id", "").lower(),
-            chapter.get("chapter_title", "").lower(),
-            slugify(chapter_ref),
-        }:
+        chapter_id = chapter.get("chapter_id", "").lower()
+        chapter_title = chapter.get("chapter_title", "").lower()
+        if ref in {chapter_id, chapter_title}:
+            return chapter
+        if ref_slug == chapter_id or ref_slug == slugify(chapter.get("chapter_title", "")):
             return chapter
     return None
 

@@ -9,6 +9,7 @@ data/saksham.db
 data/faiss/user_index.faiss
 data/faiss/user_index_meta.json
 data/models/
+data/quiz_cache/
 
 # Virtual environment
 .venv/

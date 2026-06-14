@@ -8,6 +8,7 @@ from ai.prompt_builder import (
     STRICT_SYSTEM_PROMPT,
     build_fallback_prompt,
     build_prompt,
+    build_quiz_prompt,
     format_retrieved_chunks,
 )
 from config.constants import AnswerProfile
@@ -109,6 +110,19 @@ def test_build_prompt_saksham_includes_question():
     assert "How are communicable diseases caused and spread?" in prompt
     assert "Use ONLY facts supported by the provided chapter context" in prompt
     assert "Do not use Aim, Procedure, Observation" in prompt
+
+
+def test_build_quiz_prompt_includes_question_count():
+    """Quiz prompt should request the configured number of MCQs."""
+    prompt = build_quiz_prompt(
+        retrieved_context="Agriculture provides food and raw materials.",
+        question_count=8,
+        topic="Agriculture",
+        grade=10,
+    )
+    assert "Generate exactly 8 multiple-choice questions" in prompt
+    assert "plain text only" in prompt
+    assert "Agriculture provides food" in prompt
 
 
 def test_global_system_prompt_alias():

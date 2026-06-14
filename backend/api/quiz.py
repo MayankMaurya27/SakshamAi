@@ -7,25 +7,37 @@ from sqlalchemy.orm import Session
 
 from api.responses import error_response, success_response
 from api.schemas import QuizRequest
+from config.constants import SourceType
 from database.db import get_db
-from exceptions import DocumentNotFoundError, SakshamError, ServiceUnavailableError
-from services.quiz_service import get_quiz
+from exceptions import DocumentNotFoundError, SakshamError, ServiceUnavailableError, ValidationError
+from services.quiz_service import generate_quiz
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["quiz"])
 
 
 @router.post("/quiz")
-def generate_quiz(
+def create_quiz(
     request: QuizRequest,
     db: Session = Depends(get_db),
 ):
-    """Get or regenerate document quiz."""
+    """Generate a multiple-choice quiz from Saksham or uploaded document content."""
     try:
-        result = get_quiz(request.document_id, db, regenerate=request.regenerate)
+        result = generate_quiz(
+            source=request.source,
+            db=db,
+            question_count=request.question_count,
+            document_id=request.document_id,
+            class_level=request.class_level,
+            subject=request.subject,
+            chapter=request.chapter,
+            topic=request.topic,
+        )
         return success_response(result)
     except DocumentNotFoundError as exc:
         return error_response(exc.message, status_code=404)
+    except ValidationError as exc:
+        return error_response(exc.message, status_code=422)
     except ServiceUnavailableError as exc:
         return error_response(exc.message, status_code=503)
     except SakshamError as exc:

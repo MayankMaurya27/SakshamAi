@@ -1,0 +1,36 @@
+{
+  "overview": "Electric current is the flow of positive charges in a conducting metallic wire. The electric potential difference between two points in an electric circuit carries some current. Work done in moving a charge across two points with a given potential difference is equal to 24 J. This work is done by the cell, which expends its chemical energy stored in it to maintain the current in the circuit. Electricity is a branch of science that deals with the flow of electric charge. The amount of electric charge that flows through a circuit depends on the potential difference between two points and the current flowing through them. A battery, also known as an electric cell, generates electric potential difference across its terminals when it is connected to a conducting circuit element. This potential",
+  "key_concepts": [
+    {
+      "name": "An electric circuit",
+      "description": "A continuous and closed path of an electric current is called an electric circuit"
+    },
+    {
+      "name": "Variable resistance",
+      "description": "A component used to regulate current without changing the voltage source is called variable resistance"
+    },
+    {
+      "name": "A resistor",
+      "description": "A conductor having some appreciable resistance is called a resistor"
+    }
+  ],
+  "section_notes": [],
+  "revision_points": [
+    "An electric circuit",
+    "Variable resistance",
+    "A resistor"
+  ],
+  "format_version": "v1-plain",
+  "summary": "Electric current is the flow of positive charges in a conducting metallic wire. The electric potential difference between two points in an electric circuit carries some current. Work done in moving a charge across two points with a given potential difference is equal to 24 J. This work is done by the cell, which expends its chemical energy stored in it to maintain the current in the circuit. Electricity is a branch of science that deals with the flow of electric charge. The amount of electric charge that flows through a circuit depends on the potential difference between two points and the current flowing through them. A battery, also known as an electric cell, generates electric potential difference across its terminals when it is connected to a conducting circuit element. This potential",
+  "key_points": [
+    "An electric circuit",
+    "Variable resistance",
+    "A resistor"
+  ],
+  "source": "saksham",
+  "cached": false,
+  "class_level": 10,
+  "subject": "Science",
+  "chapter": "Electricity",
+  "chapter_id": "electricity"
+}

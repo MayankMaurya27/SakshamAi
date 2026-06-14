@@ -1,0 +1,482 @@
+{
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/__init__.py": {
+    "mtime": 1781063633.8980384,
+    "ast_hash": "deacf15e7134e7efc8a4afe6b9f9ff42",
+    "semantic_hash": "deacf15e7134e7efc8a4afe6b9f9ff42"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/activity_formatter.py": {
+    "mtime": 1781202215.767091,
+    "ast_hash": "99a45f11d41b49e3164dd23e46bc058d",
+    "semantic_hash": "99a45f11d41b49e3164dd23e46bc058d"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/answer_formatter.py": {
+    "mtime": 1781168949.4152627,
+    "ast_hash": "6e98cc226d0993a8331e443ddd3ba293",
+    "semantic_hash": "6e98cc226d0993a8331e443ddd3ba293"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/bio_formatter.py": {
+    "mtime": 1781278043.7638493,
+    "ast_hash": "ea6f985bae19fc25b747d7f69d8cb7bd",
+    "semantic_hash": "ea6f985bae19fc25b747d7f69d8cb7bd"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/bm25_store.py": {
+    "mtime": 1781328272.7554855,
+    "ast_hash": "63f35cf9a30fc1c3a9cc5e294db5eae0",
+    "semantic_hash": "63f35cf9a30fc1c3a9cc5e294db5eae0"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/context_cleaner.py": {
+    "mtime": 1781278057.334183,
+    "ast_hash": "a6af77567fb8a2e325f8c647f3285b70",
+    "semantic_hash": "a6af77567fb8a2e325f8c647f3285b70"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/embeddings.py": {
+    "mtime": 1781328568.6704595,
+    "ast_hash": "ef33dc56bc12342bf69060b2f70f3679",
+    "semantic_hash": "ef33dc56bc12342bf69060b2f70f3679"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/faiss_manager.py": {
+    "mtime": 1781328331.737383,
+    "ast_hash": "78cc5df504ee524fc521b994317a9d8c",
+    "semantic_hash": "78cc5df504ee524fc521b994317a9d8c"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/hybrid_search.py": {
+    "mtime": 1781328275.2534392,
+    "ast_hash": "4d072a2ae58a02b865f9fc761a22ab09",
+    "semantic_hash": "4d072a2ae58a02b865f9fc761a22ab09"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/llm.py": {
+    "mtime": 1781369089.0732794,
+    "ast_hash": "5d70c35a2ced235bf1e8367dfaf32ff7",
+    "semantic_hash": "5d70c35a2ced235bf1e8367dfaf32ff7"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/prompt_builder.py": {
+    "mtime": 1781367462.5494118,
+    "ast_hash": "3c9ab4d0797df7220641658d7f2a2895",
+    "semantic_hash": "3c9ab4d0797df7220641658d7f2a2895"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/question_router.py": {
+    "mtime": 1781286708.945941,
+    "ast_hash": "18a4abf127e72b5fef3aee09ddf6a355",
+    "semantic_hash": "18a4abf127e72b5fef3aee09ddf6a355"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/reranker.py": {
+    "mtime": 1781328475.0437162,
+    "ast_hash": "6bd3c04fb8d384001da72af319d16a82",
+    "semantic_hash": "6bd3c04fb8d384001da72af319d16a82"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ai/retriever.py": {
+    "mtime": 1781328374.9093914,
+    "ast_hash": "d21fbb740eef2747157fef1fe0f3246a",
+    "semantic_hash": "d21fbb740eef2747157fef1fe0f3246a"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/api/__init__.py": {
+    "mtime": 1781063870.359571,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/api/ask.py": {
+    "mtime": 1781156706.5638008,
+    "ast_hash": "011c3acac45495397e35d0fb5d8d81a9",
+    "semantic_hash": "011c3acac45495397e35d0fb5d8d81a9"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/api/audio.py": {
+    "mtime": 1781063688.533462,
+    "ast_hash": "412d5d5c7c53e27392b358373141a558",
+    "semantic_hash": "412d5d5c7c53e27392b358373141a558"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/api/documents.py": {
+    "mtime": 1781063687.4294696,
+    "ast_hash": "011aa14f36cc2419397c77baad7c8663",
+    "semantic_hash": "011aa14f36cc2419397c77baad7c8663"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/api/hindi.py": {
+    "mtime": 1781156707.680184,
+    "ast_hash": "1d568750313c198a3861b1b0dc286a6f",
+    "semantic_hash": "1d568750313c198a3861b1b0dc286a6f"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/api/quiz.py": {
+    "mtime": 1781349793.4739432,
+    "ast_hash": "eaffcf02d82c53254047f4f7a1c9ef8a",
+    "semantic_hash": "eaffcf02d82c53254047f4f7a1c9ef8a"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/api/responses.py": {
+    "mtime": 1781063584.3202343,
+    "ast_hash": "0d9f2a5eb3a14b14384ff58b772fd927",
+    "semantic_hash": "0d9f2a5eb3a14b14384ff58b772fd927"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/api/saksham.py": {
+    "mtime": 1781156705.5572295,
+    "ast_hash": "5f4de8c779b67de19618e30ecc2690de",
+    "semantic_hash": "5f4de8c779b67de19618e30ecc2690de"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/api/schemas.py": {
+    "mtime": 1781349794.1461425,
+    "ast_hash": "55726283148f102018a28bab308da33a",
+    "semantic_hash": "55726283148f102018a28bab308da33a"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/api/simplify.py": {
+    "mtime": 1781156713.6765563,
+    "ast_hash": "ba2353cbff1e1ceccde341fa45fae23e",
+    "semantic_hash": "ba2353cbff1e1ceccde341fa45fae23e"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/api/summary.py": {
+    "mtime": 1781063681.2708697,
+    "ast_hash": "4d1ee2ced2a3883e6830a110b19388b7",
+    "semantic_hash": "4d1ee2ced2a3883e6830a110b19388b7"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/api/upload.py": {
+    "mtime": 1781063678.3429885,
+    "ast_hash": "e610b369968bb58f22cdfbc6f6248767",
+    "semantic_hash": "e610b369968bb58f22cdfbc6f6248767"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/app.py": {
+    "mtime": 1781166291.0767193,
+    "ast_hash": "ec0c3c61c7b734418adc0fc7d6d1586f",
+    "semantic_hash": "ec0c3c61c7b734418adc0fc7d6d1586f"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/config/__init__.py": {
+    "mtime": 1781063582.1210155,
+    "ast_hash": "0cce50e661fecee74fcf0c812e910d64",
+    "semantic_hash": "0cce50e661fecee74fcf0c812e910d64"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/config/constants.py": {
+    "mtime": 1781286696.9569147,
+    "ast_hash": "279fbd50f0ca5dac6f38991c2233ceb3",
+    "semantic_hash": "279fbd50f0ca5dac6f38991c2233ceb3"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/config/settings.py": {
+    "mtime": 1781368939.2026474,
+    "ast_hash": "4c0dfcb2b279f06eb7d2e5499387b125",
+    "semantic_hash": "4c0dfcb2b279f06eb7d2e5499387b125"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/data/faiss/saksham_bm25_index.json": {
+    "mtime": 1781349882.954531,
+    "ast_hash": "fc071e989ca0c184ac97587ea5ccfd2b",
+    "semantic_hash": "fc071e989ca0c184ac97587ea5ccfd2b"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/data/faiss/saksham_index_meta.json": {
+    "mtime": 1781349882.731365,
+    "ast_hash": "d3b41efa0c190e1980e28c754f007505",
+    "semantic_hash": "d3b41efa0c190e1980e28c754f007505"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/data/saksham_kb/manifest.json": {
+    "mtime": 1781349883.2170238,
+    "ast_hash": "27a499333f062fca9a8c1b7ba5544251",
+    "semantic_hash": "27a499333f062fca9a8c1b7ba5544251"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/database/__init__.py": {
+    "mtime": 1781063599.810228,
+    "ast_hash": "4a8972f6c1d411f9e84614161d75bf96",
+    "semantic_hash": "4a8972f6c1d411f9e84614161d75bf96"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/database/db.py": {
+    "mtime": 1781063848.293224,
+    "ast_hash": "99437f445395dec0b3b45965dd7eb73e",
+    "semantic_hash": "99437f445395dec0b3b45965dd7eb73e"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/database/models.py": {
+    "mtime": 1781063591.5092459,
+    "ast_hash": "774e279a2765c6c8650e098a0ad13b44",
+    "semantic_hash": "774e279a2765c6c8650e098a0ad13b44"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/database/repositories.py": {
+    "mtime": 1781063599.3387978,
+    "ast_hash": "4a04d0c872804f9c188194983683ddb7",
+    "semantic_hash": "4a04d0c872804f9c188194983683ddb7"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/documents/__init__.py": {
+    "mtime": 1781328514.6857686,
+    "ast_hash": "ac70a9b75fb6cffab872e27e27bcfb22",
+    "semantic_hash": "ac70a9b75fb6cffab872e27e27bcfb22"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/documents/chunker.py": {
+    "mtime": 1781328445.2298079,
+    "ast_hash": "7ac0ae6ae62b5aafa1f0305e35a2842d",
+    "semantic_hash": "7ac0ae6ae62b5aafa1f0305e35a2842d"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/documents/indexer.py": {
+    "mtime": 1781063642.3854122,
+    "ast_hash": "784df6c4b35e6a2330b63c59b3666bf0",
+    "semantic_hash": "784df6c4b35e6a2330b63c59b3666bf0"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/documents/pdf_parser.py": {
+    "mtime": 1781063637.9261434,
+    "ast_hash": "c0bc10eff28dc42d2a657dc356407f11",
+    "semantic_hash": "c0bc10eff28dc42d2a657dc356407f11"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/documents/processor.py": {
+    "mtime": 1781063648.9609792,
+    "ast_hash": "d78d143578d5191e0e837bf1f5300e5a",
+    "semantic_hash": "d78d143578d5191e0e837bf1f5300e5a"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/exceptions.py": {
+    "mtime": 1781063583.4864562,
+    "ast_hash": "0630c2da0c29aecf88282f6e8a2855ec",
+    "semantic_hash": "0630c2da0c29aecf88282f6e8a2855ec"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/scripts/build_saksham_index.py": {
+    "mtime": 1781156737.986071,
+    "ast_hash": "b988d27bb52dc7a0732515f4dd65ec0c",
+    "semantic_hash": "b988d27bb52dc7a0732515f4dd65ec0c"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/scripts/download_models.py": {
+    "mtime": 1781332138.436944,
+    "ast_hash": "ccb7d03265dcd3a63367c669eb60740d",
+    "semantic_hash": "ccb7d03265dcd3a63367c669eb60740d"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/scripts/ingest_curriculum.py": {
+    "mtime": 1781156715.5770671,
+    "ast_hash": "00f5c580d33ff276cbe7738281cab908",
+    "semantic_hash": "00f5c580d33ff276cbe7738281cab908"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/scripts/seed_kb.py": {
+    "mtime": 1781063726.7325833,
+    "ast_hash": "b75f255c8bd62747e203f9fc9f883936",
+    "semantic_hash": "b75f255c8bd62747e203f9fc9f883936"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/__init__.py": {
+    "mtime": 1781328390.7968445,
+    "ast_hash": "2b33c521d0161200a46be5c6acaee760",
+    "semantic_hash": "2b33c521d0161200a46be5c6acaee760"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/accessibility_service.py": {
+    "mtime": 1781063652.7357178,
+    "ast_hash": "3d926905c6ad1f15eee74819963f6e9b",
+    "semantic_hash": "3d926905c6ad1f15eee74819963f6e9b"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/audio_service.py": {
+    "mtime": 1781063665.981738,
+    "ast_hash": "3256547626d570af3d33451d4d18a467",
+    "semantic_hash": "3256547626d570af3d33451d4d18a467"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/curriculum_utils.py": {
+    "mtime": 1781267985.2780995,
+    "ast_hash": "64bd5189532d51807f26a679ae9ecff5",
+    "semantic_hash": "64bd5189532d51807f26a679ae9ecff5"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/knowledge_service.py": {
+    "mtime": 1781369170.9170558,
+    "ast_hash": "2111e912ea720fa36ff5a6ea07f0ef79",
+    "semantic_hash": "2111e912ea720fa36ff5a6ea07f0ef79"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/quiz_cache.py": {
+    "mtime": 1781352130.49923,
+    "ast_hash": "1455cdaab4e6b31ba7e27a4f92a8923d",
+    "semantic_hash": "1455cdaab4e6b31ba7e27a4f92a8923d"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/quiz_context.py": {
+    "mtime": 1781352105.5615566,
+    "ast_hash": "83353db55694212c038191990a3a38b0",
+    "semantic_hash": "83353db55694212c038191990a3a38b0"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/quiz_grounded.py": {
+    "mtime": 1781369352.6410644,
+    "ast_hash": "f0ae49e4534b36b1b3a789dfa5951310",
+    "semantic_hash": "f0ae49e4534b36b1b3a789dfa5951310"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/quiz_math.py": {
+    "mtime": 1781353179.4122226,
+    "ast_hash": "251183d69b236da5f759baac30c93b64",
+    "semantic_hash": "251183d69b236da5f759baac30c93b64"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/quiz_science.py": {
+    "mtime": 1781368959.7375627,
+    "ast_hash": "d3698b17b9607c4451c632824c98cc0a",
+    "semantic_hash": "d3698b17b9607c4451c632824c98cc0a"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/quiz_service.py": {
+    "mtime": 1781369358.9144256,
+    "ast_hash": "77edf63a729a77ad6ccde064e48a537a",
+    "semantic_hash": "77edf63a729a77ad6ccde064e48a537a"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/rag_service.py": {
+    "mtime": 1781287994.5791142,
+    "ast_hash": "ab65edafc3110f49c35b8913f145d4e1",
+    "semantic_hash": "ab65edafc3110f49c35b8913f145d4e1"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/services/summary_service.py": {
+    "mtime": 1781063658.9407449,
+    "ast_hash": "3701f1181bc5f748fc7c1f6b5edaa8ce",
+    "semantic_hash": "3701f1181bc5f748fc7c1f6b5edaa8ce"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/api/test_ask_api.py": {
+    "mtime": 1781156736.9699454,
+    "ast_hash": "72a16dbfc03b1f6a78607683da111329",
+    "semantic_hash": "72a16dbfc03b1f6a78607683da111329"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/api/test_documents_api.py": {
+    "mtime": 1781063751.525597,
+    "ast_hash": "2d773bd2fc45aee6b937e7d429760b1a",
+    "semantic_hash": "2d773bd2fc45aee6b937e7d429760b1a"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/api/test_quiz_api.py": {
+    "mtime": 1781349830.614147,
+    "ast_hash": "6dc7fe2188bdc95399b33b8deefccf39",
+    "semantic_hash": "6dc7fe2188bdc95399b33b8deefccf39"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/api/test_upload_api.py": {
+    "mtime": 1781063756.2950585,
+    "ast_hash": "e4cf0dfa9144c680fcf6f010251f6004",
+    "semantic_hash": "e4cf0dfa9144c680fcf6f010251f6004"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/conftest.py": {
+    "mtime": 1781328569.4023874,
+    "ast_hash": "fe1eeee8e5bad3faa5ff2cf27bd6b8a1",
+    "semantic_hash": "fe1eeee8e5bad3faa5ff2cf27bd6b8a1"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/integration/test_learning_modes.py": {
+    "mtime": 1781063763.1194708,
+    "ast_hash": "867e9fdc15a531c9c62ff35fd0ca99bc",
+    "semantic_hash": "867e9fdc15a531c9c62ff35fd0ca99bc"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/integration/test_rag_saksham.py": {
+    "mtime": 1781156750.2115638,
+    "ast_hash": "fbe3dbc8ff31d1b65d1d572d52092214",
+    "semantic_hash": "fbe3dbc8ff31d1b65d1d572d52092214"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/integration/test_retrieval_regression.py": {
+    "mtime": 1781328328.2483335,
+    "ast_hash": "439c09d1d7edeb1a4b1643a0bf580aaa",
+    "semantic_hash": "439c09d1d7edeb1a4b1643a0bf580aaa"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/integration/test_upload_flow.py": {
+    "mtime": 1781349814.0613601,
+    "ast_hash": "7c2c275118bf61c3167fd4b6def1b997",
+    "semantic_hash": "7c2c275118bf61c3167fd4b6def1b997"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_accessibility_service.py": {
+    "mtime": 1781063749.8701212,
+    "ast_hash": "9a8d38551baa4f942decbe2c0974d948",
+    "semantic_hash": "9a8d38551baa4f942decbe2c0974d948"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_activity_formatter.py": {
+    "mtime": 1781202222.191515,
+    "ast_hash": "3a16e040e1b227e3d13e49685e6aadaa",
+    "semantic_hash": "3a16e040e1b227e3d13e49685e6aadaa"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_answer_formatter.py": {
+    "mtime": 1781168826.9674582,
+    "ast_hash": "7fa9b647bccef17c7b24ea52b6a871fd",
+    "semantic_hash": "7fa9b647bccef17c7b24ea52b6a871fd"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_bio_formatter.py": {
+    "mtime": 1781278077.5278904,
+    "ast_hash": "0a767409d106453658684792e852507b",
+    "semantic_hash": "0a767409d106453658684792e852507b"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_bm25_store.py": {
+    "mtime": 1781328445.925352,
+    "ast_hash": "ef57727b7dc0424062057def6a7cfa68",
+    "semantic_hash": "ef57727b7dc0424062057def6a7cfa68"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_chunker.py": {
+    "mtime": 1781328376.6719222,
+    "ast_hash": "4e0b7537d9ebc45e275c4606a88d6bef",
+    "semantic_hash": "4e0b7537d9ebc45e275c4606a88d6bef"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_content_refs.py": {
+    "mtime": 1781174269.392265,
+    "ast_hash": "9f27db5d3adddbdd470e91934b6052cc",
+    "semantic_hash": "9f27db5d3adddbdd470e91934b6052cc"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_curriculum_utils.py": {
+    "mtime": 1781369170.9170487,
+    "ast_hash": "a213a0c9920b108d2adb342b3f3630c3",
+    "semantic_hash": "a213a0c9920b108d2adb342b3f3630c3"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_faiss_manager.py": {
+    "mtime": 1781063745.6253984,
+    "ast_hash": "a066894e9d4f6424b234217114f9e521",
+    "semantic_hash": "a066894e9d4f6424b234217114f9e521"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_hybrid_search.py": {
+    "mtime": 1781328323.1723542,
+    "ast_hash": "aa7c23d613fc9f5673336d68f3560c94",
+    "semantic_hash": "aa7c23d613fc9f5673336d68f3560c94"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_knowledge_service.py": {
+    "mtime": 1781166298.8045967,
+    "ast_hash": "c19c684119784af5cfb3b6e5e6edeb06",
+    "semantic_hash": "c19c684119784af5cfb3b6e5e6edeb06"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_pdf_parser.py": {
+    "mtime": 1781063740.7617824,
+    "ast_hash": "9ca46239f73814fcd64562b303b278ba",
+    "semantic_hash": "9ca46239f73814fcd64562b303b278ba"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_prebuilt_index.py": {
+    "mtime": 1781159222.968657,
+    "ast_hash": "09a6d5b7f3bf13ef8bbcdb4873f9d906",
+    "semantic_hash": "09a6d5b7f3bf13ef8bbcdb4873f9d906"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_prompt_builder.py": {
+    "mtime": 1781366342.1684716,
+    "ast_hash": "d49be1011b7e635e35a7fea7f62b09c1",
+    "semantic_hash": "d49be1011b7e635e35a7fea7f62b09c1"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_question_router.py": {
+    "mtime": 1781286702.6452444,
+    "ast_hash": "8eaa62fc2d14f4d7790e1012ea7306d1",
+    "semantic_hash": "8eaa62fc2d14f4d7790e1012ea7306d1"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_quiz_context.py": {
+    "mtime": 1781351388.11622,
+    "ast_hash": "400c351eca601f9e7b735b09982352c5",
+    "semantic_hash": "400c351eca601f9e7b735b09982352c5"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_quiz_grounded.py": {
+    "mtime": 1781368954.6373954,
+    "ast_hash": "a211a29672c900affa7a898b0f74503e",
+    "semantic_hash": "a211a29672c900affa7a898b0f74503e"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_quiz_math.py": {
+    "mtime": 1781353151.3254094,
+    "ast_hash": "e9dd9d54f19c7eb03c8aedcddf6897d3",
+    "semantic_hash": "e9dd9d54f19c7eb03c8aedcddf6897d3"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_quiz_science.py": {
+    "mtime": 1781367598.4730437,
+    "ast_hash": "e740adc13c2a32901b18fdcbd9cfb0df",
+    "semantic_hash": "e740adc13c2a32901b18fdcbd9cfb0df"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_quiz_service.py": {
+    "mtime": 1781369139.0754156,
+    "ast_hash": "18e29d33f7284bf1eb59de8141eef105",
+    "semantic_hash": "18e29d33f7284bf1eb59de8141eef105"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_repositories.py": {
+    "mtime": 1781063748.384353,
+    "ast_hash": "e9db1649fa2fc27b3bb5acba029af46e",
+    "semantic_hash": "e9db1649fa2fc27b3bb5acba029af46e"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_reranker.py": {
+    "mtime": 1781328522.6078482,
+    "ast_hash": "890ceddc22882d8bbf02b40ad4f65307",
+    "semantic_hash": "890ceddc22882d8bbf02b40ad4f65307"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_retriever.py": {
+    "mtime": 1781288003.1904578,
+    "ast_hash": "d63aea825b78a494e2c6c1d8a80e2ceb",
+    "semantic_hash": "d63aea825b78a494e2c6c1d8a80e2ceb"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/tests/unit/test_saksham_retrieval.py": {
+    "mtime": 1781156734.8697145,
+    "ast_hash": "7908d8fd62df1f7ee00cf3bcccab0fe7",
+    "semantic_hash": "7908d8fd62df1f7ee00cf3bcccab0fe7"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/ARCHITECTURE.md": {
+    "mtime": 1781347264.3263495,
+    "ast_hash": "b8999848648d4dd6c759f590a7a46bd9",
+    "semantic_hash": "b8999848648d4dd6c759f590a7a46bd9"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/data/faiss/saksham_kb_hash.txt": {
+    "mtime": 1781349883.2171366,
+    "ast_hash": "6498f3fd7cfc34cd5f3e987805255034",
+    "semantic_hash": "6498f3fd7cfc34cd5f3e987805255034"
+  },
+  "/Users/mayankmaurya/Documents/SakshamAi/backend/requirements.txt": {
+    "mtime": 1781328293.7852306,
+    "ast_hash": "4bfb7a3c8498dc8be898d2b43c23513e",
+    "semantic_hash": "4bfb7a3c8498dc8be898d2b43c23513e"
+  }
+}

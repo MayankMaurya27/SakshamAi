@@ -110,6 +110,12 @@ def process_upload(
     ]
     ChunkRepository(db).create_batch(document.id, chunk_records)
 
+    from services.summary_service import build_document_summary_from_chunks
+
+    summary_payload = build_document_summary_from_chunks(chunks, safe_filename)
+    summary = summary_payload.get("summary", "")
+    key_concepts: list = []
+
     truncated_text = truncate_to_tokens(text, MAX_AUTO_ANALYSIS_TOKENS)
     analysis_prompt = build_prompt(
         LearningMode.AUTO_ANALYSIS,
@@ -117,17 +123,6 @@ def process_upload(
     )
     llm_response = get_llm().generate(analysis_prompt)
     analysis = _parse_auto_analysis(llm_response)
-
-    summary = analysis.get("summary", "")
-    key_concepts = analysis.get("key_concepts", [])
-    if isinstance(key_concepts, list):
-        key_concepts = [
-            {"name": c.get("name", ""), "description": c.get("description", "")}
-            for c in key_concepts
-            if isinstance(c, dict) and c.get("name")
-        ][:10]
-    else:
-        key_concepts = []
 
     doc_repo.update_analysis(document.id, summary, key_concepts)
 

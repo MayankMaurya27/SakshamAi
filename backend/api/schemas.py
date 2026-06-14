@@ -28,15 +28,25 @@ class AskResponse(BaseModel):
 class SummaryRequest(BaseModel):
     """Request body for POST /summary."""
 
-    document_id: int
+    source: SourceType = SourceType.DOCUMENT
+    document_id: int | None = None
+    class_level: int | None = Field(None, ge=6, le=10)
+    subject: str | None = None
+    chapter: str | None = None
+    topic: str | None = None  # backward-compatible alias for chapter
     regenerate: bool = False
 
 
 class QuizRequest(BaseModel):
     """Request body for POST /quiz."""
 
-    document_id: int
-    regenerate: bool = False
+    source: SourceType = SourceType.SAKSHAM
+    document_id: int | None = None
+    class_level: int | None = Field(None, ge=6, le=10)
+    subject: str | None = None
+    chapter: str | None = None
+    topic: str | None = None  # backward-compatible alias for chapter
+    question_count: int = Field(default=10, ge=5, le=15)
 
 
 class LearningModeRequest(BaseModel):

@@ -34,6 +34,16 @@ def test_chapter_matches():
     assert not chapter_matches(meta, 8, "Science", "Electricity")
 
 
+def test_get_chapter_from_manifest_does_not_match_unrelated_chapters():
+    """Slugified ref must match the chapter, not every chapter in the class."""
+    from services.knowledge_service import get_chapter_from_manifest
+
+    chapter = get_chapter_from_manifest(10, "Science", "Electricity")
+    assert chapter is not None
+    assert chapter["chapter_id"] == "electricity"
+    assert chapter["chapter_title"] == "Electricity"
+
+
 def test_discover_chapter_pdfs():
     """Should discover chapter PDFs when present."""
     kb_dir = Path(__file__).resolve().parent.parent.parent / "data" / "saksham_kb"
