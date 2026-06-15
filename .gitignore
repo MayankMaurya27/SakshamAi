@@ -1,0 +1,8 @@
+.DS_Store
+.cursor/
+.agents/
+REPO_CLEANUP_PLAN.md
+
+# Graphify Caches and dev output
+graphify-out/cache/
+backend/graphify-out/

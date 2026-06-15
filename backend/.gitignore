@@ -11,6 +11,8 @@ data/faiss/user_index_meta.json
 data/models/
 data/quiz_cache/
 data/summary_cache/
+data/localize_cache/
+data/audio/
 
 # Virtual environment
 .venv/
