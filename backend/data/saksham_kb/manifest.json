@@ -2,6 +2,136 @@
   "version": 1,
   "chapters": [
     {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "electricity_magnetic_and_heating_effects",
+      "chapter_title": "Electricity- Magnetic and Heating Effects",
+      "source_file": "Electricity- Magnetic and Heating Effects.pdf",
+      "page_count": 16,
+      "word_count": 4906,
+      "chunk_count": 37
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "exploring_forces",
+      "chapter_title": "Exploring Forces",
+      "source_file": "Exploring Forces.pdf",
+      "page_count": 18,
+      "word_count": 5626,
+      "chunk_count": 43
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "exploring_the_investigative_world_of_science",
+      "chapter_title": "Exploring the Investigative World of Science",
+      "source_file": "Exploring the Investigative World of Science.pdf",
+      "page_count": 7,
+      "word_count": 2194,
+      "chunk_count": 6
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "health_the_ultimate_treasure",
+      "chapter_title": "Health- The Ultimate Treasure",
+      "source_file": "Health- The Ultimate Treasure.pdf",
+      "page_count": 18,
+      "word_count": 5110,
+      "chunk_count": 32
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "how_nature_works_in_harmony",
+      "chapter_title": "How Nature Works in Harmony",
+      "source_file": "How Nature Works in Harmony.pdf",
+      "page_count": 20,
+      "word_count": 5901,
+      "chunk_count": 36
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "keeping_time_with_the_skies",
+      "chapter_title": "Keeping Time with the Skies",
+      "source_file": "Keeping Time with the Skies.pdf",
+      "page_count": 20,
+      "word_count": 7157,
+      "chunk_count": 47
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "light_mirrors_and_lenses",
+      "chapter_title": "Light- Mirrors and Lenses",
+      "source_file": "Light- Mirrors and Lenses.pdf",
+      "page_count": 18,
+      "word_count": 5400,
+      "chunk_count": 34
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "nature_of_matter_elements_compounds_and_mixtures",
+      "chapter_title": "Nature of Matter - Elements, Compounds, and Mixtures",
+      "source_file": "Nature of Matter - Elements, Compounds, and Mixtures .pdf",
+      "page_count": 18,
+      "word_count": 5437,
+      "chunk_count": 43
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "our_home_earth_a_unique_life_sustaining_planet",
+      "chapter_title": "Our Home- Earth, a Unique Life Sustaining Planet",
+      "source_file": "Our Home- Earth, a Unique Life Sustaining Planet .pdf",
+      "page_count": 19,
+      "word_count": 6697,
+      "chunk_count": 41
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "particulate_nature_of_matter",
+      "chapter_title": "Particulate Nature of Matter",
+      "source_file": "Particulate Nature of Matter .pdf",
+      "page_count": 18,
+      "word_count": 4879,
+      "chunk_count": 30
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "pressure_winds_storms_and_cyclones",
+      "chapter_title": "Pressure, Winds, Storms, and Cyclones",
+      "source_file": "Pressure, Winds, Storms, and Cyclones.pdf",
+      "page_count": 18,
+      "word_count": 5919,
+      "chunk_count": 47
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "the_amazing_world_of_solutes_solvents_and_solutions",
+      "chapter_title": "The Amazing World of Solutes, Solvents, and Solutions",
+      "source_file": "The Amazing World of Solutes, Solvents, and Solutions.pdf",
+      "page_count": 18,
+      "word_count": 5808,
+      "chunk_count": 51
+    },
+    {
+      "class": 8,
+      "subject": "Science",
+      "chapter_id": "the_invisible_living_world_beyond_our_naked_eye",
+      "chapter_title": "The Invisible Living World- Beyond Our Naked Eye",
+      "source_file": "The Invisible Living World- Beyond Our Naked Eye.pdf",
+      "page_count": 20,
+      "word_count": 6661,
+      "chunk_count": 45
+    },
+    {
       "class": 10,
       "subject": "Mathematics",
       "chapter_id": "areas_related_to_circles",
@@ -1940,136 +2070,6 @@
       "page_count": 18,
       "word_count": 7972,
       "chunk_count": 31
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "electricity_magnetic_and_heating_effects",
-      "chapter_title": "Electricity- Magnetic and Heating Effects",
-      "source_file": "Electricity- Magnetic and Heating Effects.pdf",
-      "page_count": 16,
-      "word_count": 4906,
-      "chunk_count": 11
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "exploring_forces",
-      "chapter_title": "Exploring Forces",
-      "source_file": "Exploring Forces.pdf",
-      "page_count": 18,
-      "word_count": 5626,
-      "chunk_count": 13
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "exploring_the_investigative_world_of_science",
-      "chapter_title": "Exploring the Investigative World of Science",
-      "source_file": "Exploring the Investigative World of Science.pdf",
-      "page_count": 7,
-      "word_count": 2194,
-      "chunk_count": 5
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "health_the_ultimate_treasure",
-      "chapter_title": "Health- The Ultimate Treasure",
-      "source_file": "Health- The Ultimate Treasure.pdf",
-      "page_count": 18,
-      "word_count": 5110,
-      "chunk_count": 11
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "how_nature_works_in_harmony",
-      "chapter_title": "How Nature Works in Harmony",
-      "source_file": "How Nature Works in Harmony.pdf",
-      "page_count": 20,
-      "word_count": 5901,
-      "chunk_count": 13
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "keeping_time_with_the_skies",
-      "chapter_title": "Keeping Time with the Skies",
-      "source_file": "Keeping Time with the Skies.pdf",
-      "page_count": 20,
-      "word_count": 7157,
-      "chunk_count": 16
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "light_mirrors_and_lenses",
-      "chapter_title": "Light- Mirrors and Lenses",
-      "source_file": "Light- Mirrors and Lenses.pdf",
-      "page_count": 18,
-      "word_count": 5400,
-      "chunk_count": 12
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "nature_of_matter_elements_compounds_and_mixtures",
-      "chapter_title": "Nature of Matter - Elements, Compounds, and Mixtures",
-      "source_file": "Nature of Matter - Elements, Compounds, and Mixtures .pdf",
-      "page_count": 18,
-      "word_count": 5437,
-      "chunk_count": 12
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "our_home_earth_a_unique_life_sustaining_planet",
-      "chapter_title": "Our Home- Earth, a Unique Life Sustaining Planet",
-      "source_file": "Our Home- Earth, a Unique Life Sustaining Planet .pdf",
-      "page_count": 19,
-      "word_count": 6697,
-      "chunk_count": 15
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "particulate_nature_of_matter",
-      "chapter_title": "Particulate Nature of Matter",
-      "source_file": "Particulate Nature of Matter .pdf",
-      "page_count": 18,
-      "word_count": 4879,
-      "chunk_count": 11
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "pressure_winds_storms_and_cyclones",
-      "chapter_title": "Pressure, Winds, Storms, and Cyclones",
-      "source_file": "Pressure, Winds, Storms, and Cyclones.pdf",
-      "page_count": 18,
-      "word_count": 5919,
-      "chunk_count": 13
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "the_amazing_world_of_solutes_solvents_and_solutions",
-      "chapter_title": "The Amazing World of Solutes, Solvents, and Solutions",
-      "source_file": "The Amazing World of Solutes, Solvents, and Solutions.pdf",
-      "page_count": 18,
-      "word_count": 5808,
-      "chunk_count": 13
-    },
-    {
-      "class": 8,
-      "subject": "Science",
-      "chapter_id": "the_invisible_living_world_beyond_our_naked_eye",
-      "chapter_title": "The Invisible Living World- Beyond Our Naked Eye",
-      "source_file": "The Invisible Living World- Beyond Our Naked Eye.pdf",
-      "page_count": 20,
-      "word_count": 6661,
-      "chunk_count": 15
     }
   ]
 }

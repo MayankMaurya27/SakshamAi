@@ -14,7 +14,7 @@ def test_prebuilt_index_available():
 
 
 def test_startup_without_pdfs():
-    """Server startup should load index even when Class 8 Science PDFs are removed."""
+    """Server startup should load index even when curriculum PDFs are removed."""
     reset_indexes_for_testing()
     build_saksham_index(force=False)
 

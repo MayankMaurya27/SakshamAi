@@ -351,6 +351,21 @@ class MockLLM:
         if "Extract the most important" in prompt:
             return '{"concepts": [{"name": "Force", "description": "A push or pull on an object."}]}'
 
+        if "HINDI_LOCALIZE_PROMPT" in prompt:
+            if format_json and "MCQ" in prompt:
+                return (
+                    '{"question": "बल (Force) क्या है?", '
+                    '"option_a": "धक्का या खिंचाव", '
+                    '"option_b": "रंग", '
+                    '"option_c": "ध्वनि", '
+                    '"option_d": "प्रकाश", '
+                    '"correct_answer": "A"}'
+                )
+            return (
+                "• प्रकाश संश्लेषण (Photosynthesis) वह प्रक्रिया है जिसमें पौधे अपना भोजन बनाते हैं।\n\n"
+                "• यह प्रक्रिया सूर्य के प्रकाश (sunlight) की ऊर्जा का उपयोग करती है।"
+            )
+
         if "Explain in Hindi" in prompt:
             return "यह एक शैक्षिक व्याख्या है।"
 

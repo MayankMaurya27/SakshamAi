@@ -10,7 +10,7 @@ _PROFILE_HEADERS = (
 )
 
 _BIO_QUESTION_PATTERN = re.compile(
-    r"\b(?:who|what)\s+(?:was|is|were|are)\b",
+    r"\bwho\s+(?:was|is|were|are)\b",
     re.I,
 )
 
@@ -86,6 +86,9 @@ def try_format_bio_answer(context_text: str, query_terms: list[str]) -> str | No
             continue
 
         start = _profile_start(text_lower, name_pos)
+        if start >= name_pos:
+            # No sidebar header (e.g. "Be a scientist") before the term — not a bio block.
+            continue
 
         end = len(text)
         for pattern in _PASSAGE_STOP_PATTERNS:

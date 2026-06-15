@@ -9,11 +9,17 @@ import tempfile
 import uuid
 import wave
 from pathlib import Path
+from typing import Literal
 
 from ai.dyslexia_formatter import (
     build_pointwise_speech_lines,
-    extract_speech_points,
-    prepare_segment_for_speech,
+    extract_speech_points as extract_english_speech_points,
+    prepare_segment_for_speech as prepare_english_segment_for_speech,
+)
+from ai.hindi_formatter import (
+    build_hindi_pointwise_speech_lines,
+    extract_speech_points as extract_hindi_speech_points,
+    prepare_segment_for_speech as prepare_hindi_segment_for_speech,
 )
 from config.settings import get_settings
 from exceptions import ServiceUnavailableError, ValidationError
@@ -21,33 +27,41 @@ from exceptions import ServiceUnavailableError, ValidationError
 logger = logging.getLogger(__name__)
 settings = get_settings()
 
-_piper_voice = None
+_piper_voices: dict[str, object] = {}
 _POINTWISE_PAUSE_MS = 750
+AudioLanguage = Literal["en", "hi"]
 
 
-def _text_for_speech(text: str) -> str:
+def _text_for_speech(text: str, language: AudioLanguage = "en") -> str:
     """Normalize plain text for clearer speech."""
     cleaned = text.replace("•", " ")
     cleaned = re.sub(r"^\d+[.)]\s+", "", cleaned, flags=re.MULTILINE)
     cleaned = cleaned.replace("\n\n", ". ")
     cleaned = re.sub(r"\s+", " ", cleaned).strip()
-    return prepare_segment_for_speech(cleaned) or cleaned
+    if language == "hi":
+        return prepare_hindi_segment_for_speech(cleaned) or cleaned
+    return prepare_english_segment_for_speech(cleaned) or cleaned
 
 
-def _resolve_model_path() -> Path:
-    configured = settings.piper_model_path.strip()
+def _resolve_model_path(language: AudioLanguage = "en") -> Path:
+    if language == "hi":
+        configured = settings.piper_hindi_model_path.strip()
+        default_name = "hi_IN-rohan-medium.onnx"
+    else:
+        configured = settings.piper_model_path.strip()
+        default_name = "en_US-lessac-medium.onnx"
+
     if configured:
         path = Path(configured)
         if not path.is_absolute():
             path = settings.base_dir / path
         return path
-    return settings.models_dir / "piper" / "en_US-lessac-medium.onnx"
+    return settings.models_dir / "piper" / default_name
 
 
-def _load_piper_voice():
-    global _piper_voice
-    if _piper_voice is not None:
-        return _piper_voice
+def _load_piper_voice(language: AudioLanguage = "en"):
+    if language in _piper_voices:
+        return _piper_voices[language]
 
     try:
         from piper import PiperVoice
@@ -56,15 +70,18 @@ def _load_piper_voice():
             "Piper Python package not installed. Run: pip install piper-tts piper-phonemize-cross onnxruntime pathvalidate"
         ) from exc
 
-    model_path = _resolve_model_path()
+    model_path = _resolve_model_path(language)
     if not model_path.exists():
+        script_hint = "python scripts/download_piper.py"
+        if language == "hi":
+            script_hint += " --hindi"
         raise ServiceUnavailableError(
-            f"Piper model not found at {model_path}. Run: python scripts/download_piper.py"
+            f"Piper model not found at {model_path}. Run: {script_hint}"
         )
 
-    logger.info("Loading Piper voice model from %s", model_path)
-    _piper_voice = PiperVoice.load(str(model_path))
-    return _piper_voice
+    logger.info("Loading Piper voice model (%s) from %s", language, model_path)
+    _piper_voices[language] = PiperVoice.load(str(model_path))
+    return _piper_voices[language]
 
 
 def _synthesize_single_line(voice, line: str, output_path: Path) -> wave._wave_params:
@@ -74,12 +91,16 @@ def _synthesize_single_line(voice, line: str, output_path: Path) -> wave._wave_p
         return wav_file.getparams()
 
 
-def _synthesize_pointwise(speech_lines: list[str], output_path: Path) -> None:
+def _synthesize_pointwise(
+    speech_lines: list[str],
+    output_path: Path,
+    language: AudioLanguage = "en",
+) -> None:
     """Synthesize each point separately and join with silent gaps."""
     if not speech_lines:
         raise ServiceUnavailableError("No speech points to synthesize.")
 
-    voice = _load_piper_voice()
+    voice = _load_piper_voice(language)
     sample_rate = voice.config.sample_rate
     pause_frames = int(sample_rate * _POINTWISE_PAUSE_MS / 1000)
     silence = b"\x00\x00" * pause_frames
@@ -109,14 +130,23 @@ def _synthesize_pointwise(speech_lines: list[str], output_path: Path) -> None:
             out_file.writeframes(chunk)
 
 
-def _generate_with_python(text: str, output_path: Path) -> None:
-    voice = _load_piper_voice()
-    speech_text = _text_for_speech(text)
+def _generate_with_python(
+    text: str,
+    output_path: Path,
+    language: AudioLanguage = "en",
+) -> None:
+    voice = _load_piper_voice(language)
+    speech_text = _text_for_speech(text, language=language)
     with wave.open(str(output_path), "wb") as wav_file:
         voice.synthesize_wav(speech_text, wav_file)
 
 
-def _generate_with_binary(text: str, output_path: Path, model_path: Path) -> None:
+def _generate_with_binary(
+    text: str,
+    output_path: Path,
+    model_path: Path,
+    language: AudioLanguage = "en",
+) -> None:
     process = subprocess.run(
         [
             settings.piper_binary,
@@ -125,7 +155,7 @@ def _generate_with_binary(text: str, output_path: Path, model_path: Path) -> Non
             "--output_file",
             str(output_path),
         ],
-        input=_text_for_speech(text),
+        input=_text_for_speech(text, language=language),
         capture_output=True,
         text=True,
         timeout=60,
@@ -136,12 +166,39 @@ def _generate_with_binary(text: str, output_path: Path, model_path: Path) -> Non
         raise ServiceUnavailableError(f"Piper TTS failed: {process.stderr}")
 
 
-def generate_audio(text: str, *, segments: list[str] | None = None) -> dict:
+def _speech_points_for_text(
+    text: str,
+    segments: list[str] | None,
+    language: AudioLanguage,
+) -> list[str]:
+    speech_points = [segment.strip() for segment in (segments or []) if segment.strip()]
+    if speech_points:
+        return speech_points
+    if language == "hi":
+        return extract_hindi_speech_points(text)
+    return extract_english_speech_points(text)
+
+
+def _pointwise_speech_lines(
+    speech_points: list[str],
+    language: AudioLanguage,
+) -> list[str]:
+    if language == "hi":
+        return build_hindi_pointwise_speech_lines(speech_points)
+    return build_pointwise_speech_lines(speech_points)
+
+
+def generate_audio(
+    text: str,
+    *,
+    segments: list[str] | None = None,
+    language: AudioLanguage = "en",
+) -> dict:
     """
     Convert text to speech using Piper TTS (Python API, binary fallback).
 
     When ``segments`` are provided, or the text is bullet/numbered list-like,
-    each point is spoken as "Point 1.", "Point 2.", etc. with pauses between.
+    each point is spoken with pauses between (Point N / बिंदु N).
 
     Returns:
         Dict with audio_path and filename.
@@ -153,15 +210,16 @@ def generate_audio(text: str, *, segments: list[str] | None = None) -> dict:
     if not text.strip():
         raise ValidationError("Text cannot be empty for audio generation.")
 
-    model_path = _resolve_model_path()
+    model_path = _resolve_model_path(language)
     if not model_path.exists():
+        script_hint = "python scripts/download_piper.py"
+        if language == "hi":
+            script_hint += " --hindi"
         raise ServiceUnavailableError(
-            f"Piper model not found at {model_path}. Run: python scripts/download_piper.py"
+            f"Piper model not found at {model_path}. Run: {script_hint}"
         )
 
-    speech_points = [segment.strip() for segment in (segments or []) if segment.strip()]
-    if not speech_points:
-        speech_points = extract_speech_points(text)
+    speech_points = _speech_points_for_text(text, segments, language)
     use_pointwise = len(speech_points) > 1
 
     filename = f"{uuid.uuid4().hex}.wav"
@@ -170,10 +228,10 @@ def generate_audio(text: str, *, segments: list[str] | None = None) -> dict:
 
     try:
         if use_pointwise:
-            speech_lines = build_pointwise_speech_lines(speech_points)
-            _synthesize_pointwise(speech_lines, output_path)
+            speech_lines = _pointwise_speech_lines(speech_points, language)
+            _synthesize_pointwise(speech_lines, output_path, language=language)
         else:
-            _generate_with_python(text, output_path)
+            _generate_with_python(text, output_path, language=language)
     except ServiceUnavailableError:
         raise
     except Exception as exc:
@@ -183,7 +241,7 @@ def generate_audio(text: str, *, segments: list[str] | None = None) -> dict:
                 "Point-wise audio requires the Piper Python package."
             ) from exc
         try:
-            _generate_with_binary(text, output_path, model_path)
+            _generate_with_binary(text, output_path, model_path, language=language)
         except FileNotFoundError as bin_exc:
             raise ServiceUnavailableError(
                 f"Piper binary '{settings.piper_binary}' not found and Python synthesis failed."
@@ -193,8 +251,9 @@ def generate_audio(text: str, *, segments: list[str] | None = None) -> dict:
         raise ServiceUnavailableError("Piper TTS did not produce output file.")
 
     logger.info(
-        "Generated audio file: %s (%s)",
+        "Generated audio file: %s (%s, %s)",
         filename,
+        language,
         "point-wise" if use_pointwise else "continuous",
     )
     return {
@@ -204,6 +263,5 @@ def generate_audio(text: str, *, segments: list[str] | None = None) -> dict:
 
 
 def reset_piper_voice_for_testing() -> None:
-    """Clear cached Piper voice (tests only)."""
-    global _piper_voice
-    _piper_voice = None
+    """Clear cached Piper voices (tests only)."""
+    _piper_voices.clear()

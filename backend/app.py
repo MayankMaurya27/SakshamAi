@@ -12,6 +12,7 @@ from api.ask import router as ask_router
 from api.audio import router as audio_router
 from api.documents import router as documents_router
 from api.hindi import router as hindi_router
+from api.localize import router as localize_router
 from api.quiz import router as quiz_router
 from api.saksham import router as saksham_router
 from api.simplify import router as simplify_router
@@ -65,6 +66,7 @@ app.include_router(ask_router)
 app.include_router(summary_router)
 app.include_router(quiz_router)
 app.include_router(hindi_router)
+app.include_router(localize_router)
 app.include_router(simplify_router)
 app.include_router(documents_router)
 app.include_router(audio_router)

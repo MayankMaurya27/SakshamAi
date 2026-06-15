@@ -1,0 +1,21 @@
+{
+  "language": "hi",
+  "content_type": "quiz",
+  "hindi_quiz": {
+    "questions": [
+      {
+        "question": "बल (Force) क्या है?",
+        "option_a": "धक्का या खिंचाव",
+        "option_b": "रंग",
+        "option_c": "ध्वनि",
+        "option_d": "प्रकाश",
+        "correct_answer": "A"
+      }
+    ]
+  },
+  "reading_segments": [
+    "बल (Force) क्या है?"
+  ],
+  "audio_path": null,
+  "cached": false
+}

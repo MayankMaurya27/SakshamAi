@@ -21,13 +21,13 @@ def test_generate_audio_pointwise_uses_numbered_lines(tmp_path, monkeypatch):
     )
     monkeypatch.setattr(
         "services.audio_service._resolve_model_path",
-        lambda: tmp_path / "model.onnx",
+        lambda language="en": tmp_path / "model.onnx",
     )
     (tmp_path / "model.onnx").write_bytes(b"x")
 
     captured_lines: list[str] = []
 
-    def fake_pointwise(lines, output_path: Path):
+    def fake_pointwise(lines, output_path: Path, language="en"):
         captured_lines.extend(lines)
         output_path.write_bytes(b"RIFF")
 
@@ -53,16 +53,16 @@ def test_generate_audio_plain_text_stays_continuous(tmp_path, monkeypatch):
     )
     monkeypatch.setattr(
         "services.audio_service._resolve_model_path",
-        lambda: tmp_path / "model.onnx",
+        lambda language="en": tmp_path / "model.onnx",
     )
     (tmp_path / "model.onnx").write_bytes(b"x")
 
     called = {"pointwise": False, "python": False}
 
-    def fake_pointwise(_lines, _output_path):
+    def fake_pointwise(_lines, _output_path, language="en"):
         called["pointwise"] = True
 
-    def fake_python(_text, _output_path):
+    def fake_python(_text, _output_path, language="en"):
         called["python"] = True
         _output_path.write_bytes(b"RIFF")
 

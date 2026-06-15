@@ -100,6 +100,12 @@ class Settings(BaseSettings):
     dyslexia_max_words_per_sentence: int = 15
     dyslexia_max_bullets: int = 8
 
+    # Hinenglish localization (POST /localize/hi)
+    localize_cache_dir: Path = data_dir / "localize_cache"
+    localize_cache_version: str = "v1-hinenglish"
+    ollama_num_predict_localize: int = 2048
+    piper_hindi_model_path: str = ""
+
     def ensure_directories(self) -> None:
         """Create required data directories if they do not exist."""
         for directory in (
@@ -111,6 +117,7 @@ class Settings(BaseSettings):
             self.models_dir,
             self.quiz_cache_dir,
             self.summary_cache_dir,
+            self.localize_cache_dir,
         ):
             directory.mkdir(parents=True, exist_ok=True)
 

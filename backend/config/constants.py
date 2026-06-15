@@ -41,6 +41,15 @@ class AccessibilityProfile(str, Enum):
     VISUAL = "visual"
 
 
+class LocalizeContentType(str, Enum):
+    """Content types supported by POST /localize/hi."""
+
+    ANSWER = "answer"
+    SUMMARY = "summary"
+    SIMPLIFY = "simplify"
+    QUIZ = "quiz"
+
+
 class IndexName(str, Enum):
     """FAISS index identifiers."""
 

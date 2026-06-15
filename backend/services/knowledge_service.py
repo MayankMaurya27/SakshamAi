@@ -117,16 +117,15 @@ def _discovered_chapter_keys(chapters: list[ChapterInfo]) -> set[tuple[int, str,
 
 def _is_deployable_without_pdf(chapter: dict[str, Any]) -> bool:
     """
-    Return True for chapters intentionally shipped without source PDFs.
+    Return True for standard curriculum chapters shipped without source PDFs.
 
-    Only Class 8 Science uses pre-built index content with PDFs removed at deploy
-    time. Other subjects should re-index when PDFs are renamed or replaced.
+    Classes 6–10 use pre-built FAISS indexes on edge/Jetson deployments where
+    PDFs are removed after ingest. legacy_json chapters are excluded.
     """
-    return (
-        chapter.get("class") == 8
-        and chapter.get("subject", "").lower() == "science"
-        and not chapter.get("legacy_json")
-    )
+    if chapter.get("legacy_json"):
+        return False
+    class_level = chapter.get("class")
+    return isinstance(class_level, int) and 6 <= class_level <= 10
 
 
 def _preserve_chapters_without_pdfs(
@@ -137,8 +136,8 @@ def _preserve_chapters_without_pdfs(
     """
     Export indexed vectors for deployable chapters whose PDFs are no longer on disk.
 
-    This keeps pre-built Class 8 Science content available after PDFs are removed
-    for deployment, without retaining stale entries when PDFs are renamed elsewhere.
+    This keeps pre-built curriculum content available after PDFs are removed
+    for edge deployment, without retaining stale entries when PDFs are renamed elsewhere.
     """
     if old_index.index is None or old_index.total_vectors == 0:
         return []

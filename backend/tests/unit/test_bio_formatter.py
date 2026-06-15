@@ -39,3 +39,14 @@ def test_is_bio_question():
     assert is_bio_question("who was Meghnad Saha")
     assert not is_bio_question("How are communicable diseases spread?")
     assert not is_bio_question("What was the French Revolution?")
+    assert not is_bio_question("What is force?")
+
+
+def test_try_format_bio_answer_skips_concept_definition_chunks():
+    force_context = (
+        "Do you notice that forces result only when two objects are interacting? "
+        "A force is a push or pull on an object resulting from the object's interaction "
+        "with another object. The SI unit of force is newton and its symbol is N. "
+        "A step further Suppose an object is at rest."
+    )
+    assert try_format_bio_answer(force_context, ["force"]) is None

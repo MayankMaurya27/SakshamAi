@@ -56,16 +56,29 @@ def test_resolve_chapter_ref_atomic_structure_alias():
 
 
 def test_discover_chapter_pdfs():
-    """Should discover chapter PDFs when present."""
+    """Should discover chapter PDFs when present, or rely on manifest when PDF-free."""
     kb_dir = Path(__file__).resolve().parent.parent.parent / "data" / "saksham_kb"
     chapters = discover_chapter_pdfs(kb_dir)
-    assert len(chapters) >= 100
+    if chapters:
+        assert len(chapters) >= 100
+    else:
+        from services.knowledge_service import load_manifest
+
+        assert len(load_manifest().get("chapters", [])) >= 100
 
 
 def test_discover_nested_social_science_subjects():
     """Class 9/10 social science PDFs in subfolders should map to History, etc."""
     kb_dir = Path(__file__).resolve().parent.parent.parent / "data" / "saksham_kb"
     chapters = discover_chapter_pdfs(kb_dir)
+
+    if not chapters:
+        from services.knowledge_service import list_chapters
+
+        assert len(list_chapters(9, "History")) >= 1
+        assert len(list_chapters(10, "Economics")) >= 1
+        assert len(list_chapters(6, "Social Science")) >= 1
+        return
 
     history_9 = [c for c in chapters if c.class_level == 9 and c.subject == "History"]
     economics_10 = [c for c in chapters if c.class_level == 10 and c.subject == "Economics"]

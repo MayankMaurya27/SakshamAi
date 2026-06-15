@@ -85,4 +85,9 @@ def purge_caches_on_version_change(settings: Settings) -> dict[str, int]:
             quiz_version,
             "quiz",
         ),
+        "localize_removed": purge_cache_dir_if_version_changed(
+            settings.localize_cache_dir,
+            settings.localize_cache_version,
+            "localize",
+        ),
     }

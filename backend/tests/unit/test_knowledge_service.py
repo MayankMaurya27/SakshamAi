@@ -2,6 +2,7 @@
 
 from config.settings import Settings
 from services.knowledge_service import (
+    _is_deployable_without_pdf,
     compute_curriculum_hash,
     list_chapters,
     list_classes,
@@ -53,3 +54,11 @@ def test_curriculum_hash_stable():
     hash2 = compute_curriculum_hash()
     assert hash1 == hash2
     assert len(hash1) == 64
+
+
+def test_deployable_without_pdf_all_classes():
+    """Classes 6–10 manifest chapters are deployable without source PDFs."""
+    assert _is_deployable_without_pdf({"class": 6, "subject": "Science", "chapter_id": "x"})
+    assert _is_deployable_without_pdf({"class": 10, "subject": "Economics", "chapter_id": "y"})
+    assert not _is_deployable_without_pdf({"class": 6, "subject": "Science", "legacy_json": True})
+    assert not _is_deployable_without_pdf({"class": 5, "subject": "Science", "chapter_id": "z"})

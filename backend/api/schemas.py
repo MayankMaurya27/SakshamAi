@@ -1,8 +1,8 @@
 """Pydantic request/response schemas for API endpoints."""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
-from config.constants import AccessibilityProfile, LearningMode, SourceType
+from config.constants import AccessibilityProfile, LearningMode, LocalizeContentType, SourceType
 
 
 class AskRequest(BaseModel):
@@ -72,3 +72,41 @@ class AudioRequest(BaseModel):
     """Request body for POST /audio."""
 
     text: str = Field(..., min_length=1)
+
+
+class QuizQuestionLocalize(BaseModel):
+    """One MCQ for Hinenglish localization."""
+
+    question: str = Field(..., min_length=1)
+    option_a: str = Field(..., min_length=1)
+    option_b: str = Field(..., min_length=1)
+    option_c: str = Field(..., min_length=1)
+    option_d: str = Field(..., min_length=1)
+    correct_answer: str = Field(..., min_length=1)
+
+
+class QuizLocalizePayload(BaseModel):
+    """Quiz payload for Hinenglish localization."""
+
+    questions: list[QuizQuestionLocalize] = Field(..., min_length=1)
+
+
+class LocalizeHiRequest(BaseModel):
+    """Request body for POST /localize/hi."""
+
+    text: str | None = None
+    content_type: LocalizeContentType
+    quiz: QuizLocalizePayload | None = None
+    class_level: int | None = Field(None, ge=6, le=10)
+    subject: str | None = None
+    include_audio: bool = False
+    preserve_terms: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_payload(self) -> "LocalizeHiRequest":
+        if self.content_type == LocalizeContentType.QUIZ:
+            if self.quiz is None or not self.quiz.questions:
+                raise ValueError("quiz.questions is required when content_type is quiz.")
+        elif not self.text or not self.text.strip():
+            raise ValueError("text is required when content_type is not quiz.")
+        return self
