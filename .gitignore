@@ -4,5 +4,12 @@
 REPO_CLEANUP_PLAN.md
 
 # Graphify Caches and dev output
-graphify-out/cache/
+graphify-out/
 backend/graphify-out/
+
+# Specification & rule docs
+IMPLEMENTATION_RULES.md
+PRD.md
+Prompt_Specification.md
+Backend_Technical_Specification.md
+AGENTS.md
