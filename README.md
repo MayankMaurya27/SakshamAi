@@ -22,34 +22,36 @@ Stack: **FastAPI** + **FAISS** + **BM25** + **Ollama (`llama3.2:1b`)** + **SQLit
 
 ```text
 SakshamAi/
+├── .github/                            # GitHub Actions configurations
+├── .gitignore                          # Root Git ignore rules
+├── FEATURE_TESTING_GUIDE.md            # Complete API feature testing guide
 ├── README.md                           # Professional Landing Page (You Are Here)
-├── PRD.md                              # Product Requirements Document
-├── REPO_CLEANUP_PLAN.md                # Internal repo cleanup strategy
-├── .gitignore                          # Root workspace ignores
 │
-├── backend/                            # FastAPI Application
-│   ├── app.py                          # Startup lifecycles and middleware
-│   ├── requirements.txt                # Production dependencies
-│   ├── .env.example                    # Sample configuration variables
-│   ├── ARCHITECTURE.md                 # In-depth architectural design
-│   │
-│   ├── api/                            # REST Endpoints (/ask, /quiz, /upload...)
-│   ├── ai/                             # Retrievers, prompts, formatters, and TTS
-│   ├── services/                       # RAG, quiz, knowledge, and summary logic
-│   ├── database/                       # SQLite schema and repositories
-│   ├── documents/                      # PDF parser and section-aware chunker
-│   │
-│   ├── docs/                           # Topic-specific documentation
-│   │   ├── FEATURE_TESTING_GUIDE.md    # Detailed guide for manual API validation
-│   │   ├── SUMMARY_FLOW.md             # Summary generation pipeline
-│   │   └── DYSLEXIA_TEST.md            # Dyslexia parsing rules
-│   │
-│   ├── scripts/                        # Ingest & model download scripts
-│   └── data/                           # Data storage
-│       ├── faiss/                      # Pre-built indexes (critical for edge)
-│       └── saksham_kb/
-│           └── manifest.json           # Textbook metadata catalog
+└── backend/                            # FastAPI Application
+    ├── .gitignore                      # Backend-specific Git ignore rules
+    ├── app.py                          # Startup lifecycles, middleware & root endpoints
+    ├── ARCHITECTURE.md                 # In-depth RAG & caching architectural design
+    ├── exceptions.py                   # Custom HTTP exception handling
+    ├── pytest.ini                      # Pytest configurations
+    ├── requirements.txt                # Production python dependencies
+    ├── .env.example                    # Sample environment variables template
+    │
+    ├── ai/                             # Retrievers, prompt templates, and formatters
+    ├── api/                            # FastAPI REST routing/endpoints (/ask, /quiz...)
+    ├── database/                       # SQLite DB models & repo services
+    ├── docs/                           # Topic-specific documentation
+    │   ├── FEATURE_TESTING_GUIDE.md    # Detailed guide for manual API validation
+    │   ├── SUMMARY_FLOW.md             # Summary generation pipeline
+    │   └── DYSLEXIA_TEST.md            # Dyslexia parsing specifications
+    ├── documents/                      # Section-aware PDF parser and chunkers
+    ├── scripts/                        # Ingest, seed, and offline model download scripts
+    ├── services/                       # Core RAG, quiz, summarize, and localization logic
+    └── data/                           # Local storage (FAISS, models, DB, uploads)
+        ├── faiss/                      # Pre-built curriculum semantic & keyword indexes
+        └── saksham_kb/
+            └── manifest.json           # Catalog of class levels, subjects, & chapters
 ```
+
 
 ---
 
