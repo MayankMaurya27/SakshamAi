@@ -6,6 +6,12 @@ Stack: **FastAPI** + **FAISS** + **BM25** + **Ollama (`llama3.2:1b`)** + **SQLit
 
 ---
 
+## System Architecture
+
+![Saksham AI — System Architecture Flowchart](architecture_flowchart.png)
+
+---
+
 ## Key Features
 
 *   **Offline Hybrid RAG (`/ask`)**: Combines semantic vector search ([multilingual-e5-small](file:///Users/mayankmaurya/Documents/SakshamAi/backend/ai/embeddings.py)) and lexical search ([BM25 Store](file:///Users/mayankmaurya/Documents/SakshamAi/backend/ai/bm25_store.py)) fused via Reciprocal Rank Fusion (RRF), boosted by phrase matching, and re-ranked using a CrossEncoder.
