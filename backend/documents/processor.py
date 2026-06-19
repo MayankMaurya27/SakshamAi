@@ -49,23 +49,50 @@ def _parse_auto_analysis(response: str) -> dict:
     }
 
 
+
 def _normalize_questions(raw_questions: list) -> list[dict[str, str]]:
     """Normalize quiz questions from LLM output."""
     normalized: list[dict[str, str]] = []
+
     for q in raw_questions[:5]:
         if not isinstance(q, dict):
             continue
+
+        options = q.get("options", {})
+
+        option_a = ""
+        option_b = ""
+        option_c = ""
+        option_d = ""
+
+        if isinstance(options, dict):
+            option_a = options.get("A", "")
+            option_b = options.get("B", "")
+            option_c = options.get("C", "")
+            option_d = options.get("D", "")
+
+        elif isinstance(options, list):
+            option_a = options[0] if len(options) > 0 else ""
+            option_b = options[1] if len(options) > 1 else ""
+            option_c = options[2] if len(options) > 2 else ""
+            option_d = options[3] if len(options) > 3 else ""
+
         normalized.append(
             {
                 "question": q.get("question", ""),
-                "option_a": q.get("option_a", q.get("options", {}).get("A", "")),
-                "option_b": q.get("option_b", q.get("options", {}).get("B", "")),
-                "option_c": q.get("option_c", q.get("options", {}).get("C", "")),
-                "option_d": q.get("option_d", q.get("options", {}).get("D", "")),
-                "correct_answer": str(q.get("correct_answer", "A"))[0].upper(),
+                "option_a": q.get("option_a", option_a),
+                "option_b": q.get("option_b", option_b),
+                "option_c": q.get("option_c", option_c),
+                "option_d": q.get("option_d", option_d),
+                "correct_answer": str(
+                    q.get("correct_answer", "A")
+                )[0].upper(),
             }
         )
+
     return [q for q in normalized if q["question"]]
+
+
 
 
 def process_upload(
