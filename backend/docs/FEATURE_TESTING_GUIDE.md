@@ -110,7 +110,6 @@ print('Hash updated')
 python scripts/build_saksham_index.py          # same as ingest (no --force = load if hash OK)
 python scripts/build_saksham_index.py --force  # full rebuild from PDFs
 python scripts/purge_uploads.py                # clear uploaded PDFs + user index
-python scripts/seed_kb.py                      # dev seed text (if used locally)
 ```
 
 ---
