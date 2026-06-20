@@ -86,6 +86,25 @@ Output rules:
 - Every question MUST end with a line: Answer: X (where X is A, B, C, or D).
 - Vary the correct answer letter across questions."""
 
+QUIZ_JSON_OUTPUT_FORMAT = """Return ONLY a valid JSON object. Do not include any code fences, markdown tags, or prose.
+
+JSON Format:
+{{
+  "questions": [
+    {{
+      "question": "The question text (must end with a question mark)",
+      "options": {{
+        "A": "Option A text",
+        "B": "Option B text",
+        "C": "Option C text",
+        "D": "Option D text"
+      }},
+      "correct_answer": "A"
+    }}
+  ]
+}}
+"""
+
 TEMPLATES: dict[LearningMode, str] = {
     LearningMode.LEARN: """Context:
 {retrieved_context}
@@ -131,7 +150,7 @@ Question rules:
 - Avoid duplicate or near-duplicate questions.
 - For math chapters, write numeric options clearly (for example: 0.2, 1/10, 2.5).
 
-""" + QUIZ_TEXT_OUTPUT_FORMAT,
+""" + QUIZ_JSON_OUTPUT_FORMAT,
     LearningMode.SUMMARY: """Context:
 {retrieved_context}
 
@@ -242,7 +261,7 @@ Options:
 - Only one correct option.
 - Vary correct_answer across A, B, C, and D.
 
-""" + QUIZ_TEXT_OUTPUT_FORMAT
+""" + QUIZ_JSON_OUTPUT_FORMAT
 
 SCIENCE_QUIZ_TEMPLATE = """Context:
 {retrieved_context}
@@ -263,7 +282,7 @@ Options:
 - Only one correct option.
 - Vary correct_answer across A, B, C, and D.
 
-""" + QUIZ_TEXT_OUTPUT_FORMAT
+""" + QUIZ_JSON_OUTPUT_FORMAT
 
 _STRICT_MODES = frozenset(
     {
@@ -376,6 +395,18 @@ def build_quiz_prompt(
         )
         return f"{STRICT_SYSTEM_PROMPT}\n\n{body}"
 
+    # Social Science template routing
+    sub_lower = (subject or "").lower()
+    if any(term in sub_lower for term in ("social", "history", "geography", "civics", "political", "economics")):
+        chapter_section = f"Chapter:\n{topic}\n\n" if topic else ""
+        body = SOCIAL_SCIENCE_QUIZ_TEMPLATE.format(
+            retrieved_context=retrieved_context,
+            chapter_section=chapter_section,
+            question_count=question_count,
+            grade=grade,
+        )
+        return f"{STRICT_SYSTEM_PROMPT}\n\n{body}"
+
     return build_prompt(
         LearningMode.QUIZ,
         retrieved_context=retrieved_context,
@@ -383,6 +414,101 @@ def build_quiz_prompt(
         grade=grade,
         question_count=question_count,
     )
+
+
+CONCEPT_EXTRACTION_PROMPT = """You are Saksham AI, an offline educational assistant. Extract the core educational concepts from the textbook context below.
+
+Context:
+{retrieved_context}
+
+{chapter_section}Instructions:
+- Extract exactly {concept_count} key educational concepts.
+- For each concept, provide a 'concept_name' (clear, short name) and a 'concept_description' (1-2 sentences explaining the core factual concept details from the text).
+- Do NOT include activity steps, mapping instructions, figure descriptions, or side notes.
+- Return ONLY valid JSON with a "concepts" array. Do not use code fences or prose.
+
+JSON Format:
+{{
+  "concepts": [
+    {{
+      "concept_name": "Name of concept",
+      "concept_description": "Description of the key educational facts"
+    }}
+  ]
+}}"""
+
+CONCEPT_QUIZ_TEMPLATE = """Context:
+{retrieved_context}
+
+{chapter_section}Concepts to test:
+{concepts_list}
+
+Instructions:
+Generate exactly {question_count} multiple-choice questions for Class {grade}. Each question must test one of the key concepts listed above.
+
+Question style:
+- Test conceptual understanding of the targeted concept.
+- Do NOT use activity instructions, mapping tasks, or rhetorical questions.
+- Keep each question under 140 characters and grammatically complete.
+- Options must be distinct, plausible, and complete options (no fragments).
+- Only one option must be correct.
+
+""" + QUIZ_JSON_OUTPUT_FORMAT
+
+SOCIAL_SCIENCE_QUIZ_TEMPLATE = """Context:
+{retrieved_context}
+
+{chapter_section}Instructions:
+Generate exactly {question_count} multiple-choice social science (history, geography, civics, or economics) questions for Class {grade}.
+
+Question style:
+- Ask about facts, definitions, causes, historical/geographical concepts, and processes from the chapter.
+- Each question must be a clear factual MCQ with one correct answer.
+- Keep each question under 140 characters.
+- Do NOT copy rhetorical questions, activity instructions, or map reading tasks.
+- Do NOT paste long sentences from the context as the question.
+- Use simple English suitable for Class {grade}.
+
+Options:
+- Four distinct, complete answer choices. No sentence fragments.
+- Only one correct option.
+- Vary correct_answer across A, B, C, and D.
+
+""" + QUIZ_JSON_OUTPUT_FORMAT
+
+
+def build_concept_extraction_prompt(
+    retrieved_context: str,
+    topic: str = "",
+    concept_count: int = 5,
+) -> str:
+    """Build a prompt to extract core concepts from a chapter context."""
+    chapter_section = f"Chapter:\n{topic}\n\n" if topic else ""
+    body = CONCEPT_EXTRACTION_PROMPT.format(
+        retrieved_context=retrieved_context,
+        chapter_section=chapter_section,
+        concept_count=concept_count,
+    )
+    return f"{STRICT_SYSTEM_PROMPT}\n\n{body}"
+
+
+def build_concept_quiz_prompt(
+    retrieved_context: str,
+    concepts_list: str,
+    question_count: int,
+    topic: str = "",
+    grade: int = 8,
+) -> str:
+    """Build a prompt to generate concept-targeted quiz questions."""
+    chapter_section = f"Chapter:\n{topic}\n\n" if topic else ""
+    body = CONCEPT_QUIZ_TEMPLATE.format(
+        retrieved_context=retrieved_context,
+        chapter_section=chapter_section,
+        concepts_list=concepts_list,
+        question_count=question_count,
+        grade=grade,
+    )
+    return f"{STRICT_SYSTEM_PROMPT}\n\n{body}"
 
 
 SUMMARY_PROSE_INSTRUCTIONS = """Output format (plain text only — do NOT use JSON, headings, or bullet lists):

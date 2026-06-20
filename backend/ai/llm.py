@@ -268,10 +268,13 @@ class MockLLM:
         _ = format_json
         self.last_prompt = prompt
 
-        if "Generate exactly" in prompt and "multiple-choice questions" in prompt:
+        if "Extract exactly" in prompt or "Extract the most important" in prompt:
+            return '{"concepts": [{"concept_name": "Agriculture", "concept_description": "Agriculture is a primary activity that provides food and raw materials."}]}'
+
+        if "Generate exactly" in prompt and "multiple-choice" in prompt.lower():
             import re
 
-            match = re.search(r"Generate exactly (\d+) multiple-choice questions", prompt)
+            match = re.search(r"Generate exactly\s+(\d+)\s+.*?multiple-choice", prompt, re.I)
             count = int(match.group(1)) if match else 5
             return self._format_text_quiz(count, prompt)
 

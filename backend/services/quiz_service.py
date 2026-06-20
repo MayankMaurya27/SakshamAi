@@ -11,7 +11,11 @@ from sqlalchemy.orm import Session
 
 from ai.dyslexia_formatter import extract_preserve_terms
 from ai.llm import get_llm
-from ai.prompt_builder import build_quiz_prompt
+from ai.prompt_builder import (
+    build_quiz_prompt,
+    build_concept_extraction_prompt,
+    build_concept_quiz_prompt,
+)
 from config.constants import AccessibilityProfile, SourceType
 from config.settings import get_settings
 from database.repositories import ChunkRepository, DocumentRepository
@@ -495,6 +499,7 @@ def _generate_questions_for_context(
         response = llm.generate(
             prompt,
             num_predict=settings.ollama_num_predict_quiz,
+            format_json=True,
         )
         batch = _filter_generated_batch(
             tag_llm_questions(
@@ -567,6 +572,78 @@ def _generate_math_quiz_questions(
     return combined[:question_count]
 
 
+def _extract_concepts_from_context(context: str, topic: str, count: int) -> list[dict[str, str]]:
+    """Extract key educational concepts from the text context using the local LLM."""
+    if not context.strip():
+        return []
+    llm = get_llm()
+    prompt = build_concept_extraction_prompt(context, topic=topic, concept_count=count)
+    response = llm.generate(prompt, num_predict=settings.ollama_num_predict_quiz, format_json=True)
+    
+    text = response.strip()
+    try:
+        data = json.loads(text)
+        if isinstance(data, dict) and "concepts" in data:
+            return data["concepts"]
+    except json.JSONDecodeError:
+        pass
+        
+    fence = _JSON_FENCE.search(text)
+    if fence:
+        text = fence.group(1).strip()
+        
+    try:
+        data = json.loads(text)
+        if isinstance(data, dict) and "concepts" in data:
+            return data["concepts"]
+    except json.JSONDecodeError:
+        pass
+        
+    parsed = _extract_bracketed_json(text, opening="{")
+    if isinstance(parsed, dict) and "concepts" in parsed:
+        return parsed["concepts"]
+        
+    logger.warning("Failed to parse concept extraction JSON response. Using basic text fallback.")
+    concepts = []
+    names = re.findall(r'"concept_name"\s*:\s*"([^"]+)"', text)
+    descriptions = re.findall(r'"concept_description"\s*:\s*"([^"]+)"', text)
+    for name, desc in zip(names, descriptions):
+        concepts.append({"concept_name": name, "concept_description": desc})
+    return concepts
+
+
+def _generate_questions_for_concepts(
+    context: str,
+    concepts: list[dict[str, str]],
+    topic: str,
+    grade: int,
+    subject: str | None = None,
+) -> list[dict[str, Any]]:
+    """Query LLM to generate exactly 1 MCQ for each concept, using a strict batching strategy."""
+    if not concepts:
+        return []
+        
+    llm = get_llm()
+    concepts_list_str = "\n".join(
+        f"{idx+1}. {c.get('concept_name')}: {c.get('concept_description')}"
+        for idx, c in enumerate(concepts)
+    )
+    
+    prompt = build_concept_quiz_prompt(
+        retrieved_context=context,
+        concepts_list=concepts_list_str,
+        question_count=len(concepts),
+        topic=topic,
+        grade=grade
+    )
+    
+    response = llm.generate(prompt, num_predict=settings.ollama_num_predict_quiz, format_json=True)
+    parsed = parse_quiz_response(response)
+    normalized = normalize_questions(parsed)
+    tagged = tag_llm_questions(normalized, context)
+    return tagged
+
+
 def _generate_grounded_quiz_questions(
     context: str,
     question_count: int,
@@ -575,23 +652,49 @@ def _generate_grounded_quiz_questions(
     subject: str | None = None,
     source_chunks: list[str] | None = None,
 ) -> list[dict[str, Any]]:
-    """Build quizzes from chapter text first, then LLM fallback."""
+    """Build quizzes using concept-driven LLM flow first, then definitions/lists fallback."""
     chunks = source_chunks or []
     usable = filter_quiz_source_chunks(chunks, subject=subject)
     if not usable:
         usable = [chunk.strip() for chunk in chunks if chunk and chunk.strip()]
     corpus = "\n".join(usable)
 
-    grounded = build_grounded_chapter_questions(
-        usable,
-        question_count,
-        chapter_title=topic,
-        allow_cloze=False,
-    )
-    combined = dedupe_questions(grounded)
-    remaining = max(0, question_count - len(combined))
+    combined: list[dict[str, Any]] = []
 
+    # 1. Primary Flow: Concept-Driven LLM Generation
+    try:
+        concepts = _extract_concepts_from_context(context, topic, question_count)
+        if concepts:
+            llm_raw = _generate_questions_for_concepts(
+                context,
+                concepts[:question_count],
+                topic,
+                grade,
+                subject=subject
+            )
+            verified_llm = _filter_generated_batch(llm_raw, subject, corpus)
+            combined = dedupe_questions(verified_llm)
+            logger.info("Concept-driven flow generated %d verified questions", len(combined))
+    except Exception as e:
+        logger.error("Error in primary concept-driven flow: %s. Falling back.", e)
+
+    # 2. Secondary Flow: Fallback to Heuristic-based Definitions & Lists (No Cloze)
+    remaining = max(0, question_count - len(combined))
     if remaining > 0:
+        logger.info("Concept-driven flow was short by %d questions. Falling back to Heuristics.", remaining)
+        grounded = build_grounded_chapter_questions(
+            usable,
+            remaining,
+            chapter_title=topic,
+            exclude_questions=combined,
+            allow_cloze=False,
+        )
+        combined = dedupe_questions(combined + grounded)
+        remaining = max(0, question_count - len(combined))
+
+    # 3. Final Fallback: If still short, try a standard LLM generation attempt for remaining count
+    if remaining > 0:
+        logger.info("Quiz still short by %d questions. Running final LLM fallback.", remaining)
         llm_raw = _generate_questions_for_context(
             context,
             remaining,
@@ -605,46 +708,6 @@ def _generate_grounded_quiz_questions(
             corpus,
         )
         combined = dedupe_questions(combined + llm_questions)
-        remaining = max(0, question_count - len(combined))
-
-    if remaining > 0:
-        cloze_fill = build_grounded_chapter_questions(
-            usable,
-            remaining,
-            chapter_title=topic,
-            exclude_questions=combined,
-            allow_cloze=True,
-        )
-        combined = dedupe_questions(combined + cloze_fill)
-
-    if len(combined) < question_count:
-        extra_grounded = build_grounded_chapter_questions(
-            usable,
-            question_count - len(combined),
-            chapter_title=topic,
-            exclude_questions=combined,
-            allow_cloze=True,
-        )
-        combined = dedupe_questions(combined + extra_grounded)
-
-    if len(combined) < question_count:
-        extra_llm = _filter_generated_batch(
-            tag_llm_questions(
-                normalize_questions(
-                    _generate_questions_for_context(
-                        context,
-                        question_count - len(combined),
-                        topic,
-                        grade,
-                        subject=subject,
-                    )
-                ),
-                corpus,
-            ),
-            subject,
-            corpus,
-        )
-        combined = dedupe_questions(combined + extra_llm)
 
     return strip_quiz_metadata(combined[:question_count])
 
@@ -688,7 +751,7 @@ def _generate_quiz_from_context(
             question_count,
         )
 
-    use_batch = question_count > 10
+    use_batch = question_count > 7
     if not use_batch:
         questions = _generate_grounded_quiz_questions(
             context,

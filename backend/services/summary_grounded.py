@@ -74,7 +74,7 @@ def collect_definition_concepts(corpus: str) -> list[dict[str, str]]:
             key = term.lower()
             if key in seen:
                 continue
-            if not _is_usable_definition(primary, term):
+            if not _is_usable_definition(primary, term, is_alias=True):
                 continue
             seen.add(key)
             concepts.append(

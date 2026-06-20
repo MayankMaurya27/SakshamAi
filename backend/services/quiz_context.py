@@ -16,6 +16,35 @@ _EXERCISE_LIST = re.compile(
 )
 
 
+_INSTRUCTIONAL_COMMAND = re.compile(
+    r"^\s*(?:Recall|Notice|Look\s+at|Find\s+out|Let’s|Let\s+us|Observe|Activity|Fig\.?|Figure|Table|Hint|Discuss|Questions|Exercises|Project|Teacher’s\s+note|Box)\b",
+    re.I
+)
+_INSTRUCTIONAL_CONTENT = re.compile(
+    r"\b(?:look\s+at\s+the\s+map|refer\s+periodically|refer\s+to\s+the\s+map|shown\s+in\s+the\s+map|end\s+of\s+this\s+book)\b",
+    re.I
+)
+
+
+def clean_quiz_sentences(text: str) -> str:
+    """Split chunk into sentences and filter out instructional or map-reading commands."""
+    if not text:
+        return text
+    # Split text into sentences using simple punctuation bounds
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    cleaned_sentences = []
+    for sentence in sentences:
+        s = sentence.strip()
+        if not s:
+            continue
+        if _INSTRUCTIONAL_COMMAND.search(s) or _INSTRUCTIONAL_CONTENT.search(s):
+            continue
+        if s.endswith("?"):
+            continue
+        cleaned_sentences.append(s)
+    return " ".join(cleaned_sentences)
+
+
 def is_exercise_list_chunk(text: str) -> bool:
     """Detect end-of-chapter exercise blocks that make poor quiz sources."""
     cleaned = clean_context_text(text)
@@ -45,6 +74,7 @@ def filter_quiz_source_chunks(chunks: list[str], subject: str | None = None) -> 
         if is_exercise_list_chunk(chunk):
             continue
         cleaned = clean_context_for_llm(clean_context_text(chunk))
+        cleaned = clean_quiz_sentences(cleaned)
         if cleaned and len(cleaned) >= 80:
             filtered.append(cleaned)
     return filtered

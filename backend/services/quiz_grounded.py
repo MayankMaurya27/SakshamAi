@@ -129,8 +129,10 @@ def strip_quiz_metadata(questions: list[dict[str, Any]]) -> list[dict[str, Any]]
     return cleaned
 
 
-def _is_usable_definition(subject: str, term: str) -> bool:
-    if len(subject) < 10 or len(term) < 3:
+def _is_usable_definition(subject: str, term: str, is_alias: bool = False) -> bool:
+    min_subject_len = 4 if is_alias else 10
+    min_subject_words = 1 if is_alias else 3
+    if len(subject) < min_subject_len or len(term) < 3:
         return False
     if len(subject) > 120 or len(term) > 70:
         return False
@@ -142,7 +144,7 @@ def _is_usable_definition(subject: str, term: str) -> bool:
         return False
     if not re.match(r"[A-Za-z(]", subject):
         return False
-    if len(subject.split()) < 3:
+    if len(subject.split()) < min_subject_words:
         return False
     return True
 
@@ -189,9 +191,19 @@ def _definition_question_text(subject: str) -> str:
     return f"What name is given to {subject}?"
 
 
+_BAD_DISTRACTOR_START = re.compile(
+    r"^(?:and|or|but|of|with|by|from|in|on|at|to|for|the|a|an|is|are|was|were|as|than|that|which|who|its|our|your|their|his|her)\b",
+    re.I
+)
+_BAD_DISTRACTOR_END = re.compile(
+    r"\b(?:and|or|but|of|with|by|from|in|on|at|to|for|the|a|an|is|are|was|were|as|than|that|which|who|its|our|your|their|his|her|this|these|those)$",
+    re.I
+)
+
+
 def _is_usable_distractor(text: str, correct: str = "") -> bool:
     cleaned = text.strip()
-    if len(cleaned) < 8 or len(cleaned) > 70:
+    if len(cleaned) < 3 or len(cleaned) > 70:
         return False
     if correct and cleaned.lower() == correct.lower():
         return False
@@ -199,10 +211,19 @@ def _is_usable_distractor(text: str, correct: str = "") -> bool:
         return False
     if _JUNK_TERM.search(cleaned) or _EXERCISE_OPTION.search(cleaned):
         return False
-    if re.match(r"^(the|for|like|pay|in|on|at|to|a|an|or|if|we|it|is|as|by)\b", cleaned, re.I):
+    if _BAD_DISTRACTOR_START.match(cleaned) or _BAD_DISTRACTOR_END.search(cleaned):
         return False
-    if len(cleaned.split()) < 2:
-        return False
+        
+    if correct:
+        correct_words = len(correct.split())
+        dist_words = len(cleaned.split())
+        if correct_words <= 3:
+            if dist_words > correct_words + 2 or dist_words < max(1, correct_words - 2):
+                return False
+        else:
+            if dist_words < max(2, correct_words - 3):
+                return False
+            
     return True
 
 
@@ -254,6 +275,11 @@ def _build_mcq(
     if len(distractors) < 3 or len({correct, *distractors[:3]}) < 4:
         return None
     option_values = [correct, *distractors[:3]]
+    # Normalize option capitalization matching correct answer
+    if correct and correct[0].isupper():
+        option_values = [opt[:1].upper() + opt[1:] for opt in option_values]
+    else:
+        option_values = [opt[:1].lower() + opt[1:] for opt in option_values]
     shuffled, answer = _deterministic_shuffle(option_values, question)
     item = {
         "question": question,
@@ -317,7 +343,7 @@ def _collect_definition_terms(corpus: str) -> list[str]:
             if key in seen:
                 continue
             primary = _clean_phrase(match.group(1))
-            if not _is_usable_definition(primary, term):
+            if not _is_usable_definition(primary, term, is_alias=True):
                 continue
             seen.add(key)
             terms.append(term)
@@ -380,8 +406,8 @@ def extract_definition_questions(
     list_items = list_item_pool or _collect_list_items(corpus)
     questions: list[dict[str, Any]] = []
 
-    def append(subject: str, term: str, source_text: str, question_text: str | None = None) -> bool:
-        if not _is_usable_definition(subject, term):
+    def append(subject: str, term: str, source_text: str, question_text: str | None = None, is_alias: bool = False) -> bool:
+        if not _is_usable_definition(subject, term, is_alias=is_alias):
             return False
         qtext = question_text or _definition_question_text(subject)
         correct = _normalize_term(term)
@@ -431,7 +457,7 @@ def extract_definition_questions(
         alias = _clean_phrase(match.group(2))
         source_text = _normalize_text(match.group(0))
         qtext = f"{primary} is also known as:"
-        if append(primary, alias, source_text, qtext):
+        if append(primary, alias, source_text, qtext, is_alias=True):
             return questions[:count]
 
     return questions[:count]

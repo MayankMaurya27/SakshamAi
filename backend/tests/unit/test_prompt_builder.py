@@ -121,7 +121,7 @@ def test_build_quiz_prompt_includes_question_count():
         grade=10,
     )
     assert "Generate exactly 8 multiple-choice questions" in prompt
-    assert "plain text only" in prompt
+    assert "valid JSON" in prompt
     assert "Agriculture provides food" in prompt
 
 
