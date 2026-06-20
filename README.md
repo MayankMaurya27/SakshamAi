@@ -31,6 +31,7 @@ SakshamAi/
 ├── .github/                            # GitHub Actions configurations
 ├── .gitignore                          # Root Git ignore rules
 ├── FEATURE_TESTING_GUIDE.md            # Complete API feature testing guide
+├── SakshamAI_Postman_Collection.json   # Pre-configured Postman Collection for judges
 ├── README.md                           # Professional Landing Page (You Are Here)
 │
 └── backend/                            # FastAPI Application
@@ -154,6 +155,17 @@ pytest tests/api -q
 ```
 
 All 154+ tests should pass successfully.
+
+### Interactive API Testing (Postman)
+
+To make manual verification easy, we have provided a pre-configured Postman Collection at the root of the project:
+
+- **Collection File**: [SakshamAI_Postman_Collection.json](file:///Users/mayankmaurya/Documents/SakshamAi/SakshamAI_Postman_Collection.json)
+- **Import & Setup**:
+  1. Open Postman, click **Import**, and load `SakshamAI_Postman_Collection.json`.
+  2. The collection is organized into folders for each feature module (Health, Browse, Ask, Summary, Quiz, Simplify, Document Pipeline, Standalone TTS, Hinenglish Localize).
+  3. The `base_url` variable is pre-configured to `http://localhost:8000`.
+  4. **Document Upload Testing**: After calling the upload request, copy the returned `document_id` from the response and update the `document_id` collection variable in Postman to query/quiz that specific file.
 
 ---
 

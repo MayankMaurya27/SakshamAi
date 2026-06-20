@@ -1,0 +1,976 @@
+{
+  "info": {
+    "_postman_id": "7f8faee1-24db-4ef0-9b43-41c1eb48a608",
+    "name": "Saksham AI Backend API Collection",
+    "description": "Comprehensive Postman Collection for testing Saksham AI API endpoints. Features are grouped into structured folders covering System Health, Curriculum Browsing, RAG Q&A, Revision Summaries, MCQ Quizzes, Simplification, Document Management (User PDF pipeline), Standalone TTS, Hinenglish Localization, and Deprecated endpoints.\n\n### How to Use:\n1. Import this file into Postman.\n2. Ensure the backend server is running (`uvicorn app:app --reload --port 8000`).\n3. The `base_url` variable is pre-configured to `http://localhost:8000`.\n4. When uploading a custom PDF, note the `document_id` returned and set it in the Collection Variables so subsequent document-related requests work automatically.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. System Health & Docs",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Performs a system health check to verify backend status, Ollama LLM availability, embedding model status, and audio system readiness."
+          },
+          "response": []
+        },
+        {
+          "name": "Swagger UI Documentation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/docs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "docs"
+              ]
+            },
+            "description": "Launches the interactive OpenAPI Swagger UI documentation in the browser."
+          },
+          "response": []
+        },
+        {
+          "name": "Dyslexia UI Demo Page",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/static/dyslexia_demo.html",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "static",
+                "dyslexia_demo.html"
+              ]
+            },
+            "description": "Retrieve the static Dyslexia Demo HTML page designed to test accessibility font styles and display hints."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints related to checking system status, viewing API docs, and testing static assets."
+    },
+    {
+      "name": "2. Curriculum Browsing",
+      "item": [
+        {
+          "name": "List Class Levels",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/saksham/classes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "saksham",
+                "classes"
+              ]
+            },
+            "description": "Get all NCERT / CBSE curriculum class levels (Classes 6–10)."
+          },
+          "response": []
+        },
+        {
+          "name": "List Subjects for a Class",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/saksham/subjects?class_level=8",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "saksham",
+                "subjects"
+              ],
+              "query": [
+                {
+                  "key": "class_level",
+                  "value": "8",
+                  "description": "Target class level (e.g. 6-10)"
+                }
+              ]
+            },
+            "description": "List all subjects available for a given class level (e.g., Class 8 Science, Mathematics, Social Science)."
+          },
+          "response": []
+        },
+        {
+          "name": "List Chapters for a Subject",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/saksham/chapters?class_level=8&subject=Science",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "saksham",
+                "chapters"
+              ],
+              "query": [
+                {
+                  "key": "class_level",
+                  "value": "8"
+                },
+                {
+                  "key": "subject",
+                  "value": "Science"
+                }
+              ]
+            },
+            "description": "Retrieve the full list of chapters available in the pre-built curriculum manifest for a given class level and subject."
+          },
+          "response": []
+        },
+        {
+          "name": "List Topics (Chapters Alias)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/saksham/topics?class_level=10&subject=Science",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "saksham",
+                "topics"
+              ],
+              "query": [
+                {
+                  "key": "class_level",
+                  "value": "10"
+                },
+                {
+                  "key": "subject",
+                  "value": "Science"
+                }
+              ]
+            },
+            "description": "Alias endpoint to fetch chapter titles for class + subject."
+          },
+          "response": []
+        }
+      ],
+      "description": "Browse classes, subjects, and chapters indexed in the core curriculum knowledge base."
+    },
+    {
+      "name": "3. RAG Q&A (POST /ask)",
+      "item": [
+        {
+          "name": "RAG Ask - Standard Learn Mode",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What is force?\",\n  \"source\": \"saksham\",\n  \"class_level\": 8,\n  \"subject\": \"Science\",\n  \"chapter\": \"Exploring Forces\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/ask",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ask"
+              ]
+            },
+            "description": "Performs a RAG search against the core NCERT database to give a grounded answer for a curriculum question."
+          },
+          "response": []
+        },
+        {
+          "name": "RAG Ask - Beginner Mode",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What is photosynthesis?\",\n  \"source\": \"saksham\",\n  \"class_level\": 7,\n  \"subject\": \"Science\",\n  \"chapter\": \"Nutrition in Plants\",\n  \"mode\": \"beginner\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/ask",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ask"
+              ]
+            },
+            "description": "Requests an answer formulated with simpler language and beginner level explanation style."
+          },
+          "response": []
+        },
+        {
+          "name": "RAG Ask - Visual Mode",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Explain electric circuits.\",\n  \"source\": \"saksham\",\n  \"class_level\": 10,\n  \"subject\": \"Science\",\n  \"chapter\": \"Electricity\",\n  \"mode\": \"visual\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/ask",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ask"
+              ]
+            },
+            "description": "Requests an answer emphasizing visual concepts, structural descriptions, and layout analogies."
+          },
+          "response": []
+        },
+        {
+          "name": "RAG Ask - Dyslexia Profile with Audio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What is force?\",\n  \"source\": \"saksham\",\n  \"class_level\": 8,\n  \"subject\": \"Science\",\n  \"chapter\": \"Exploring Forces\",\n  \"accessibility_profile\": \"dyslexia\",\n  \"include_audio\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/ask",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ask"
+              ]
+            },
+            "description": "Applies a structured dyslexia-friendly formatting (accessibility hints) and generates point-wise TTS audio files for the answer."
+          },
+          "response": []
+        },
+        {
+          "name": "RAG Ask - Uploaded Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What is the main topic of this document?\",\n  \"source\": \"document\",\n  \"document_id\": \"{{document_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/ask",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ask"
+              ]
+            },
+            "description": "Queries an uploaded user document index directly using RAG."
+          },
+          "response": []
+        }
+      ],
+      "description": "Interact with Ollama RAG pipelines in standard, simplified, visual, accessibility (dyslexia), or user document modes."
+    },
+    {
+      "name": "4. Revision Summaries (POST /summary)",
+      "item": [
+        {
+          "name": "Get Curriculum Summary",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"source\": \"saksham\",\n  \"class_level\": 10,\n  \"subject\": \"Science\",\n  \"chapter\": \"Electricity\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/summary",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "summary"
+              ]
+            },
+            "description": "Generates or retrieves a cached grounded revision note/summary of a curriculum chapter."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Summary - Bypass Cache",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"source\": \"saksham\",\n  \"class_level\": 8,\n  \"subject\": \"Science\",\n  \"chapter\": \"Exploring Forces\",\n  \"regenerate\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/summary",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "summary"
+              ]
+            },
+            "description": "Bypasses the summary cache and forces regeneration of the chapter revision notes."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Summary - Dyslexia Profile with Audio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"source\": \"saksham\",\n  \"class_level\": 8,\n  \"subject\": \"Science\",\n  \"chapter\": \"Exploring Forces\",\n  \"accessibility_profile\": \"dyslexia\",\n  \"include_audio\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/summary",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "summary"
+              ]
+            },
+            "description": "Generates a dyslexia-tailored revision note summary with point-wise segmentation hints and pre-generated audio support."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Uploaded Document Summary",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"source\": \"document\",\n  \"document_id\": \"{{document_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/summary",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "summary"
+              ]
+            },
+            "description": "Fetches the grounded prose summary generated during PDF upload."
+          },
+          "response": []
+        }
+      ],
+      "description": "Generate key concepts summaries and revision notes for NCERT chapters or user documents."
+    },
+    {
+      "name": "5. MCQ Quizzes (POST /quiz)",
+      "item": [
+        {
+          "name": "Generate Curriculum Quiz",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"source\": \"saksham\",\n  \"class_level\": 8,\n  \"subject\": \"Science\",\n  \"chapter\": \"Exploring Forces\",\n  \"question_count\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/quiz",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "quiz"
+              ]
+            },
+            "description": "Generates 5-15 high-quality, grounded multiple-choice questions from curriculum chapters using quality gating."
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Quiz - Dyslexia Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"source\": \"saksham\",\n  \"class_level\": 8,\n  \"subject\": \"Science\",\n  \"chapter\": \"Exploring Forces\",\n  \"question_count\": 5,\n  \"accessibility_profile\": \"dyslexia\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/quiz",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "quiz"
+              ]
+            },
+            "description": "Generates quizzes structured for dyslexia display formatting."
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Uploaded Document Quiz",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"source\": \"document\",\n  \"document_id\": \"{{document_id}}\",\n  \"question_count\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/quiz",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "quiz"
+              ]
+            },
+            "description": "Generates high-quality MCQ quizzes grounded in the user's uploaded document text."
+          },
+          "response": []
+        }
+      ],
+      "description": "Create interactive multiple-choice questions grounded in curriculum text or user uploads with automated quality gates."
+    },
+    {
+      "name": "6. Concept Simplification (POST /simplify)",
+      "item": [
+        {
+          "name": "Simplify Complex Concept",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Explain democracy and republic.\",\n  \"source\": \"saksham\",\n  \"class_level\": 7,\n  \"subject\": \"Social Science\",\n  \"chapter\": \"The State, the Government, and You\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/simplify",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "simplify"
+              ]
+            },
+            "description": "Explains complex curriculum terms or formulas using analogical thinking, everyday terminology, and simpler syntax."
+          },
+          "response": []
+        }
+      ],
+      "description": "Bust complex jargon and simplify curriculum ideas."
+    },
+    {
+      "name": "7. User Document Pipeline",
+      "item": [
+        {
+          "name": "Upload User PDF Document",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "description": "Provide path to your custom PDF file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/upload",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "upload"
+              ]
+            },
+            "description": "Extracts text, chunks content, generates embeddings, saves FAISS vector database partitions, creates a grounded summary, and builds interactive quiz questions for a custom PDF document. Save the returned `document_id` to test subsequent requests."
+          },
+          "response": []
+        },
+        {
+          "name": "List Uploaded Documents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/documents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documents"
+              ]
+            },
+            "description": "Returns a list of metadata for all user-uploaded PDF documents."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Upload Details & Stored Quizzes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/document/{{document_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "document",
+                "{{document_id}}"
+              ]
+            },
+            "description": "Retrieves the detail metadata for a specific uploaded document ID, along with any pre-generated quiz questions saved during the upload phase."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Upload & Vector Index",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/document/{{document_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "document",
+                "{{document_id}}"
+              ]
+            },
+            "description": "Deletes the physical PDF file, metadata, stored quizzes, and cleans up the associated FAISS vector index partition."
+          },
+          "response": []
+        }
+      ],
+      "description": "Ingest, review, and delete custom PDF files. The pipeline generates vectors on the fly for complete RAG Q&A."
+    },
+    {
+      "name": "8. Text to Speech (POST /audio)",
+      "item": [
+        {
+          "name": "Standalone TTS Audio Generation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Force is a push or pull on an object.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/audio",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "audio"
+              ]
+            },
+            "description": "Uses the pre-configured local Piper TTS synthesizer model to convert arbitrary English text into a downloadable `.wav` file."
+          },
+          "response": []
+        },
+        {
+          "name": "Play/Retrieve WAV Audio File",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/audio/sample.wav",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "audio",
+                "sample.wav"
+              ]
+            },
+            "description": "Serves a generated TTS WAV audio file. Replace `sample.wav` with the actual file name returned in audio fields of previous API responses."
+          },
+          "response": []
+        }
+      ],
+      "description": "Synthesize and serve speech audio for accessibility features using the local Piper engine."
+    },
+    {
+      "name": "9. Hinenglish Localization (POST /localize/hi)",
+      "item": [
+        {
+          "name": "Localize RAG Answer to Hinenglish",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Photosynthesis is the process by which green plants make food using sunlight.\",\n  \"content_type\": \"answer\",\n  \"class_level\": 9,\n  \"include_audio\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/localize/hi",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "localize",
+                "hi"
+              ]
+            },
+            "description": "Translates explanation text into Hinenglish (Hindi written with English technical terms preserved) to facilitate comprehension."
+          },
+          "response": []
+        },
+        {
+          "name": "Localize Summary to Hinenglish",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Electric current flows through a closed circuit. Resistance limits current flow.\",\n  \"content_type\": \"summary\",\n  \"class_level\": 10,\n  \"include_audio\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/localize/hi",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "localize",
+                "hi"
+              ]
+            },
+            "description": "Translates summary/revision text to Hinenglish."
+          },
+          "response": []
+        },
+        {
+          "name": "Localize Simplify to Hinenglish",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Democracy means people choose leaders by voting.\",\n  \"content_type\": \"simplify\",\n  \"class_level\": 7,\n  \"include_audio\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/localize/hi",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "localize",
+                "hi"
+              ]
+            },
+            "description": "Translates simplified concept texts to Hinenglish."
+          },
+          "response": []
+        },
+        {
+          "name": "Localize Quiz (Structured JSON) to Hinenglish",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content_type\": \"quiz\",\n  \"class_level\": 8,\n  \"quiz\": {\n    \"questions\": [{\n      \"question\": \"What is force?\",\n      \"option_a\": \"Push or pull\",\n      \"option_b\": \"Color\",\n      \"option_c\": \"Sound\",\n      \"option_d\": \"Light\",\n      \"correct_answer\": \"A\"\n    }]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/localize/hi",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "localize",
+                "hi"
+              ]
+            },
+            "description": "Translates the keys (question, options) of a structured quiz object into Hinenglish, preserving options keys and the correct answer format."
+          },
+          "response": []
+        }
+      ],
+      "description": "Translate English answers, summaries, simplified content, or structured quiz formats to Hinenglish (Hindi technical hybrid language)."
+    },
+    {
+      "name": "10. Deprecated",
+      "item": [
+        {
+          "name": "POST /hindi (Legacy /ask)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What is force?\",\n  \"source\": \"saksham\",\n  \"class_level\": 8,\n  \"subject\": \"Science\",\n  \"chapter\": \"Exploring Forces\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/hindi",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "hindi"
+              ]
+            },
+            "description": "Deprecated endpoint. Still returns valid responses but responds with a migration reminder header pointing to standard /ask + /localize/hi."
+          },
+          "response": []
+        }
+      ],
+      "description": "Deprecated legacy endpoints. Retained for backwards compatibility."
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "document_id",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

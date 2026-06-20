@@ -1,14 +1,14 @@
 """Format textbook activity answers directly from retrieved passage text."""
 
 import re
-from enum import StrEnum
+from enum import Enum
 
 from ai.context_cleaner import clean_context_text
 
 _MAX_PROCEDURE_STEPS = 5
 
 
-class ActivityIntent(StrEnum):
+class ActivityIntent(str, Enum):
     """Which part of an activity the student is asking about."""
 
     FULL = "full"

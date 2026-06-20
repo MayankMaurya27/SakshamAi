@@ -3,6 +3,9 @@
 Commands and endpoints to test **every** backend feature.  
 Base URL (local): `http://localhost:8000`
 
+> [!TIP]
+> **Prefer GUI Testing?** A pre-configured Postman Collection [SakshamAI_Postman_Collection.json](file:///Users/mayankmaurya/Documents/SakshamAi/SakshamAI_Postman_Collection.json) is available at the root of the project. Simply import it into Postman to run these tests with one-click!
+
 ---
 
 ## Table of contents

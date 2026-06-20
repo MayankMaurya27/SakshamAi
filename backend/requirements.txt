@@ -13,5 +13,5 @@ pytest==8.3.4
 pytest-asyncio==0.25.0
 piper-tts==1.4.2
 piper-phonemize-cross==1.2.1
-onnxruntime==1.26.0
+onnxruntime==1.23.2
 pathvalidate==3.3.1
