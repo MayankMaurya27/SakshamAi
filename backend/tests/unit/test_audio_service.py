@@ -40,8 +40,8 @@ def test_generate_audio_pointwise_uses_numbered_lines(tmp_path, monkeypatch):
     result = generate_audio(bullet_text)
 
     assert captured_lines == [
-        "Point 1. Photosynthesis. process by which plants make food.",
-        "Point 2. uses sunlight. energy from the sun.",
+        "Photosynthesis. process by which plants make food.",
+        "uses sunlight. energy from the sun.",
     ]
     assert result["audio_path"].startswith("/audio/")
 

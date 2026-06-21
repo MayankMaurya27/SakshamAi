@@ -34,34 +34,7 @@ def _strip_connectors(text: str) -> str:
 
 def _split_long_sentence(sentence: str, max_words: int) -> list[str]:
     stripped = sentence.strip()
-    if not stripped or _word_count(stripped) <= max_words:
-        return [stripped] if stripped else []
-
-    parts: list[str] = []
-    for match in _SPLIT_CONJUNCTION.finditer(stripped):
-        prefix = stripped[: match.start()].strip(" ,;")
-        if prefix and _word_count(prefix) >= 4:
-            parts.append(prefix)
-            stripped = stripped[match.end() :].strip()
-    if stripped:
-        parts.append(stripped.strip(" ,;."))
-
-    if len(parts) <= 1 and _word_count(stripped) > max_words:
-        words = stripped.split()
-        chunk: list[str] = []
-        for word in words:
-            chunk.append(word)
-            if len(chunk) >= max_words:
-                parts.append(" ".join(chunk))
-                chunk = []
-        if chunk:
-            parts.append(" ".join(chunk))
-        return [part.strip(" ,;.") for part in parts if part.strip()]
-
-    refined: list[str] = []
-    for part in parts:
-        refined.extend(_split_long_sentence(part, max_words))
-    return refined
+    return [stripped] if stripped else []
 
 
 def _split_sentences(text: str) -> list[str]:
@@ -135,11 +108,11 @@ def prepare_segment_for_speech(segment: str) -> str:
 def build_pointwise_speech_lines(segments: list[str]) -> list[str]:
     """Build one spoken utterance per visible bullet or numbered point."""
     lines: list[str] = []
-    for index, segment in enumerate(segments, start=1):
+    for segment in segments:
         body = prepare_segment_for_speech(segment)
         if not body:
             continue
-        lines.append(f"Point {index}. {body}.")
+        lines.append(f"{body}.")
     return lines
 
 
@@ -181,7 +154,7 @@ def format_dyslexia_text(
         return text
 
     max_words = max_words_per_sentence or settings.dyslexia_max_words_per_sentence
-    bullet_cap = max_bullets or settings.dyslexia_max_bullets
+    bullet_cap = max_bullets
 
     sentences = _split_sentences(text)
     short_sentences: list[str] = []
@@ -199,7 +172,7 @@ def format_dyslexia_text(
             continue
         seen.add(normalized)
         bullets.append(sentence.rstrip("."))
-        if len(bullets) >= bullet_cap:
+        if bullet_cap is not None and len(bullets) >= bullet_cap:
             break
 
     if not bullets:

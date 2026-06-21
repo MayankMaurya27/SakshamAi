@@ -14,23 +14,6 @@ from services.audio_service import generate_audio
 logger = logging.getLogger(__name__)
 settings = get_settings()
 
-DYSLEXIA_DISPLAY_HINTS: dict[str, Any] = {
-    "line_height": 1.5,
-    "max_line_chars": 60,
-    "font_family": "sans-serif",
-    "letter_spacing": "0.03em",
-    "word_spacing": "0.05em",
-    "background": "#FFF8E7",
-    "prefer_audio": True,
-}
-
-
-def display_hints_for(profile: AccessibilityProfile) -> dict[str, Any]:
-    if profile == AccessibilityProfile.DYSLEXIA:
-        return dict(DYSLEXIA_DISPLAY_HINTS)
-    return {}
-
-
 def format_text_for_profile(
     text: str,
     profile: AccessibilityProfile,
@@ -72,7 +55,6 @@ def build_accessibility_metadata(
     )
     return {
         "profile": profile.value,
-        "display_hints": display_hints_for(profile),
         "reading_segments": segments,
         "audio_path": audio_path,
     }
@@ -91,7 +73,6 @@ def build_accessibility_payload(
     return {
         "profile": metadata["profile"],
         "formatted_text": formatted,
-        "display_hints": metadata["display_hints"],
         "reading_segments": metadata["reading_segments"],
         "audio_path": metadata["audio_path"],
     }

@@ -77,9 +77,9 @@ def prepare_segment_for_speech(segment: str) -> str:
 def build_hindi_pointwise_speech_lines(segments: list[str]) -> list[str]:
     """Build one spoken utterance per bullet with Hindi point labels."""
     lines: list[str] = []
-    for index, segment in enumerate(segments, start=1):
+    for segment in segments:
         body = prepare_segment_for_speech(segment)
         if not body:
             continue
-        lines.append(f"बिंदु {index}. {body}.")
+        lines.append(f"{body}.")
     return lines

@@ -15,7 +15,6 @@ def test_build_accessibility_payload_dyslexia():
     )
     assert payload["profile"] == "dyslexia"
     assert "•" in payload["formatted_text"]
-    assert payload["display_hints"]["prefer_audio"] is True
     assert payload["reading_segments"]
     assert payload["audio_path"] is None
 

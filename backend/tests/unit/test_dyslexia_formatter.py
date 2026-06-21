@@ -10,16 +10,16 @@ from ai.dyslexia_formatter import (
 )
 
 
-def test_format_dyslexia_text_splits_long_sentences():
+def test_format_dyslexia_text_preserves_long_sentences_complete():
     text = (
         "Photosynthesis is the process by which green plants make food using sunlight, "
         "and it is one of the most important life processes on Earth for all living things."
     )
     formatted = format_dyslexia_text(text, max_words_per_sentence=12, max_bullets=6)
     assert "•" in formatted
-    assert _word_count(formatted) > 0
-    for segment in split_reading_segments(formatted):
-        assert _word_count(segment) <= 14
+    segments = split_reading_segments(formatted)
+    assert len(segments) == 1
+    assert "Photosynthesis is the process" in segments[0]
 
 
 def test_format_dyslexia_text_strips_connectors():
@@ -62,8 +62,8 @@ def test_build_pointwise_speech_lines_numbers_each_point():
     ]
     lines = build_pointwise_speech_lines(segments)
     assert lines == [
-        "Point 1. Photosynthesis. process by which plants make food.",
-        "Point 2. uses sunlight. energy from the sun.",
+        "Photosynthesis. process by which plants make food.",
+        "uses sunlight. energy from the sun.",
     ]
 
 

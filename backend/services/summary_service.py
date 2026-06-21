@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from ai.dyslexia_formatter import extract_preserve_terms
 from ai.llm import get_llm
-from ai.prompt_builder import build_summary_expand_prompt, build_summary_prompt
+from ai.prompt_builder import build_summary_expand_prompt, build_summary_prompt, build_dyslexia_summary_prompt
 from config.constants import AccessibilityProfile, SourceType
 from config.settings import get_settings
 from database.repositories import ChunkRepository, DocumentRepository
@@ -321,6 +321,7 @@ def generate_saksham_summary(
     class_level: int,
     subject: str,
     chapter_ref: str,
+    accessibility_profile: AccessibilityProfile | None = None,
     regenerate: bool = False,
 ) -> dict[str, Any]:
     """Generate a revision summary for a Saksham curriculum chapter."""
@@ -333,6 +334,7 @@ def generate_saksham_summary(
         class_level=class_level,
         subject=subject,
         chapter_id=chapter_id,
+        accessibility_profile=accessibility_profile.value if accessibility_profile else None,
     )
     if not regenerate:
         cached = load_cached_summary(cache_file)
@@ -348,6 +350,55 @@ def generate_saksham_summary(
                 "Ignoring summary cache with mismatched metadata for chapter_id=%s",
                 chapter_id,
             )
+
+    if accessibility_profile == AccessibilityProfile.DYSLEXIA:
+        # Load or generate standard summary first
+        standard_payload = generate_saksham_summary(
+            class_level,
+            subject,
+            chapter_ref,
+            accessibility_profile=None,
+            regenerate=regenerate,
+        )
+        original_summary = standard_payload.get("summary", "")
+        
+        # Rewrite standard summary with LLM
+        prompt = build_dyslexia_summary_prompt(original_summary)
+        rewritten = get_llm().generate(prompt, num_predict=settings.ollama_num_predict_summary)
+        rewritten = clean_summary_text(rewritten)
+        
+        lines = []
+        for line in rewritten.splitlines():
+            line_str = line.strip()
+            if not line_str:
+                continue
+            if line_str.startswith("•"):
+                lines.append(line_str)
+            elif line_str.startswith("-") or line_str.startswith("*"):
+                lines.append("• " + line_str[1:].strip())
+            else:
+                lines.append("• " + line_str)
+        
+        chunked_lines = []
+        for i in range(0, len(lines), 3):
+            chunk = lines[i : i + 3]
+            chunked_lines.append("\n".join(chunk))
+        rewritten_summary = "\n\n".join(chunked_lines)
+
+        parsed = {
+            "summary": rewritten_summary,
+            "format_version": SUMMARY_FORMAT_VERSION,
+        }
+        payload = _build_response_payload(
+            parsed,
+            SourceType.SAKSHAM,
+            class_level=class_level,
+            subject=subject,
+            chapter=chapter_title,
+            chapter_id=chapter_id,
+        )
+        save_cached_summary(cache_file, payload)
+        return payload
 
     chunks = get_chapter_chunk_texts(class_level, subject, chapter_ref)
     if not chunks:
@@ -383,6 +434,7 @@ def generate_saksham_summary(
 def generate_document_summary(
     document_id: int,
     db: Session,
+    accessibility_profile: AccessibilityProfile | None = None,
     regenerate: bool = False,
 ) -> dict[str, Any]:
     """Generate or return a stored summary for an uploaded document."""
@@ -390,6 +442,62 @@ def generate_document_summary(
     document = doc_repo.get_by_id(document_id)
     if document is None:
         raise DocumentNotFoundError(f"Document {document_id} not found.")
+
+    if accessibility_profile == AccessibilityProfile.DYSLEXIA:
+        # Check cache file for dyslexia document summary
+        cache_file = cache_path(
+            SourceType.DOCUMENT.value,
+            document_id=document_id,
+            accessibility_profile=AccessibilityProfile.DYSLEXIA.value,
+        )
+        if not regenerate:
+            cached = load_cached_summary(cache_file)
+            if cached:
+                return cached
+
+        # Load or generate standard summary first
+        standard_payload = generate_document_summary(
+            document_id,
+            db,
+            accessibility_profile=None,
+            regenerate=regenerate,
+        )
+        original_summary = standard_payload.get("summary", "")
+
+        # Rewrite standard summary with LLM
+        prompt = build_dyslexia_summary_prompt(original_summary)
+        rewritten = get_llm().generate(prompt, num_predict=settings.ollama_num_predict_summary)
+        rewritten = clean_summary_text(rewritten)
+
+        lines = []
+        for line in rewritten.splitlines():
+            line_str = line.strip()
+            if not line_str:
+                continue
+            if line_str.startswith("•"):
+                lines.append(line_str)
+            elif line_str.startswith("-") or line_str.startswith("*"):
+                lines.append("• " + line_str[1:].strip())
+            else:
+                lines.append("• " + line_str)
+
+        chunked_lines = []
+        for i in range(0, len(lines), 3):
+            chunk = lines[i : i + 3]
+            chunked_lines.append("\n".join(chunk))
+        rewritten_summary = "\n\n".join(chunked_lines)
+
+        parsed = {
+            "summary": rewritten_summary,
+            "format_version": SUMMARY_FORMAT_VERSION,
+        }
+        payload = _build_response_payload(
+            parsed,
+            SourceType.DOCUMENT,
+            document_id=document_id,
+        )
+        save_cached_summary(cache_file, payload)
+        return payload
 
     if not regenerate:
         stored = _document_payload_from_db(document)
@@ -421,17 +529,22 @@ def _apply_accessibility_to_payload(
     profile: AccessibilityProfile | None,
     include_audio: bool,
     chunk_texts: list[str] | None = None,
+    already_formatted: bool = False,
 ) -> dict[str, Any]:
     if profile is None:
         return payload
 
-    preserve_terms = extract_preserve_terms("\n".join(chunk_texts or []))
-    formatted = format_text_for_profile(
-        payload.get("summary", ""),
-        profile,
-        preserve_terms=preserve_terms,
-    )
-    payload["summary"] = formatted
+    if already_formatted:
+        formatted = payload.get("summary", "")
+    else:
+        preserve_terms = extract_preserve_terms("\n".join(chunk_texts or []))
+        formatted = format_text_for_profile(
+            payload.get("summary", ""),
+            profile,
+            preserve_terms=preserve_terms,
+        )
+        payload["summary"] = formatted
+
     payload["accessibility"] = build_accessibility_metadata(
         profile,
         formatted,
@@ -463,6 +576,7 @@ def generate_summary(
             class_level,
             subject,
             chapter_ref,
+            accessibility_profile=accessibility_profile,
             regenerate=regenerate,
         )
         chunks = get_chapter_chunk_texts(class_level, subject, chapter_ref)
@@ -471,11 +585,17 @@ def generate_summary(
             accessibility_profile,
             include_audio,
             chunks,
+            already_formatted=(accessibility_profile == AccessibilityProfile.DYSLEXIA),
         )
 
     if document_id is None:
         raise ValidationError("Document summary requires document_id.")
-    payload = generate_document_summary(document_id, db, regenerate=regenerate)
+    payload = generate_document_summary(
+        document_id,
+        db,
+        accessibility_profile=accessibility_profile,
+        regenerate=regenerate,
+    )
     chunks = [
         chunk.chunk_text
         for chunk in ChunkRepository(db).get_by_document_id(document_id)
@@ -485,6 +605,7 @@ def generate_summary(
         accessibility_profile,
         include_audio,
         chunks,
+        already_formatted=(accessibility_profile == AccessibilityProfile.DYSLEXIA),
     )
 
 

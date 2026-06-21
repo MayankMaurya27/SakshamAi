@@ -26,6 +26,7 @@ def _cache_key(
     subject: str | None = None,
     chapter_id: str | None = None,
     document_id: int | None = None,
+    accessibility_profile: str | None = None,
 ) -> str:
     parts = [
         source,
@@ -34,6 +35,7 @@ def _cache_key(
         (subject or "").lower(),
         (chapter_id or "").lower(),
         str(document_id or ""),
+        (accessibility_profile or "").lower(),
     ]
     return hashlib.sha256("|".join(parts).encode("utf-8")).hexdigest()[:24]
 
@@ -44,6 +46,7 @@ def cache_path(
     subject: str | None = None,
     chapter_id: str | None = None,
     document_id: int | None = None,
+    accessibility_profile: str | None = None,
 ) -> Path:
     key = _cache_key(
         source,
@@ -51,6 +54,7 @@ def cache_path(
         subject=subject,
         chapter_id=chapter_id,
         document_id=document_id,
+        accessibility_profile=accessibility_profile,
     )
     return _cache_dir() / f"{key}.json"
 

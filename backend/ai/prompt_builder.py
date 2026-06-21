@@ -665,3 +665,24 @@ Options:
 
 Answer (output ONLY the letter A, B, C, D, or NONE):"""
     return f"{SOLVER_SYSTEM_PROMPT}\n\n{body}"
+
+
+DYSLEXIA_SUMMARY_REWRITE_PROMPT = """You are Saksham AI, an offline educational assistant. Your task is to rewrite the provided summary into a dyslexia-friendly version.
+
+Rules for Dyslexia-Friendly Text:
+1. Break down the text into short, simple sentences. Each sentence must be a complete grammatical sentence. Do NOT write fragments.
+2. Use simple everyday words. Avoid complex vocabulary.
+3. Keep essential textbook/NCERT terms, but always include a short definition or explanation in brackets next to them. For example: "Photosynthesis (how plants make food) uses sunlight." or "A democracy (a government run by the people) allows citizens to vote."
+4. Each sentence must contain exactly ONE main idea and should be under 15 words.
+5. Format the output as a clean list of bullet points starting with a single "• " character. Do NOT add any introductory text, titles, or concluding remarks.
+
+Original Summary to Rewrite:
+{original_summary}
+
+Dyslexia-friendly rewritten version:"""
+
+
+def build_dyslexia_summary_prompt(original_summary: str) -> str:
+    """Build a prompt to rewrite a summary for dyslexia accessibility."""
+    body = DYSLEXIA_SUMMARY_REWRITE_PROMPT.format(original_summary=original_summary)
+    return f"{STRICT_SYSTEM_PROMPT}\n\n{body}"

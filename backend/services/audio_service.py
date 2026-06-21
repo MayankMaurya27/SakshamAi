@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 settings = get_settings()
 
 _piper_voices: dict[str, object] = {}
-_POINTWISE_PAUSE_MS = 750
+_POINTWISE_PAUSE_MS = 1750
 AudioLanguage = Literal["en", "hi"]
 
 

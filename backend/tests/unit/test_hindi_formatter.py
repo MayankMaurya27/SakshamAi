@@ -30,7 +30,7 @@ def test_split_reading_segments_bullets():
 
 def test_build_hindi_pointwise_speech_lines():
     lines = build_hindi_pointwise_speech_lines(["प्रकाश संश्लेषण महत्वपूर्ण है"])
-    assert lines == ["बिंदु 1. प्रकाश संश्लेषण महत्वपूर्ण है."]
+    assert lines == ["प्रकाश संश्लेषण महत्वपूर्ण है."]
 
 
 def test_extract_speech_points_multiple_bullets():

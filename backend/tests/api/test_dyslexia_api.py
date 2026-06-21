@@ -1,5 +1,7 @@
 """API tests for dyslexia accessibility mode."""
 
+from config.constants import AccessibilityProfile
+
 
 def test_ask_dyslexia_returns_accessibility_block(client, monkeypatch):
     monkeypatch.setattr(
@@ -22,7 +24,6 @@ def test_ask_dyslexia_returns_accessibility_block(client, monkeypatch):
     data = response.json()["data"]
     assert "accessibility" in data
     assert data["accessibility"]["profile"] == "dyslexia"
-    assert data["accessibility"]["display_hints"]["prefer_audio"] is True
     assert data["accessibility"]["reading_segments"]
 
 
@@ -47,16 +48,26 @@ def test_ask_without_profile_unchanged(client, monkeypatch):
 
 
 def test_summary_dyslexia_formats_text(client, monkeypatch):
-    monkeypatch.setattr(
-        "services.summary_service.generate_saksham_summary",
-        lambda *args, **kwargs: {
+    def mock_generate_saksham_summary(*args, **kwargs):
+        profile = kwargs.get("accessibility_profile")
+        if profile == AccessibilityProfile.DYSLEXIA:
+            return {
+                "summary": "• Photosynthesis uses sunlight.\n\n• Plants make food.",
+                "format_version": "v2-prose",
+                "source": "saksham",
+            }
+        return {
             "summary": (
                 "Photosynthesis is the process by which green plants make food "
                 "using sunlight, and chlorophyll helps capture that energy."
             ),
             "format_version": "v2-prose",
             "source": "saksham",
-        },
+        }
+
+    monkeypatch.setattr(
+        "services.summary_service.generate_saksham_summary",
+        mock_generate_saksham_summary,
     )
     monkeypatch.setattr(
         "services.summary_service.get_chapter_chunk_texts",
