@@ -222,16 +222,37 @@ def generate_audio(
     speech_points = _speech_points_for_text(text, segments, language)
     use_pointwise = len(speech_points) > 1
 
-    filename = f"{uuid.uuid4().hex}.wav"
+    import shutil
+    has_afconvert = shutil.which("afconvert") is not None
+    has_ffmpeg = shutil.which("ffmpeg") is not None
+    has_lame = shutil.which("lame") is not None
+
+    base_filename = uuid.uuid4().hex
+    encoder_type = None
+
+    if has_lame:
+        filename = f"{base_filename}.mp3"
+        encoder_type = "lame"
+    elif has_ffmpeg:
+        filename = f"{base_filename}.mp3"
+        encoder_type = "ffmpeg"
+    elif has_afconvert:
+        filename = f"{base_filename}.m4a"
+        encoder_type = "afconvert"
+    else:
+        filename = f"{base_filename}.wav"
+
+    wav_filename = f"{base_filename}.wav"
     output_path = settings.audio_dir / filename
+    wav_path = settings.audio_dir / wav_filename
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     try:
         if use_pointwise:
             speech_lines = _pointwise_speech_lines(speech_points, language)
-            _synthesize_pointwise(speech_lines, output_path, language=language)
+            _synthesize_pointwise(speech_lines, wav_path, language=language)
         else:
-            _generate_with_python(text, output_path, language=language)
+            _generate_with_python(text, wav_path, language=language)
     except ServiceUnavailableError:
         raise
     except Exception as exc:
@@ -241,14 +262,50 @@ def generate_audio(
                 "Point-wise audio requires the Piper Python package."
             ) from exc
         try:
-            _generate_with_binary(text, output_path, model_path, language=language)
+            _generate_with_binary(text, wav_path, model_path, language=language)
         except FileNotFoundError as bin_exc:
             raise ServiceUnavailableError(
                 f"Piper binary '{settings.piper_binary}' not found and Python synthesis failed."
             ) from bin_exc
 
-    if not output_path.exists() or output_path.stat().st_size == 0:
+    if not wav_path.exists() or wav_path.stat().st_size == 0:
         raise ServiceUnavailableError("Piper TTS did not produce output file.")
+
+    if encoder_type == "afconvert":
+        try:
+            # Convert WAV to compressed M4A (AAC) format on macOS
+            cmd = ["afconvert", "-f", "m4af", "-d", "aac", str(wav_path), str(output_path)]
+            subprocess.run(cmd, check=True, capture_output=True)
+            wav_path.unlink(missing_ok=True)
+        except Exception as convert_exc:
+            logger.error("Failed to convert WAV to M4A using afconvert: %s. Falling back to WAV.", convert_exc)
+            filename = wav_filename
+            output_path = wav_path
+    elif encoder_type == "ffmpeg":
+        try:
+            # Convert WAV to compressed MP3 format on Linux/Jetson using ffmpeg
+            cmd = ["ffmpeg", "-y", "-i", str(wav_path), "-b:a", "64k", str(output_path)]
+            subprocess.run(cmd, check=True, capture_output=True)
+            wav_path.unlink(missing_ok=True)
+        except Exception as convert_exc:
+            logger.error("Failed to convert WAV to MP3 using ffmpeg: %s. Falling back to WAV.", convert_exc)
+            filename = wav_filename
+            output_path = wav_path
+    elif encoder_type == "lame":
+        try:
+            # Convert WAV to compressed MP3 format on Linux/Jetson using lame
+            cmd = ["lame", "-b", "64", str(wav_path), str(output_path)]
+            subprocess.run(cmd, check=True, capture_output=True)
+            wav_path.unlink(missing_ok=True)
+        except Exception as convert_exc:
+            logger.error("Failed to convert WAV to MP3 using lame: %s. Falling back to WAV.", convert_exc)
+            filename = wav_filename
+            output_path = wav_path
+    else:
+        logger.warning(
+            "No audio compression utility (afconvert, ffmpeg, lame) found. "
+            "To enable audio compression on Edge AI/Linux, please run: sudo apt-get install -y ffmpeg"
+        )
 
     logger.info(
         "Generated audio file: %s (%s, %s)",

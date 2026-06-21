@@ -84,6 +84,14 @@ To facilitate offline deployability while keeping clone times minimal, assets ar
 
 *   Python 3.10 to 3.12 installed.
 *   [Ollama](https://ollama.com/) installed and running locally.
+*   **Audio Compression (Optional but Recommended)**:
+    *   *macOS*: Apple's built-in `afconvert` utility is used automatically to produce `.m4a` files. If you want `.mp3` output instead, run `brew install lame`.
+    *   *Linux / NVIDIA Jetson (Edge AI)*: To reduce Text-to-Speech audio sizes by over 90% (saving disk space), install `ffmpeg` or `lame` on the device:
+        ```bash
+        sudo apt-get install -y ffmpeg  # Complete media framework (disk space used: ~300MB)
+        # OR
+        sudo apt-get install -y lame    # Ultra-lightweight MP3 encoder (disk space used: <1MB)
+        ```
 
 ### Step 1: Clone the Repository
 
