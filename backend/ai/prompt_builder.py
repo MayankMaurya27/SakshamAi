@@ -16,6 +16,14 @@ STRICT RULES:
 
 Write in clear, simple English for the student's class level."""
 
+SOLVER_SYSTEM_PROMPT = """You are a strict multiple-choice question solver.
+Your ONLY task: read the context and output the letter (A, B, C, or D) of the correct option.
+Rules:
+- Output ONLY a single letter: A, B, C, or D.
+- If the context does not support any option, output: NONE
+- Do NOT write any explanation, reasoning, sentence, or extra text whatsoever.
+Example output: B"""
+
 GUIDED_SYSTEM_PROMPT = """You are Saksham AI, an offline educational assistant for Indian school students.
 
 RULES:
@@ -88,11 +96,16 @@ Output rules:
 
 QUIZ_JSON_OUTPUT_FORMAT = """Return ONLY a valid JSON object. Do not include any code fences, markdown tags, or prose.
 
-JSON Format:
+CRITICAL JSON RULES:
+- The "question" field must contain a complete query that ENDS with a question mark (?). Do NOT write statements, fill-in-the-blank prompts, or sentences ending with "...".
+- The "options" field must contain ONLY the four choices (A, B, C, D).
+- Do NOT swap or invert these fields (do not put choices in "question" or the query in "options").
+
+JSON Format (containing exactly {question_count} question objects in the array):
 {{
   "questions": [
     {{
-      "question": "The question text (must end with a question mark)",
+      "question": "Question 1 text (must end with a question mark)?",
       "options": {{
         "A": "Option A text",
         "B": "Option B text",
@@ -100,6 +113,16 @@ JSON Format:
         "D": "Option D text"
       }},
       "correct_answer": "A"
+    }},
+    {{
+      "question": "Question 2 text (must end with a question mark)?",
+      "options": {{
+        "A": "Option A text",
+        "B": "Option B text",
+        "C": "Option C text",
+        "D": "Option D text"
+      }},
+      "correct_answer": "B"
     }}
   ]
 }}
@@ -272,6 +295,7 @@ Generate exactly {question_count} multiple-choice science questions for Class {g
 Question style:
 - Ask about facts, definitions, processes, and concepts from the chapter.
 - Each question must be a clear factual MCQ with one correct answer.
+- Every question must be a complete query ending with a question mark (?). Do NOT write fill-in-the-blank statements ending with "...".
 - Keep each question under 140 characters.
 - Do NOT copy rhetorical questions, activity instructions, or textbook introductions.
 - Do NOT paste long sentences from the context as the question.
@@ -427,12 +451,16 @@ Context:
 - Do NOT include activity steps, mapping instructions, figure descriptions, or side notes.
 - Return ONLY valid JSON with a "concepts" array. Do not use code fences or prose.
 
-JSON Format:
+JSON Format (containing exactly {concept_count} concept objects in the array):
 {{
   "concepts": [
     {{
-      "concept_name": "Name of concept",
-      "concept_description": "Description of the key educational facts"
+      "concept_name": "Name of first concept",
+      "concept_description": "Description of the first key educational facts from the text."
+    }},
+    {{
+      "concept_name": "Name of second concept",
+      "concept_description": "Description of the second key educational facts from the text."
     }}
   ]
 }}"""
@@ -448,6 +476,8 @@ Generate exactly {question_count} multiple-choice questions for Class {grade}. E
 
 Question style:
 - Test conceptual understanding of the targeted concept.
+- Write an actual, natural question ending with a question mark.
+- Do NOT copy the concept name or concept description verbatim as the question.
 - Do NOT use activity instructions, mapping tasks, or rhetorical questions.
 - Keep each question under 140 characters and grammatically complete.
 - Options must be distinct, plausible, and complete options (no fragments).
@@ -464,6 +494,7 @@ Generate exactly {question_count} multiple-choice social science (history, geogr
 Question style:
 - Ask about facts, definitions, causes, historical/geographical concepts, and processes from the chapter.
 - Each question must be a clear factual MCQ with one correct answer.
+- Every question must be a complete query ending with a question mark (?). Do NOT write fill-in-the-blank statements ending with "...".
 - Keep each question under 140 characters.
 - Do NOT copy rhetorical questions, activity instructions, or map reading tasks.
 - Do NOT paste long sentences from the context as the question.
@@ -614,3 +645,23 @@ def format_retrieved_chunks(chunks: list[str]) -> str:
     if not chunks:
         return ""
     return "\n\n---\n\n".join(chunks)
+
+
+def build_solve_prompt(
+    context: str,
+    question: str,
+    options: dict[str, str],
+) -> str:
+    """Build a prompt asking the LLM to solve the MCQ and output the correct option letter."""
+    options_str = "\n".join(f"{k}: {v}" for k, v in options.items())
+    body = f"""Context:
+{context}
+
+Question:
+{question}
+
+Options:
+{options_str}
+
+Answer (output ONLY the letter A, B, C, D, or NONE):"""
+    return f"{SOLVER_SYSTEM_PROMPT}\n\n{body}"

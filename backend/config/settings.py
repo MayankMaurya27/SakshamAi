@@ -81,9 +81,9 @@ class Settings(BaseSettings):
     quiz_default_questions: int = 10
     quiz_max_context_chars: int = 6500
     ollama_num_predict_quiz: int = 2048
-    quiz_llm_max_attempts: int = 5
-    quiz_llm_batch_size: int = 1
-    quiz_cache_version: str = "v12-json-grammar-mode"
+    quiz_llm_max_attempts: int = 15
+    quiz_llm_batch_size: int = 2
+    quiz_cache_version: str = "v18-optimized-solver"
 
     # Summary generation
     summary_cache_dir: Path = data_dir / "summary_cache"

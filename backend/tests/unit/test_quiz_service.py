@@ -149,7 +149,7 @@ def test_generate_questions_for_context_retries_until_enough(monkeypatch):
                     "questions": [
                         {
                             "question": f"Question {idx} about resources and development?",
-                            "option_a": "Resources and development",
+                            "option_a": f"Development of coal {idx}",
                             "option_b": "Sports and games",
                             "option_c": "Music and dance",
                             "option_d": "Fashion and design",

@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 import re
 from typing import Any, Literal
 
 from services.quiz_context import stratified_sample_chunks
 from services.quiz_math import _deterministic_shuffle
+
+logger = logging.getLogger(__name__)
 
 QuestionSourceType = Literal["definition", "list", "cloze", "llm"]
 
@@ -150,7 +153,7 @@ def _is_usable_definition(subject: str, term: str, is_alias: bool = False) -> bo
 
 
 def _is_usable_list_item(text: str) -> bool:
-    if len(text) < 4 or len(text) > 80:
+    if len(text) < 15 or len(text.split()) < 3 or len(text) > 80:
         return False
     if text[0] in "])(" or text.endswith("]"):
         return False
@@ -576,26 +579,100 @@ def extract_sentence_cloze_questions(
     return questions[:count]
 
 
-def is_valid_grounded_question(question: str, options: dict[str, str]) -> bool:
-    """Reject malformed or low-quality grounded MCQs."""
+def is_valid_grounded_question(
+    question: str,
+    options: dict[str, str],
+    is_cloze: bool = False,
+    correct_answer: str | None = None,
+) -> bool:
+    """Reject malformed or low-quality grounded MCQs.
+    
+    Args:
+        question: The question text.
+        options: Dict mapping option letter (A-D) to text.
+        is_cloze: Whether this is a fill-in-the-blank cloze question.
+        correct_answer: The correct answer text. If provided, the verbatim
+            overlap check applies only to this answer, not all distractors.
+    """
     cleaned = question.strip()
     if len(cleaned) < 12 or len(cleaned) > 220:
+        logger.info("is_valid_grounded_question rejected: length check failed (%d chars)", len(cleaned))
         return False
     if _JUNK_SENTENCE.search(cleaned):
+        logger.info("is_valid_grounded_question rejected: junk sentence pattern matched")
         return False
     if cleaned.count("?") > 1:
+        logger.info("is_valid_grounded_question rejected: multiple question marks")
         return False
     values = [value.strip() for value in options.values()]
     if not all(values) or len(set(values)) < 4:
+        logger.info("is_valid_grounded_question rejected: duplicate or empty options")
         return False
     if any(len(value) < 3 or len(value) > 90 for value in values):
+        logger.info("is_valid_grounded_question rejected: option too short or too long")
         return False
     if any(_FILLER_OPTION.match(value) for value in values):
+        logger.info("is_valid_grounded_question rejected: filler option matched")
         return False
     if any(_EXERCISE_OPTION.search(value) for value in values):
+        logger.info("is_valid_grounded_question rejected: exercise option matched")
         return False
     if any(_GARBAGE_TEXT.search(value) for value in values):
+        logger.info("is_valid_grounded_question rejected: garbage text matched")
         return False
+    for value in values:
+        if value.endswith("?") or value.lower().startswith(("what ", "who ", "where ", "why ", "when ", "how ", "which ")):
+            logger.info("is_valid_grounded_question rejected: option format looks like a question: %s", value)
+            return False
+
+    # 1. Reject if the CORRECT answer is present verbatim inside the question (answer leak).
+    # Only the correct answer is checked — checking distractors caused false rejections because
+    # distractors legitimately contain words that appear in the question stem.
+    if not is_cloze:
+        question_lower = cleaned.lower()
+        check_text = correct_answer if correct_answer is not None else None
+        if check_text is not None:
+            val_lower = check_text.strip().lower()
+            if len(val_lower) > 4:
+                if val_lower in question_lower or question_lower in val_lower:
+                    logger.info(
+                        "is_valid_grounded_question rejected: correct answer verbatim inside question: %s",
+                        check_text,
+                    )
+                    return False
+
+    # 2. Reject statement-matching or text recognition patterns (unless it is a heuristic cloze question)
+    if not is_cloze:
+        question_lower = cleaned.lower()
+        bad_patterns = [
+            "matches:",
+            "matches \"",
+            "which item",
+            "which statement",
+            "complete the statement",
+            "complete the sentence",
+            "fill in the blank",
+            "blanked",
+            "______",
+            "notice ",
+            "the terrain here",
+            "notice the",
+            "Notice that"
+        ]
+        for pattern in bad_patterns:
+            if pattern in question_lower:
+                logger.info("is_valid_grounded_question rejected: bad pattern matched: %s", pattern)
+                return False
+
+    # 3. Reject weak filler options (like "all of the above", "both a and b")
+    meta_option_pat = re.compile(
+        r"\b(?:all of the above|none of the above|both [a-d] and [a-d]|all of these|none of these|above options|neither [a-d] nor [a-d]|\ball of the these)\b",
+        re.I
+    )
+    if any(meta_option_pat.search(value) for value in values):
+        logger.info("is_valid_grounded_question rejected: meta/filler option pattern matched")
+        return False
+
     return True
 
 
@@ -605,19 +682,23 @@ def verify_grounded_question(item: dict[str, Any], corpus: str) -> bool:
     options = item.get("options", {})
     if not isinstance(options, dict):
         return False
-    if not is_valid_grounded_question(question, options):
-        return False
+    meta = item.get("_quiz_meta", {})
+    source_type = str(meta.get("source_type", ""))
+    is_cloze = (source_type == "cloze")
 
     answer_key = str(item.get("correct_answer", "")).strip().upper()
     if answer_key not in options:
         return False
     correct_text = str(options[answer_key]).strip()
+
+    if not is_valid_grounded_question(question, options, is_cloze=is_cloze, correct_answer=correct_text):
+        return False
+
     if _FILLER_OPTION.match(correct_text) or _GARBAGE_TEXT.search(correct_text):
         return False
 
-    meta = item.get("_quiz_meta", {})
     source_text = str(meta.get("source_text", ""))
-    source_type = str(meta.get("source_type", ""))
+
 
     if source_type == "cloze":
         if not source_text or not _text_in_corpus(correct_text, source_text):
@@ -639,26 +720,153 @@ def verify_grounded_question(item: dict[str, Any], corpus: str) -> bool:
 
 
 def verify_llm_question(item: dict[str, Any], corpus: str) -> bool:
-    """Lightweight verification for LLM-generated MCQs."""
+    """Factual/reasoning verification for LLM-generated MCQs using local LLM solver."""
     question = str(item.get("question", "")).strip()
+    if "?" not in question:
+        return False
     options = item.get("options", {})
     if not isinstance(options, dict):
-        return False
-    if not is_valid_grounded_question(question, options):
         return False
 
     answer_key = str(item.get("correct_answer", "")).strip().upper()
     if answer_key not in options:
         return False
     correct_text = str(options[answer_key]).strip()
+
+    if not is_valid_grounded_question(question, options, is_cloze=False, correct_answer=correct_text):
+        return False
+
     if _FILLER_OPTION.match(correct_text) or _GARBAGE_TEXT.search(correct_text):
         return False
+
+    # Fast Python verification: Check if the correct answer matches/overlaps with the corpus
     if _text_in_corpus(correct_text, corpus):
         return True
-    if len(correct_text) >= 8:
-        tokens = [token for token in re.findall(r"[a-z]{5,}", correct_text.lower())]
-        if any(token in corpus.lower() for token in tokens):
+        
+    local_stopwords = _STOPWORDS.union({
+        "because", "since", "why", "how", "what", "who", "where", "when", 
+        "if", "should", "could", "would", "did", "does", "do", "done", 
+        "make", "makes", "making", "have", "has", "having", "do", "does", 
+        "doing", "get", "gets", "getting", "go", "goes", "going", "want", 
+        "wants", "need", "needs", "called", "known", "means", "about", 
+        "other", "some", "many", "more", "most", "also", "only", "such",
+        "about", "their", "them", "they", "there", "these", "those"
+    })
+    
+    tokens = [t for t in re.findall(r"[a-z]{4,}", correct_text.lower())]
+    tokens = [t for t in tokens if t not in local_stopwords]
+    if tokens and any(t in corpus.lower() for t in tokens):
+        return True
+
+    from ai.llm import get_llm, OllamaLLM
+    from ai.prompt_builder import build_solve_prompt
+    
+    llm = get_llm()
+    # Bypass for unit tests that use MockLLM or other mock clients
+    if not isinstance(llm, OllamaLLM):
+        return False
+
+    # Production flow: Retrieve best context and solve
+    def find_best_context(q: str, opts: dict[str, str], corp: str) -> str:
+        paragraphs = [p.strip() for p in corp.split("\n\n") if p.strip()]
+        if not paragraphs:
+            paragraphs = [p.strip() for p in corp.split("\n") if p.strip()]
+        if not paragraphs:
+            return corp[:4000]
+            
+        blocks = []
+        curr_block = []
+        curr_len = 0
+        for p in paragraphs:
+            if curr_len + len(p) > 3000:
+                if curr_block:
+                    blocks.append("\n\n".join(curr_block))
+                curr_block = [p]
+                curr_len = len(p)
+            else:
+                curr_block.append(p)
+                curr_len += len(p) + 2
+        if curr_block:
+            blocks.append("\n\n".join(curr_block))
+            
+        best_block = blocks[0] if blocks else corp[:3000]
+        best_score = -1
+        
+        q_words = set(re.findall(r"\w+", q.lower()))
+        for opt in opts.values():
+            q_words.update(re.findall(r"\w+", opt.lower()))
+        q_words = {w for w in q_words if w not in _STOPWORDS and len(w) > 2}
+        
+        for block in blocks:
+            block_lower = block.lower()
+            score = sum(1 for w in q_words if w in block_lower)
+            if score > best_score:
+                best_score = score
+                best_block = block
+        return best_block
+
+    context = find_best_context(question, options, corpus)
+    prompt = build_solve_prompt(context, question, options)
+    response = llm.generate(prompt, num_predict=16)
+    
+    solved_text = response.strip()
+    # Normalize to uppercase for matching, but keep original for logging
+    solved_upper = solved_text.upper()
+
+    # Strategy 1: Response starts directly with the option letter (ideal output from SOLVER_SYSTEM_PROMPT)
+    # e.g. "B", "B.", "B:", "B)"
+    direct_match = re.match(r"^([ABCD])[.:\)\s]?$", solved_upper)
+    if direct_match:
+        solved_option = direct_match.group(1)
+        if solved_option == answer_key:
             return True
+        logger.info(
+            "verify_llm_question rejected: solver selected '%s' but correct_answer is '%s' (question: '%s')",
+            solved_option, answer_key, question,
+        )
+        return False
+
+    # Strategy 2: Response contains explicit prefix patterns
+    # e.g. "CORRECT OPTION: B", "ANSWER IS B", "THE CORRECT ANSWER IS B"
+    prefix_match = re.search(
+        r"(?:CORRECT OPTION|CORRECT ANSWER|ANSWER IS|THE ANSWER IS)[:\s]+([ABCD]|NONE)\b",
+        solved_upper,
+    )
+    if prefix_match:
+        solved_option = prefix_match.group(1)
+        if solved_option == "NONE":
+            logger.info("verify_llm_question rejected: solver returned NONE (question: '%s')", question)
+            return False
+        if solved_option == answer_key:
+            return True
+        logger.info(
+            "verify_llm_question rejected: solver selected '%s' but correct_answer is '%s' (question: '%s')",
+            solved_option, answer_key, question,
+        )
+        return False
+
+    # Strategy 3: Short responses only (<=10 chars) — search for a standalone letter.
+    # We intentionally skip this for long prose responses to avoid the letter 'a' (article)
+    # being matched as option A in sentences like "This was not found in a chapter".
+    if len(solved_text) <= 10:
+        letter_match = re.search(r"\b([ABCD]|NONE)\b", solved_upper)
+        if letter_match:
+            solved_option = letter_match.group(1)
+            if solved_option == "NONE":
+                logger.info("verify_llm_question rejected: solver returned NONE (question: '%s')", question)
+                return False
+            if solved_option == answer_key:
+                return True
+            logger.info(
+                "verify_llm_question rejected: solver selected '%s' but correct_answer is '%s' (question: '%s')",
+                solved_option, answer_key, question,
+            )
+            return False
+
+    logger.info(
+        "verify_llm_question rejected: solver output not parseable. Response: '%s' (question: '%s')",
+        solved_text[:120], question,
+    )
     return False
 
 
@@ -732,10 +940,8 @@ def build_grounded_chapter_questions(
                 list_item_pool=list_items,
             )
         )
-        needed = count - len(questions)
-        if needed <= 0:
-            break
-        accept(extract_list_questions(window, needed * 2, seen, phrase_pool))
+        # Skip list matching questions to avoid low-quality identity-matching MCQs.
+        # accept(extract_list_questions(window, needed * 2, seen, phrase_pool))
 
     if allow_cloze and len(questions) < count:
         for window in _chunk_windows(chunks):

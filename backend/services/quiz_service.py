@@ -472,6 +472,7 @@ def _generate_questions_for_context(
     subject: str | None = None,
     math_facts_reference: str = "",
     chapter_kind: str | None = None,
+    exclude_questions: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     if not context.strip():
         raise ValidationError("No usable chapter content found for quiz generation.")
@@ -479,6 +480,7 @@ def _generate_questions_for_context(
     llm = get_llm()
     collected: list[dict[str, Any]] = []
     max_attempts = settings.quiz_llm_max_attempts
+    exclude_texts = [re.sub(r"\s+", " ", q["question"].lower()).strip() for q in (exclude_questions or [])]
 
     for attempt in range(1, max_attempts + 1):
         remaining = question_count - len(collected)
@@ -487,6 +489,12 @@ def _generate_questions_for_context(
 
         batch_size = min(remaining, settings.quiz_llm_batch_size)
         attempt_context = _context_for_attempt(context, attempt)
+        
+        exclude_instruction = ""
+        current_excludes = list(exclude_texts) + [re.sub(r"\s+", " ", q["question"].lower()).strip() for q in collected]
+        if current_excludes:
+            exclude_instruction = "\nDo NOT generate any of the following questions (avoid repeating these concepts):\n" + "\n".join(f"- {q}" for q in current_excludes)
+
         prompt = build_quiz_prompt(
             attempt_context,
             batch_size,
@@ -496,6 +504,9 @@ def _generate_questions_for_context(
             math_facts_reference=math_facts_reference,
             chapter_kind=chapter_kind,
         )
+        if exclude_instruction:
+            prompt = prompt.rstrip() + "\n\n" + exclude_instruction
+
         response = llm.generate(
             prompt,
             num_predict=settings.ollama_num_predict_quiz,
@@ -509,7 +520,14 @@ def _generate_questions_for_context(
             subject,
             context,
         )
-        collected = dedupe_questions(collected + batch)
+        
+        unique_batch = []
+        for item in batch:
+            key = re.sub(r"\s+", " ", item["question"].lower()).strip()
+            if key not in exclude_texts:
+                unique_batch.append(item)
+
+        collected = dedupe_questions(collected + unique_batch)
 
         if len(collected) >= question_count:
             logger.info(
@@ -619,29 +637,38 @@ def _generate_questions_for_concepts(
     grade: int,
     subject: str | None = None,
 ) -> list[dict[str, Any]]:
-    """Query LLM to generate exactly 1 MCQ for each concept, using a strict batching strategy."""
+    """Query LLM to generate exactly 1 MCQ for each concept sequentially."""
     if not concepts:
         return []
         
     llm = get_llm()
-    concepts_list_str = "\n".join(
-        f"{idx+1}. {c.get('concept_name')}: {c.get('concept_description')}"
-        for idx, c in enumerate(concepts)
-    )
+    collected: list[dict[str, Any]] = []
     
-    prompt = build_concept_quiz_prompt(
-        retrieved_context=context,
-        concepts_list=concepts_list_str,
-        question_count=len(concepts),
-        topic=topic,
-        grade=grade
-    )
-    
-    response = llm.generate(prompt, num_predict=settings.ollama_num_predict_quiz, format_json=True)
-    parsed = parse_quiz_response(response)
-    normalized = normalize_questions(parsed)
-    tagged = tag_llm_questions(normalized, context)
-    return tagged
+    for idx, c in enumerate(concepts):
+        concept_str = f"Concept: {c.get('concept_name')}\nDescription: {c.get('concept_description')}"
+        
+        exclude_instruction = ""
+        if collected:
+            exclude_texts = [re.sub(r"\s+", " ", q["question"].lower()).strip() for q in collected]
+            exclude_instruction = "\nDo NOT generate any of the following questions (avoid repeating these concepts):\n" + "\n".join(f"- {q}" for q in exclude_texts)
+            
+        prompt = build_concept_quiz_prompt(
+            retrieved_context=context,
+            concepts_list=concept_str,
+            question_count=1,
+            topic=topic,
+            grade=grade
+        )
+        if exclude_instruction:
+            prompt = prompt.rstrip() + "\n\n" + exclude_instruction
+            
+        response = llm.generate(prompt, num_predict=settings.ollama_num_predict_quiz, format_json=True)
+        parsed = parse_quiz_response(response)
+        normalized = normalize_questions(parsed)
+        tagged = tag_llm_questions(normalized, context)
+        collected.extend(tagged)
+        
+    return collected
 
 
 def _generate_grounded_quiz_questions(
@@ -663,11 +690,12 @@ def _generate_grounded_quiz_questions(
 
     # 1. Primary Flow: Concept-Driven LLM Generation
     try:
-        concepts = _extract_concepts_from_context(context, topic, question_count)
+        concepts_to_extract = max(10, question_count + 3)
+        concepts = _extract_concepts_from_context(context, topic, concepts_to_extract)
         if concepts:
             llm_raw = _generate_questions_for_concepts(
                 context,
-                concepts[:question_count],
+                concepts,
                 topic,
                 grade,
                 subject=subject
@@ -679,18 +707,8 @@ def _generate_grounded_quiz_questions(
         logger.error("Error in primary concept-driven flow: %s. Falling back.", e)
 
     # 2. Secondary Flow: Fallback to Heuristic-based Definitions & Lists (No Cloze)
+    # Bypassed to eliminate mixed quiz styles (heuristics vs conceptual) and text recognition.
     remaining = max(0, question_count - len(combined))
-    if remaining > 0:
-        logger.info("Concept-driven flow was short by %d questions. Falling back to Heuristics.", remaining)
-        grounded = build_grounded_chapter_questions(
-            usable,
-            remaining,
-            chapter_title=topic,
-            exclude_questions=combined,
-            allow_cloze=False,
-        )
-        combined = dedupe_questions(combined + grounded)
-        remaining = max(0, question_count - len(combined))
 
     # 3. Final Fallback: If still short, try a standard LLM generation attempt for remaining count
     if remaining > 0:
@@ -701,6 +719,7 @@ def _generate_grounded_quiz_questions(
             topic,
             grade,
             subject=subject,
+            exclude_questions=combined,
         )
         llm_questions = _filter_generated_batch(
             tag_llm_questions(normalize_questions(llm_raw), corpus),
