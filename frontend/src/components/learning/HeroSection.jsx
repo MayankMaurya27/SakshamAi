@@ -1,249 +1,109 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  BookMarked,
+  Brain,
+  BookOpen,
+  Accessibility,
+  FileText,
+  Orbit,
+  WifiOff,
+} from "lucide-react";
+import Badge from "../ui/Badge";
+import Button from "../ui/Button";
 
-const nodes = [
-  {
-    title: "Learn",
-    desc: "Understand concepts clearly",
-  },
-  {
-    title: "Quiz",
-    desc: "Practice and test knowledge",
-  },
-  {
-    title: "Notes",
-    desc: "Quick revision material",
-  },
-  {
-    title: "Accessibility",
-    desc: "Support for every learner",
-  },
-  {
-    title: "Curriculum AI",
-    desc: "Aligned with school syllabus",
-  },
-  {
-    title: "Offline AI",
-    desc: "Works without cloud dependency",
-  },
+const features = [
+  { icon: Brain, title: "Adaptive", desc: "Profile-aware explanations" },
+  { icon: BookOpen, title: "Curriculum", desc: "NCERT Classes 6–10" },
+  { icon: FileText, title: "Your Notes", desc: "Upload & learn from PDFs" },
+  { icon: Orbit, title: "Concept Maps", desc: "Visual chapter graphs" },
+  { icon: Accessibility, title: "Inclusive", desc: "Every learner supported" },
+  { icon: WifiOff, title: "Offline Ready", desc: "Edge-first design" },
 ];
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center">
-      <div className="max-w-7xl mx-auto px-6 py-24 w-full">
+    <section className="relative min-h-[92vh] flex items-center overflow-hidden">
+      <div className="aurora-orb w-[500px] h-[500px] -top-32 -left-48 bg-primary/12" />
+      <div className="aurora-orb w-[400px] h-[400px] top-1/3 -right-40 bg-accent/10" />
+      <div className="aurora-orb w-[300px] h-[300px] bottom-0 left-1/3 bg-neural/8" />
 
-        {/* Badge */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex justify-center"
+        >
+          <Badge variant="gold">
+            <BookMarked size={12} />
+            EDGE MINDS · Saksham
+          </Badge>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="text-center mt-8 max-w-4xl mx-auto"
+        >
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-ink leading-[1.05] tracking-tight">
+            Learning that{" "}
+            <span className="gradient-text italic">adapts</span>
+            <br />
+            to every mind
+          </h1>
+          <p className="mt-6 text-base sm:text-lg md:text-xl text-ink-muted max-w-2xl mx-auto leading-relaxed">
+            Saksham turns your study materials into a living workspace —
+            concept maps, quizzes, summaries, and narration built for real
+            classrooms.
+          </p>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex justify-center"
+          transition={{ duration: 0.6, delay: 0.25 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10"
         >
-          <div
-            className="
-              inline-flex
-              items-center
-              gap-2
-              rounded-full
-              bg-white/80
-              backdrop-blur-md
-              border
-              border-slate-200
-              px-5
-              py-2
-              text-sm
-              text-slate-600
-              shadow-sm
-            "
-          >
-            <Sparkles size={14} />
-            Offline • Accessible • Curriculum Aware
-          </div>
+          <Button to="/learn" size="lg" icon={ArrowRight}>
+            Enter Workspace
+          </Button>
+          <Button to="/upload" variant="secondary" size="lg" icon={FileText}>
+            Upload Notes
+          </Button>
         </motion.div>
-
-        {/* Heading */}
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.15 }}
-          className="text-center mt-10"
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="mt-20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4"
         >
-          <h1
-            className="
-              text-5xl
-              md:text-7xl
-              lg:text-8xl
-              font-black
-              tracking-tight
-              text-[#1E3A5F]
-            "
-          >
-            Saksham AI
-          </h1>
-
-          <p
-            className="
-              mt-5
-              text-lg
-              md:text-xl
-              text-slate-600
-              max-w-2xl
-              mx-auto
-            "
-          >
-            Learning Without Barriers
-          </p>
-        </motion.div>
-
-        {/* Ecosystem */}
-
-        <div className="mt-20 max-w-4xl mx-auto">
-
-          <div
-            className="
-              grid
-              grid-cols-1
-              sm:grid-cols-2
-              lg:grid-cols-3
-              gap-5
-            "
-          >
-            {nodes.map((node, index) => (
+          {features.map((feature, i) => {
+            const Icon = feature.icon;
+            return (
               <motion.div
-                key={node.title}
-                initial={{
-                  opacity: 0,
-                  y: 30,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  delay: index * 0.08,
-                }}
-                whileHover={{
-                  y: -6,
-                  scale: 1.03,
-                }}
-                className="
-                  group
-                  bg-white/70
-                  backdrop-blur-md
-                  border
-                  border-slate-200
-                  rounded-3xl
-                  p-6
-                  text-center
-                  shadow-sm
-                  hover:shadow-xl
-                  transition-all
-                "
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + i * 0.06 }}
+                whileHover={{ y: -4 }}
+                className="glass-panel rounded-2xl p-4 sm:p-5 text-center group cursor-default neural-border"
               >
-                <h3
-                  className="
-                    text-xl
-                    font-bold
-                    text-[#1E3A5F]
-                  "
-                >
-                  {node.title}
+                <div className="w-10 h-10 mx-auto rounded-xl bg-primary/12 flex items-center justify-center text-primary group-hover:bg-accent/15 group-hover:text-accent transition-colors">
+                  <Icon size={20} />
+                </div>
+                <h3 className="mt-3 text-sm font-bold text-ink">
+                  {feature.title}
                 </h3>
-
-                <p
-                  className="
-                    mt-3
-                    text-sm
-                    text-slate-600
-                  "
-                >
-                  {node.desc}
+                <p className="mt-1 text-xs text-ink-muted hidden sm:block">
+                  {feature.desc}
                 </p>
               </motion.div>
-            ))}
-          </div>
-
-        </div>
-
-        {/* Mission */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          transition={{
-            delay: 0.5,
-          }}
-          className="
-            mt-16
-            text-center
-          "
-        >
-          <p
-            className="
-              text-slate-600
-              max-w-3xl
-              mx-auto
-              leading-relaxed
-            "
-          >
-            Saksham AI combines curriculum-aware learning,
-            accessibility support, offline intelligence,
-            summaries, quizzes, and multilingual assistance
-            into one learning ecosystem designed for every student.
-          </p>
+            );
+          })}
         </motion.div>
-
-        {/* CTA */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            delay: 0.6,
-          }}
-          className="
-            mt-12
-            flex
-            justify-center
-          "
-        >
-          <button
-            onClick={() => {
-              window.location.href = "/learn";
-            }}
-            className="
-              flex
-              items-center
-              gap-2
-              px-8
-              py-4
-              rounded-2xl
-              bg-[#1E3A5F]
-              text-white
-              font-semibold
-              shadow-lg
-              hover:-translate-y-1
-              transition-all
-            "
-          >
-            Enter Workspace
-            <ArrowRight size={18} />
-          </button>
-        </motion.div>
-
       </div>
     </section>
   );

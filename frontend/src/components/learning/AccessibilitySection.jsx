@@ -1,191 +1,115 @@
 import { motion } from "framer-motion";
-import {
-  User,
-  BookOpen,
-  Eye,
-  Headphones,
-} from "lucide-react";
+import { Link } from "react-router-dom";
+import { User, BookOpen, Eye, Headphones, ArrowRight } from "lucide-react";
+import Badge from "../ui/Badge";
+import Button from "../ui/Button";
 
 const profiles = [
   {
     icon: User,
+    id: "beginner",
     title: "Beginner Learners",
     description:
-      "Concepts are simplified into easy-to-understand explanations with examples and guided learning support.",
+      "Concepts simplified with clear examples, step-by-step explanations, and guided learning support.",
+    example: "Plants use sunlight, water, and air to make their food.",
   },
   {
     icon: BookOpen,
-    title: "Dyslexic Support",
+    id: "dyslexia",
+    title: "Dyslexia Support",
     description:
-      "Structured content, reduced reading complexity and learner-friendly presentation improve accessibility.",
+      "Shorter content blocks, improved readability, reduced complexity, and structured presentation.",
+    example:
+      "Plants make food from sunlight. This is called photosynthesis.",
   },
   {
     icon: Eye,
+    id: "visual",
     title: "Visually Impaired",
     description:
-      "Accessible content delivery with narration support and inclusive learning experiences.",
+      "Browser narration with play/pause/volume controls, screen-reader friendly content, and inclusive delivery.",
+    example: "Content optimized for narration and auditory consumption.",
   },
 ];
 
 export default function AccessibilitySection() {
   return (
-    <section id="accessibility" className="py-20">
-
-      <div className="max-w-7xl mx-auto px-6">
-
-        {/* Heading */}
-
-        <div className="text-center">
-
-          <p className="uppercase tracking-[0.35em] text-sm text-slate-500">
-            Accessibility First
-          </p>
-
-          <h2 className="mt-4 text-4xl md:text-6xl font-bold text-[#1E3A5F]">
-            Learning For Everyone
+    <section id="accessibility" className="py-20 lg:py-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto">
+          <Badge variant="accent">Accessibility First</Badge>
+          <h2 className="font-display text-4xl md:text-5xl text-ink mt-4">
+            Learning for everyone
           </h2>
-
-          <p className="mt-6 max-w-3xl mx-auto text-slate-600 text-lg">
-            Saksham AI adapts the same educational content for
-            different learning needs, ensuring every student
-            can learn effectively.
+          <p className="mt-4 text-ink-muted text-lg">
+            The same knowledge, adapted for different learning needs — because
+            education should never leave anyone behind.
           </p>
-
         </div>
 
-        {/* Accessibility Profiles */}
-
-        <div className="grid lg:grid-cols-3 gap-8 mt-16">
-
+        <div className="grid lg:grid-cols-3 gap-6 mt-14">
           {profiles.map((profile, index) => {
             const Icon = profile.icon;
-
             return (
               <motion.div
-                key={profile.title}
-                initial={{
-                  opacity: 0,
-                  y: 30,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
+                key={profile.id}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{
-                  delay: index * 0.15,
-                }}
-                whileHover={{
-                  y: -8,
-                }}
-                className="
-                  bg-white/80
-                  backdrop-blur-md
-                  border
-                  border-slate-200
-                  rounded-[32px]
-                  p-8
-                  shadow-lg
-                "
+                transition={{ delay: index * 0.1 }}
+                className="glass-panel-strong rounded-2xl p-7 hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 neural-border"
               >
-                <div
-                  className="
-                    w-14
-                    h-14
-                    rounded-2xl
-                    bg-[#1E3A5F]
-                    text-white
-                    flex
-                    items-center
-                    justify-center
-                  "
-                >
-                  <Icon size={24} />
+                <div className="w-12 h-12 rounded-2xl bg-accent/15 text-accent flex items-center justify-center">
+                  <Icon size={22} />
                 </div>
-
-                <h3 className="mt-6 text-2xl font-bold text-[#1E3A5F]">
+                <h3 className="mt-5 text-xl font-bold text-ink">
                   {profile.title}
                 </h3>
-
-                <p className="mt-4 text-slate-600 leading-relaxed">
+                <p className="mt-3 text-sm text-ink-muted leading-relaxed">
                   {profile.description}
                 </p>
-
+                <div className="mt-5 p-4 rounded-xl bg-surface border border-border text-sm text-ink leading-relaxed">
+                  {profile.example}
+                </div>
+                <Link
+                  to={`/learn?profile=${profile.id}`}
+                  className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-primary transition-colors"
+                >
+                  Try this profile
+                  <ArrowRight size={14} />
+                </Link>
               </motion.div>
             );
           })}
-
         </div>
 
-        {/* Example Card */}
-
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="
-            mt-16
-            bg-white/80
-            backdrop-blur-md
-            border
-            border-slate-200
-            rounded-[32px]
-            p-8
-            shadow-lg
-          "
+          className="mt-12 neural-border rounded-3xl p-8 lg:p-10 glass-panel-strong"
         >
-
-          <div className="flex items-center gap-3">
-            <Headphones className="text-[#1E3A5F]" />
-            <h3 className="text-2xl font-bold text-[#1E3A5F]">
-              Adaptive Learning Experience
-            </h3>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-neural/15 text-neural flex items-center justify-center shrink-0">
+                <Headphones size={22} />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-ink">
+                  Browser narration built in
+                </h3>
+                <p className="mt-2 text-ink-muted text-sm max-w-lg">
+                  Read aloud runs entirely in your browser — play, pause, volume,
+                  and speed controls. No server audio needed.
+                </p>
+              </div>
+            </div>
+            <Button to="/accessibility" variant="secondary" icon={ArrowRight}>
+              Learn More
+            </Button>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-6 mt-8">
-
-            <div className="bg-slate-50 rounded-2xl p-5 border">
-              <div className="font-semibold text-[#1E3A5F]">
-                Beginner
-              </div>
-
-              <p className="mt-3 text-slate-600 text-sm">
-                Plants use sunlight, water and air to make their food.
-              </p>
-            </div>
-
-            <div className="bg-slate-50 rounded-2xl p-5 border">
-              <div className="font-semibold text-[#1E3A5F]">
-                Dyslexic Friendly
-              </div>
-
-              <p className="mt-3 text-slate-600 text-sm">
-                Shorter content blocks with improved readability and reduced complexity.
-              </p>
-            </div>
-
-            <div className="bg-slate-50 rounded-2xl p-5 border">
-              <div className="font-semibold text-[#1E3A5F]">
-                Audio Support
-              </div>
-
-              <p className="mt-3 text-slate-600 text-sm">
-                Content can be narrated and consumed through audio.
-              </p>
-            </div>
-
-          </div>
-
         </motion.div>
-
       </div>
-
     </section>
   );
 }

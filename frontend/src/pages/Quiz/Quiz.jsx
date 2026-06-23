@@ -1,175 +1,314 @@
-import MainLayout from "../../components/layout/MainLayout";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   Brain,
   BookOpen,
   Trophy,
   Target,
   ChevronRight,
+  Sparkles,
+  AlertCircle,
 } from "lucide-react";
+import MainLayout from "../../components/layout/MainLayout";
+import PageHeader from "../../components/ui/PageHeader";
+import Card from "../../components/ui/Card";
+import Select from "../../components/ui/Select";
+import Button from "../../components/ui/Button";
+import Badge from "../../components/ui/Badge";
+import { LoadingState } from "../../components/ui/Spinner";
+import QuizPanel from "../../components/learning/QuizPanel";
+import KnowledgeBackground from "../../components/background/KnowledgeBackground";
+import { useDocuments, useCurriculum } from "../../hooks/useLearning";
+import { generateQuiz, buildLearningPayload } from "../../services/learningApi";
+import useProgressStore from "../../store/progressStore";
+
+const quizModes = [
+  {
+    icon: BookOpen,
+    title: "Curriculum Quiz",
+    description: "Generate quizzes from your syllabus and chapters.",
+    count: 5,
+  },
+  {
+    icon: Brain,
+    title: "Revision Quiz",
+    description: "Quick revision before tests and examinations.",
+    count: 5,
+  },
+  {
+    icon: Target,
+    title: "Chapter Challenge",
+    description: "Focus on a specific topic or chapter.",
+    count: 8,
+  },
+  {
+    icon: Trophy,
+    title: "Challenge Mode",
+    description: "Mixed questions with increasing difficulty.",
+    count: 10,
+  },
+];
 
 export default function Quiz() {
-  const quizModes = [
-    {
-      icon: BookOpen,
-      title: "Curriculum Quiz",
-      description: "Generate quizzes from your syllabus and chapters.",
-    },
-    {
-      icon: Brain,
-      title: "Revision Quiz",
-      description: "Quick revision before tests and examinations.",
-    },
-    {
-      icon: Target,
-      title: "Chapter Challenge",
-      description: "Focus on a specific topic or chapter.",
-    },
-    {
-      icon: Trophy,
-      title: "Challenge Mode",
-      description: "Mixed questions with increasing difficulty.",
-    },
-  ];
+  const { documents, loading: docsLoading, error: docsError } = useDocuments();
+  const curriculum = useCurriculum();
+  const { questionsAnswered, getAverageScore, bestScore, quizAttempts } =
+    useProgressStore();
+
+  const [selectedDocument, setSelectedDocument] = useState("");
+  const [source, setSource] = useState("saksham");
+  const [error, setError] = useState("");
+  const profile = "beginner";
+  const [quiz, setQuiz] = useState([]);
+  const [quizLoading, setQuizLoading] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [score, setScore] = useState(null);
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [activeMode, setActiveMode] = useState(null);
+  const recordQuizAttempt = useProgressStore((s) => s.recordQuizAttempt);
+
+  const handleGenerate = async (mode) => {
+    const docId = selectedDocument || documents[0]?.id;
+    if (source === "document" && !docId) {
+      setError("Please upload or select a document first.");
+      return;
+    }
+
+    try {
+      setQuizLoading(true);
+      setError("");
+      setActiveMode(mode.title);
+      const questions = await generateQuiz({
+        ...buildLearningPayload({
+          source,
+          documentId: docId,
+          classLevel: curriculum.selectedClass,
+          subject: curriculum.selectedSubject,
+          chapter: curriculum.selectedChapter,
+          profile,
+        }),
+        topic: curriculum.selectedChapter,
+        question_count: mode.count,
+      });
+      setQuiz(questions);
+      setSelectedAnswers({});
+      setScore(null);
+      setQuizSubmitted(false);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setQuizLoading(false);
+    }
+  };
+
+  const submitQuiz = () => {
+    let total = 0;
+    quiz.forEach((q, index) => {
+      if (selectedAnswers[index] === q.correct_answer) total++;
+    });
+    setScore(total);
+    setQuizSubmitted(true);
+    recordQuizAttempt({
+      score: total,
+      total: quiz.length,
+      chapter: curriculum.selectedChapter,
+      subject: curriculum.selectedSubject,
+      classLevel: curriculum.selectedClass,
+    });
+  };
+
+  if (docsLoading || curriculum.loading) {
+    return (
+      <MainLayout>
+        <LoadingState message="Loading quiz center..." />
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <KnowledgeBackground intensity="subtle" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <PageHeader
+          eyebrow="Assessment Workspace"
+          title="Quiz Center"
+          description="Practice concepts, test understanding, and track your learning progress."
+          align="center"
+        />
 
-        {/* Header */}
+        {(error || curriculum.error || docsError) && (
+          <div className="mt-6 flex items-center gap-2 text-sm text-error bg-error/10 border border-error/20 rounded-xl px-4 py-3">
+            <AlertCircle size={16} className="shrink-0" />
+            {error || curriculum.error || docsError}
+          </div>
+        )}
 
-        <div className="text-center">
-
-          <p className="uppercase tracking-[0.3em] text-sm text-slate-500">
-            Assessment Workspace
-          </p>
-
-          <h1 className="mt-4 text-5xl md:text-6xl font-bold text-[#1E3A5F]">
-            Quiz Center
-          </h1>
-
-          <p className="mt-6 max-w-2xl mx-auto text-slate-600 text-lg">
-            Practice concepts, test understanding and track learning progress.
-          </p>
-
+        <div className="grid md:grid-cols-3 gap-4 mt-12">
+          {[
+            { label: "Questions Attempted", value: questionsAnswered },
+            { label: "Average Score", value: `${getAverageScore()}%` },
+            { label: "Best Score", value: `${bestScore}%` },
+          ].map((stat) => (
+            <Card key={stat.label} className="text-center">
+              <p className="text-sm text-ink-muted font-medium">{stat.label}</p>
+              <p className="mt-2 text-3xl font-bold text-primary">{stat.value}</p>
+            </Card>
+          ))}
         </div>
 
-        {/* Modes */}
+        <Card className="mt-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <Select
+              label="Quiz Source"
+              value={source}
+              onChange={(e) => {
+                setSource(e.target.value);
+                setError("");
+              }}
+              options={[
+                { value: "saksham", label: "Saksham Curriculum" },
+                { value: "document", label: "Uploaded Document" },
+              ]}
+            />
+            <Select
+              label="Class"
+              value={curriculum.selectedClass}
+              onChange={(e) => curriculum.setSelectedClass(e.target.value)}
+              options={curriculum.classes.map((c) => ({
+                value: c,
+                label: `Class ${c}`,
+              }))}
+              disabled={source === "document"}
+            />
+            <Select
+              label="Subject"
+              value={curriculum.selectedSubject}
+              onChange={(e) => curriculum.setSelectedSubject(e.target.value)}
+              options={curriculum.subjects.map((s) => ({ value: s, label: s }))}
+              disabled={source === "document"}
+            />
+            <Select
+              label="Chapter"
+              value={curriculum.selectedChapter}
+              onChange={(e) => curriculum.setSelectedChapter(e.target.value)}
+              options={curriculum.chapters.map((ch) => ({
+                value: ch.chapter_title,
+                label: ch.chapter_title,
+              }))}
+              disabled={source === "document"}
+            />
+            <Select
+              label="Document"
+              value={selectedDocument || documents[0]?.id || ""}
+              onChange={(e) => setSelectedDocument(e.target.value)}
+              options={documents.map((doc) => ({
+                value: doc.id,
+                label: doc.filename,
+              }))}
+              placeholder="No documents"
+              disabled={source === "saksham" || documents.length === 0}
+            />
+          </div>
+        </Card>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-
-          {quizModes.map((mode) => {
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mt-10">
+          {quizModes.map((mode, i) => {
             const Icon = mode.icon;
-
+            const isActive = activeMode === mode.title;
             return (
-              <div
+              <motion.div
                 key={mode.title}
-                className="
-                  group
-                  bg-white/80
-                  backdrop-blur-md
-                  border
-                  border-slate-200
-                  rounded-[32px]
-                  p-6
-                  shadow-lg
-                  hover:-translate-y-2
-                  transition-all
-                  cursor-pointer
-                "
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08 }}
               >
-                <div
-                  className="
-                    w-14
-                    h-14
-                    rounded-2xl
-                    bg-[#1E3A5F]
-                    text-white
-                    flex
-                    items-center
-                    justify-center
-                  "
+                <Card
+                  hover
+                  className={`cursor-pointer h-full ${isActive ? "ring-2 ring-accent" : ""}`}
+                  onClick={() => !quizLoading && handleGenerate(mode)}
                 >
-                  <Icon size={26} />
-                </div>
-
-                <h3 className="mt-6 text-xl font-bold text-[#1E3A5F]">
-                  {mode.title}
-                </h3>
-
-                <p className="mt-3 text-slate-600 text-sm leading-relaxed">
-                  {mode.description}
-                </p>
-
-                <div className="mt-6 flex items-center gap-2 text-[#1E3A5F] font-medium">
-                  Explore
-                  <ChevronRight size={18} />
-                </div>
-
-              </div>
+                  <div className="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center">
+                    <Icon size={22} />
+                  </div>
+                  <h3 className="mt-5 text-lg font-bold text-primary">
+                    {mode.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-ink-muted leading-relaxed">
+                    {mode.description}
+                  </p>
+                  <div className="mt-4 flex items-center gap-1.5 text-sm font-semibold text-accent">
+                    {quizLoading && isActive ? "Generating..." : "Start"}
+                    <ChevronRight size={16} />
+                  </div>
+                </Card>
+              </motion.div>
             );
           })}
-
         </div>
 
-        {/* Stats */}
-
-        <div className="grid md:grid-cols-3 gap-6 mt-16">
-
-          <div className="bg-white rounded-3xl border border-slate-200 p-8">
-            <p className="text-slate-500">Questions Attempted</p>
-            <h3 className="mt-3 text-4xl font-bold text-[#1E3A5F]">0</h3>
+        {quiz.length > 0 && (
+          <div className="mt-12">
+            <div className="flex items-center gap-3 mb-6">
+              <Badge variant="accent">
+                <Sparkles size={12} />
+                {activeMode}
+              </Badge>
+              <span className="text-sm text-ink-muted">
+                {quiz.length} questions
+              </span>
+            </div>
+            <QuizPanel
+              quiz={quiz}
+              selectedAnswers={selectedAnswers}
+              setSelectedAnswers={setSelectedAnswers}
+              quizSubmitted={quizSubmitted}
+              onSubmit={submitQuiz}
+              score={score}
+            />
           </div>
+        )}
 
-          <div className="bg-white rounded-3xl border border-slate-200 p-8">
-            <p className="text-slate-500">Average Score</p>
-            <h3 className="mt-3 text-4xl font-bold text-[#1E3A5F]">0%</h3>
-          </div>
+        {quizAttempts.length > 0 && (
+          <Card className="mt-12">
+            <h3 className="font-bold text-primary">Recent Attempts</h3>
+            <div className="mt-4 space-y-3">
+              {quizAttempts.slice(0, 5).map((attempt) => (
+                <div
+                  key={attempt.id}
+                  className="flex items-center justify-between py-3 border-b border-border last:border-0"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-ink">
+                      {attempt.subject} · {attempt.chapter}
+                    </p>
+                    <p className="text-xs text-ink-muted mt-0.5">
+                      Class {attempt.classLevel}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-primary">{attempt.percentage}%</p>
+                    <p className="text-xs text-ink-muted">
+                      {attempt.score}/{attempt.total}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
 
-          <div className="bg-white rounded-3xl border border-slate-200 p-8">
-            <p className="text-slate-500">Best Score</p>
-            <h3 className="mt-3 text-4xl font-bold text-[#1E3A5F]">0%</h3>
-          </div>
-
-        </div>
-
-        {/* CTA */}
-
-        <div
-          className="
-            mt-16
-            bg-white/80
-            backdrop-blur-md
-            border
-            border-slate-200
-            rounded-[36px]
-            p-10
-            text-center
-          "
-        >
-          <h2 className="text-3xl font-bold text-[#1E3A5F]">
-            Ready To Practice?
-          </h2>
-
-          <p className="mt-4 text-slate-600">
-            Generate a personalized quiz and strengthen your understanding.
-          </p>
-
-          <button
-            className="
-              mt-8
-              px-8
-              py-4
-              rounded-2xl
-              bg-[#1E3A5F]
-              text-white
-              font-semibold
-            "
-          >
-            Start Quiz
-          </button>
-        </div>
-
+        {documents.length === 0 && (
+          <Card className="mt-10 text-center py-10">
+            <p className="text-ink-muted">
+              Curriculum quizzes work immediately. Upload study material if you
+              also want quizzes from your own notes.
+            </p>
+            <Button to="/upload" icon={ChevronRight} className="mt-4">
+              Upload Notes
+            </Button>
+          </Card>
+        )}
       </div>
     </MainLayout>
   );
-}   
+}

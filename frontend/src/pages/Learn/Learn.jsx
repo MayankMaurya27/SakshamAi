@@ -1,33 +1,91 @@
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Send, FileText, BookMarked, AlertCircle } from "lucide-react";
 import MainLayout from "../../components/layout/MainLayout";
-import api from "../../services/api";
-import { BookOpen, Brain, Languages, FileText, Volume2 } from "lucide-react";
+import PageHeader from "../../components/ui/PageHeader";
+import Card from "../../components/ui/Card";
+import Select from "../../components/ui/Select";
+import Textarea from "../../components/ui/Textarea";
+import Button from "../../components/ui/Button";
+import Badge from "../../components/ui/Badge";
+import { LoadingState } from "../../components/ui/Spinner";
+import LearningTools from "../../components/learning/LearningTools";
+import QuizPanel from "../../components/learning/QuizPanel";
+import AudioPlayer from "../../components/audio/AudioPlayer";
+import KnowledgeBackground from "../../components/background/KnowledgeBackground";
+import { useDocuments, useCurriculum } from "../../hooks/useLearning";
+import { useSpeechPlayer } from "../../hooks/useSpeechPlayer";
+import {
+  askQuestion,
+  generateSummary,
+  simplifyExplanation,
+  localizeHindi,
+  generateQuiz,
+  buildLearningPayload,
+} from "../../services/learningApi";
+import useProgressStore from "../../store/progressStore";
+
+const TABS = [
+  { id: "answer", label: "Answer" },
+  { id: "summary", label: "Summary" },
+  { id: "simplify", label: "Simplified" },
+  { id: "hindi", label: "Hindi" },
+  { id: "quiz", label: "Quiz" },
+];
+
+const PROFILES = [
+  { value: "beginner", label: "Beginner" },
+  { value: "dyslexia", label: "Dyslexia Friendly" },
+  { value: "visual", label: "Visually Impaired" },
+];
+
+const SOURCES = [
+  { value: "saksham", label: "Saksham Curriculum" },
+  { value: "document", label: "Uploaded Document" },
+];
+
+const LOADING_MESSAGES = {
+  answer: "Generating answer...",
+  summary: "Generating summary...",
+  simplify: "Simplifying...",
+  hindi: "Translating...",
+};
 
 export default function Learn() {
+  const [searchParams] = useSearchParams();
+  const profileParam = searchParams.get("profile");
+  const sourceParam = searchParams.get("source");
+  const documentParam = searchParams.get("document");
+
+  const { documents, loading: docsLoading, error: docsError } = useDocuments();
+  const curriculum = useCurriculum();
+  const speech = useSpeechPlayer();
+  const recordQuizAttempt = useProgressStore((s) => s.recordQuizAttempt);
+
+  const [selectedDocument, setSelectedDocument] = useState(documentParam || "");
+  const activeDocument =
+    selectedDocument || (documents[0] ? String(documents[0].id) : "");
+
+  const [profile, setProfile] = useState(() =>
+    ["beginner", "dyslexia", "visual"].includes(profileParam)
+      ? profileParam
+      : "beginner",
+  );
+  const [source, setSource] = useState(
+    sourceParam === "document" ? "document" : "saksham",
+  );
+
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const [documents, setDocuments] = useState([]);
-  const [selectedDocument, setSelectedDocument] = useState("");
-
-  const [classes, setClasses] = useState([]);
-  const [subjects, setSubjects] = useState([]);
-  const [chapters, setChapters] = useState([]);
-  const [selectedChapter, setSelectedChapter] = useState("");
-
-  const [profile, setProfile] = useState("beginner");
-
-  const [selectedClass, setSelectedClass] = useState(6);
-  const [selectedSubject, setSelectedSubject] = useState("");
-
   const [hasResponse, setHasResponse] = useState(false);
+  const [error, setError] = useState("");
+
   const [summary, setSummary] = useState("");
   const [summaryLoading, setSummaryLoading] = useState(false);
-
   const [simplifiedText, setSimplifiedText] = useState("");
   const [simplifyLoading, setSimplifyLoading] = useState(false);
-
   const [hindiText, setHindiText] = useState("");
   const [hindiLoading, setHindiLoading] = useState(false);
 
@@ -35,235 +93,155 @@ export default function Learn() {
   const [quizLoading, setQuizLoading] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [score, setScore] = useState(null);
-
   const [quizSubmitted, setQuizSubmitted] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const [activeTab, setActiveTab] = useState("answer");
-  useEffect(() => {
-    loadInitialData();
-  }, []);
 
-  useEffect(() => {
-    if (selectedClass) {
-      loadSubjects(selectedClass);
-    }
-  }, [selectedClass]);
-
-  useEffect(() => {
-    if (selectedClass && selectedSubject) {
-      loadChapters(selectedClass, selectedSubject);
-    }
-  }, [selectedClass, selectedSubject]);
-
-  const loadInitialData = async () => {
-    try {
-      const [docsRes, classesRes] = await Promise.all([
-        api.get("/documents"),
-        api.get("/saksham/classes"),
-      ]);
-
-      const docs = docsRes.data?.data?.documents || [];
-
-      const classList = classesRes.data?.data?.classes || [];
-
-      setDocuments(docs);
-      setClasses(classList);
-
-      if (docs.length > 0) {
-        setSelectedDocument(docs[0].id);
-      }
-
-      if (classList.length > 0) {
-        setSelectedClass(classList[0]);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const loadSubjects = async (classLevel) => {
-    try {
-      const response = await api.get(
-        `/saksham/subjects?class_level=${classLevel}`,
-      );
-
-      const subjectList = response.data?.data?.subjects || [];
-
-      setSubjects(subjectList);
-
-      if (subjectList.length > 0) {
-        setSelectedSubject(subjectList[0]);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const loadChapters = async (classLevel, subject) => {
-    try {
-      const response = await api.get(
-        `/saksham/chapters?class_level=${classLevel}&subject=${encodeURIComponent(
-          subject,
-        )}`,
-      );
-
-      const chapterList = response.data?.data?.chapters || [];
-
-      setChapters(chapterList);
-
-      if (chapterList.length > 0) {
-        setSelectedChapter(chapterList[0].chapter_title);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const getPayload = useCallback(
+    () =>
+      buildLearningPayload({
+        source,
+        documentId: activeDocument,
+        classLevel: curriculum.selectedClass,
+        subject: curriculum.selectedSubject,
+        chapter: curriculum.selectedChapter,
+        profile,
+      }),
+    [
+      activeDocument,
+      source,
+      curriculum.selectedClass,
+      curriculum.selectedSubject,
+      curriculum.selectedChapter,
+      profile,
+    ],
+  );
 
   const handleAsk = async () => {
     if (!question.trim()) return;
-
-    if (!selectedDocument) {
-      alert("Please upload/select a document first.");
+    if (source === "document" && !activeDocument) {
+      setError("Please upload or select a document first.");
       return;
     }
 
     try {
       setLoading(true);
-
-      const response = await api.post("/ask", {
+      setError("");
+      const result = await askQuestion({
         question,
-        source: "document",
-        document_id: Number(selectedDocument),
-        class_level: Number(selectedClass),
-        subject: selectedSubject.toLowerCase(),
-        chapter: selectedChapter,
+        ...getPayload(),
         topic: "",
         mode: "learn",
-        accessibility_profile: profile,
-        include_audio: false,
       });
-
-      setAnswer(response.data?.data?.answer || "No answer received.");
-
+      setAnswer(result);
       setHasResponse(true);
-    } catch (error) {
-      console.error(error);
-      setAnswer("Failed to generate answer.");
-      setHasResponse(true);
+      setActiveTab("answer");
+      setQuiz([]);
+      setQuizSubmitted(false);
+      setScore(null);
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleSummary = async () => {
+    if (source === "document" && !activeDocument) {
+      setError("Please upload or select a document first.");
+      return;
+    }
     try {
       setSummaryLoading(true);
-
-      const response = await api.post("/summary", {
-        source: "document",
-        document_id: Number(selectedDocument),
-        class_level: Number(selectedClass),
-        subject: selectedSubject.toLowerCase(),
-        chapter: selectedChapter,
-        topic: question || selectedChapter,
+      setError("");
+      const result = await generateSummary({
+        ...getPayload(),
+        topic: question || curriculum.selectedChapter,
         regenerate: false,
-        accessibility_profile: profile,
-        include_audio: false,
       });
-
-      setSummary(response.data?.data?.summary || "No summary generated.");
+      setSummary(result);
       setActiveTab("summary");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to generate summary");
+      setHasResponse(true);
+    } catch (err) {
+      setError(err.message);
     } finally {
       setSummaryLoading(false);
     }
   };
 
   const handleSimplify = async () => {
+    if (!question.trim() && !answer.trim()) {
+      setError("Ask a question first, or generate an answer to simplify.");
+      return;
+    }
     try {
       setSimplifyLoading(true);
-
-      const response = await api.post("/simplify", {
-        question: question,
-        source: "document",
-        document_id: Number(selectedDocument),
-        class_level: Number(selectedClass),
-        subject: selectedSubject.toLowerCase(),
-        chapter: selectedChapter,
+      setError("");
+      const result = await simplifyExplanation({
+        question: question || answer.slice(0, 200),
+        ...getPayload(),
         topic: "",
-        accessibility_profile: profile,
-        include_audio: false,
       });
-
-      setSimplifiedText(
-        response.data?.data?.simplified_answer ||
-          "No simplified answer generated.",
-      );
+      setSimplifiedText(result);
       setActiveTab("simplify");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to simplify explanation");
+      setHasResponse(true);
+    } catch (err) {
+      setError(err.message);
     } finally {
       setSimplifyLoading(false);
     }
   };
 
   const handleHindi = async () => {
+    if (!answer.trim()) {
+      setError("Generate an answer first, then translate to Hindi.");
+      return;
+    }
     try {
       setHindiLoading(true);
-
-      const response = await api.post("/localize/hi", {
+      setError("");
+      const localizationPayload = {
         text: answer,
         content_type: "answer",
-        class_level: Number(selectedClass),
-        subject: selectedSubject,
+        subject: curriculum.selectedSubject,
         include_audio: false,
         preserve_terms: [],
-      });
-
-      setHindiText(
-        response.data?.data?.hindi_text || "No translation generated.",
-      );
+      };
+      if (curriculum.selectedClass) {
+        localizationPayload.class_level = Number(curriculum.selectedClass);
+      }
+      const result = await localizeHindi(localizationPayload);
+      setHindiText(result);
       setActiveTab("hindi");
-    } catch (error) {
-      console.error(error.response?.data);
-      console.error(error);
-
-      alert("Hindi translation failed");
+      setHasResponse(true);
+    } catch (err) {
+      setError(err.message);
     } finally {
       setHindiLoading(false);
     }
   };
 
   const handleQuiz = async () => {
+    if (source === "document" && !activeDocument) {
+      setError("Please upload or select a document first.");
+      return;
+    }
     try {
       setQuizLoading(true);
-
-      const response = await api.post("/quiz", {
-        source: "document",
-        document_id: Number(selectedDocument),
-        class_level: Number(selectedClass),
-        subject: selectedSubject.toLowerCase(),
-        chapter: selectedChapter,
-        topic: question || selectedChapter,
+      setError("");
+      const questions = await generateQuiz({
+        ...getPayload(),
+        topic: question || curriculum.selectedChapter,
         question_count: 5,
-        accessibility_profile: profile,
-        include_audio: false,
       });
-
-      setQuiz(response.data?.data?.questions || []);
+      setQuiz(questions);
       setActiveTab("quiz");
-
+      setHasResponse(true);
       setSelectedAnswers({});
       setScore(null);
-    } catch (error) {
-      console.error(error.response?.data);
-      console.error(error);
-
-      alert("Quiz generation failed");
+      setQuizSubmitted(false);
+    } catch (err) {
+      setError(err.message);
     } finally {
       setQuizLoading(false);
     }
@@ -271,501 +249,290 @@ export default function Learn() {
 
   const submitQuiz = () => {
     let total = 0;
-
     quiz.forEach((q, index) => {
-      if (selectedAnswers[index] === q.correct_answer) {
-        total++;
-      }
+      if (selectedAnswers[index] === q.correct_answer) total++;
     });
-
     setScore(total);
     setQuizSubmitted(true);
+    recordQuizAttempt({
+      score: total,
+      total: quiz.length,
+      chapter: curriculum.selectedChapter,
+      subject: curriculum.selectedSubject,
+      classLevel: curriculum.selectedClass,
+    });
   };
 
-  const speakText = (text) => {
-    if (!text) return;
-
-    speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(text);
-
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-
-    utterance.onstart = () => setIsSpeaking(true);
-
-    utterance.onend = () => setIsSpeaking(false);
-
-    speechSynthesis.speak(utterance);
+  const getActiveContent = () => {
+    switch (activeTab) {
+      case "summary":
+        return summaryLoading ? LOADING_MESSAGES.summary : summary;
+      case "simplify":
+        return simplifyLoading ? LOADING_MESSAGES.simplify : simplifiedText;
+      case "hindi":
+        return hindiLoading ? LOADING_MESSAGES.hindi : hindiText;
+      default:
+        return loading ? LOADING_MESSAGES.answer : answer;
+    }
   };
 
-  const stopAudio = () => {
-    speechSynthesis.cancel();
-    setIsSpeaking(false);
+  const getSpeakableText = () => {
+    const content = getActiveContent();
+    if (!content || Object.values(LOADING_MESSAGES).includes(content)) return "";
+    return content;
   };
+
+  const visibleTabs = TABS.filter((tab) => {
+    if (tab.id === "answer") return hasResponse || answer;
+    if (tab.id === "summary") return summary;
+    if (tab.id === "simplify") return simplifiedText;
+    if (tab.id === "hindi") return hindiText;
+    if (tab.id === "quiz") return quiz.length > 0;
+    return false;
+  });
+
+  const selectedDoc = documents.find(
+    (d) => d.id === Number(activeDocument),
+  );
+
+  if (docsLoading || curriculum.loading) {
+    return (
+      <MainLayout>
+        <LoadingState message="Preparing your workspace..." />
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-10">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-bold text-[#1E3A5F]">
-            Learning Workspace
-          </h1>
-
-          <p className="mt-3 text-slate-600">
-            Ask questions, understand concepts, revise smarter and practice
-            effectively.
-          </p>
+      <KnowledgeBackground intensity="subtle" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <div className="space-y-4">
+          <Badge variant="gold">
+            <BookMarked size={12} />
+            Study Workspace
+          </Badge>
+          <PageHeader
+            eyebrow="Saksham Learn"
+            title="Ask. Understand. Master."
+            description="Your curriculum-aware study companion — ask from uploaded materials, generate summaries, quizzes, and adaptive explanations with built-in narration."
+          />
         </div>
 
-        <div className="mt-10 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
-          <div className="grid md:grid-cols-4 gap-4">
-            <select
-              value={selectedClass}
-              onChange={(e) => setSelectedClass(e.target.value)}
-              className="border rounded-xl px-4 py-3"
-            >
-              {classes.map((cls) => (
-                <option key={cls} value={cls}>
-                  Class {cls}
-                </option>
-              ))}
-            </select>
+        {(error || docsError || curriculum.error) && (
+          <div className="mt-6 flex items-center gap-2 text-sm text-error bg-error/10 border border-error/20 rounded-xl px-4 py-3">
+            <AlertCircle size={16} className="shrink-0" />
+            {error || docsError || curriculum.error}
+          </div>
+        )}
 
-            <select
-              value={selectedSubject}
-              onChange={(e) => setSelectedSubject(e.target.value)}
-              className="border rounded-xl px-4 py-3"
-            >
-              {subjects.map((subject) => (
-                <option key={subject} value={subject}>
-                  {subject}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={selectedChapter}
-              onChange={(e) => setSelectedChapter(e.target.value)}
-              className="border rounded-xl px-4 py-3"
-            >
-              {chapters.map((chapter) => (
-                <option key={chapter.chapter_id} value={chapter.chapter_title}>
-                  {chapter.chapter_title}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={selectedDocument}
+        <Card className="mt-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Select
+              label="Learning Source"
+              value={source}
+              onChange={(e) => {
+                setSource(e.target.value);
+                setError("");
+              }}
+              options={SOURCES}
+            />
+            <Select
+              label="Class"
+              value={curriculum.selectedClass}
+              onChange={(e) => curriculum.setSelectedClass(e.target.value)}
+              options={curriculum.classes.map((c) => ({
+                value: c,
+                label: `Class ${c}`,
+              }))}
+              disabled={source === "document"}
+            />
+            <Select
+              label="Subject"
+              value={curriculum.selectedSubject}
+              onChange={(e) => curriculum.setSelectedSubject(e.target.value)}
+              options={curriculum.subjects.map((s) => ({ value: s, label: s }))}
+              disabled={source === "document"}
+            />
+            <Select
+              label="Chapter"
+              value={curriculum.selectedChapter}
+              onChange={(e) => curriculum.setSelectedChapter(e.target.value)}
+              options={curriculum.chapters.map((ch) => ({
+                value: ch.chapter_title,
+                label: ch.chapter_title,
+              }))}
+              disabled={source === "document"}
+            />
+            <Select
+              label="Document"
+              value={activeDocument}
               onChange={(e) => setSelectedDocument(e.target.value)}
-              className="border rounded-xl px-4 py-3"
-            >
-              {documents.map((doc) => (
-                <option key={doc.id} value={doc.id}>
-                  {doc.filename}
-                </option>
-              ))}
-            </select>
-
-            <select
+              options={documents.map((doc) => ({
+                value: doc.id,
+                label: doc.filename,
+              }))}
+              placeholder="No documents"
+              disabled={source === "saksham" || documents.length === 0}
+            />
+            <Select
+              label="Learning Profile"
               value={profile}
               onChange={(e) => setProfile(e.target.value)}
-              className="border rounded-xl px-4 py-3"
-            >
-              <option value="beginner">Beginner</option>
-              <option value="dyslexia">Dyslexia Friendly</option>
-              <option value="visual">Visually Impaired</option>
-            </select>
+              options={PROFILES}
+            />
           </div>
-        </div>
+        </Card>
 
         <div className="mt-8 grid lg:grid-cols-[1fr_320px] gap-6">
           <div className="space-y-6">
-            <div className="bg-white border border-slate-200 rounded-3xl p-6">
-              <h2 className="text-xl font-semibold mb-4">Ask Question</h2>
-
-              <textarea
+            <Card>
+              <Textarea
+                label="Your Question"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                placeholder="Ask anything from your uploaded document..."
-                className="
-                  w-full
-                  min-h-[140px]
-                  resize-none
-                  border
-                  rounded-2xl
-                  p-4
-                  outline-none
-                "
+                placeholder={
+                  source === "document"
+                    ? "Ask anything from your uploaded document..."
+                    : "Ask anything from the selected curriculum chapter..."
+                }
+                rows={5}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleAsk();
+                }}
               />
+              <div className="mt-4 flex flex-wrap gap-3 items-center">
+                <Button
+                  onClick={handleAsk}
+                  loading={loading}
+                  icon={Send}
+                  disabled={
+                    !question.trim() ||
+                    (source === "document"
+                      ? !activeDocument
+                      : !curriculum.selectedChapter)
+                  }
+                >
+                  {loading ? "Generating..." : "Ask Saksham"}
+                </Button>
+                <span className="text-xs text-ink-faint hidden sm:inline">
+                  Ctrl+Enter to submit
+                </span>
+              </div>
+            </Card>
 
-              <button
-                onClick={handleAsk}
-                disabled={loading}
-                className="
-                  mt-4
-                  bg-[#1E3A5F]
-                  text-white
-                  px-6
-                  py-3
-                  rounded-xl
-                  font-medium
-                "
-              >
-                {loading ? "Generating..." : "Ask Saksham AI"}
-              </button>
-            </div>
-
-            {hasResponse && (
-              <>
-                <div className="bg-white border border-slate-200 rounded-3xl p-6">
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    <button
-                      onMouseEnter={() => setActiveTab("answer")}
-                      onClick={() => setActiveTab("answer")}
-                      className={`
-px-5
-py-2.5
-rounded-full
-font-medium
-transition-all
-duration-300
-${
-  activeTab === "answer"
-    ? "bg-[#1E3A5F] text-white shadow-lg scale-105"
-    : "bg-white border border-slate-200 text-slate-600 hover:border-[#1E3A5F] hover:text-[#1E3A5F]"
-}
-`}
-                    >
-                      Answer
-                    </button>
-
-                    {summary && (
-                      <button
-                        onMouseEnter={() => setActiveTab("summary")}
-                        onClick={() => setActiveTab("summary")}
-                        className={`
-px-5
-py-2.5
-rounded-full
-font-medium
-transition-all
-duration-300
-${
-  activeTab === "summary"
-    ? "bg-[#1E3A5F] text-white shadow-lg scale-105"
-    : "bg-white border border-slate-200 text-slate-600 hover:border-[#1E3A5F] hover:text-[#1E3A5F]"
-}
-`}
-                      >
-                        Summary
-                      </button>
-                    )}
-
-                    {simplifiedText && (
-                      <button
-                        onMouseEnter={() => setActiveTab("simplify")}
-                        onClick={() => setActiveTab("simplify")}
-                        className={`
-px-5
-py-2.5
-rounded-full
-font-medium
-transition-all
-duration-300
-${
-  activeTab === "simplify"
-    ? "bg-[#1E3A5F] text-white shadow-lg scale-105"
-    : "bg-white border border-slate-200 text-slate-600 hover:border-[#1E3A5F] hover:text-[#1E3A5F]"
-}
-`}
-                      >
-                        Simplified
-                      </button>
-                    )}
-
-                    {hindiText && (
-                      <button
-                        onMouseEnter={() => setActiveTab("hindi")}
-                        onClick={() => setActiveTab("hindi")}
-                        className={`
-px-5
-py-2.5
-rounded-full
-font-medium
-transition-all
-duration-300
-${
-  activeTab === "hindi"
-    ? "bg-[#1E3A5F] text-white shadow-lg scale-105"
-    : "bg-white border border-slate-200 text-slate-600 hover:border-[#1E3A5F] hover:text-[#1E3A5F]"
-}
-`}
-                      >
-                        Hindi
-                      </button>
-                    )}
-
-                    {quiz.length > 0 && (
-                      <button
-                        onClick={() => setActiveTab("quiz")}
-                        className={`px-4 py-2 rounded-xl transition-all ${
-                          activeTab === "quiz"
-                            ? "bg-[#1E3A5F] text-white"
-                            : "bg-slate-100"
-                        }`}
-                      >
-                        Quiz
-                      </button>
-                    )}
-                  </div>
-                  {loading ? (
-                    <div className="text-slate-500">Generating answer...</div>
-                  ) : (
-                    <>
-                      {activeTab === "answer" && (
-                        <div className="whitespace-pre-wrap leading-8 text-slate-700">
-                          {answer}
-                        </div>
-                      )}
-
-                      {activeTab === "summary" && (
-                        <div className="whitespace-pre-wrap leading-8 text-slate-700">
-                          {summaryLoading ? "Generating summary..." : summary}
-                        </div>
-                      )}
-
-                      {activeTab === "simplify" && (
-                        <div className="whitespace-pre-wrap leading-8 text-slate-700">
-                          {simplifyLoading ? "Simplifying..." : simplifiedText}
-                        </div>
-                      )}
-
-                      {activeTab === "hindi" && (
-                        <div className="whitespace-pre-wrap leading-8 text-slate-700">
-                          {hindiLoading ? "Translating..." : hindiText}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-
-                {activeTab === "quiz" && (
-                  <div>
-                    {quiz.length === 0 ? (
-                      <div className="text-slate-500">
-                        Generate a quiz using the Quiz tool.
+            <AnimatePresence>
+              {hasResponse && (
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-6"
+                >
+                  {activeTab !== "quiz" && (
+                    <Card>
+                      <div className="flex flex-wrap gap-2 mb-6">
+                        {visibleTabs
+                          .filter((t) => t.id !== "quiz")
+                          .map((tab) => (
+                            <button
+                              key={tab.id}
+                              type="button"
+                              onClick={() => setActiveTab(tab.id)}
+                              className={`
+                                px-4 py-2 rounded-full text-sm font-semibold transition-all focus-ring
+                                ${
+                                  activeTab === tab.id
+                                    ? "bg-primary text-void shadow-amber"
+                                    : "bg-surface border border-border text-ink-muted hover:border-accent/50 hover:text-accent"
+                                }
+                              `}
+                            >
+                              {tab.label}
+                            </button>
+                          ))}
+                        {quiz.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab("quiz")}
+                            className={`
+                              px-4 py-2 rounded-full text-sm font-semibold transition-all focus-ring
+                              ${
+                                activeTab === "quiz"
+                                  ? "bg-primary text-void shadow-amber"
+                                  : "bg-surface border border-border text-ink-muted hover:border-accent/50 hover:text-accent"
+                              }
+                            `}
+                          >
+                            Quiz
+                          </button>
+                        )}
                       </div>
-                    ) : (
-                      <>
-                        {quiz.map((q, index) => (
-                          <div key={index} className="mb-8">
-                            <p className="font-medium mb-4">
-                              {index + 1}. {q.question}
-                            </p>
 
-                            {["A", "B", "C", "D"].map((option) => (
-                              <label
-                                key={option}
-                                className={`block mb-2 p-2 rounded-lg ${
-                                  quizSubmitted && option === q.correct_answer
-                                    ? "bg-green-50 border border-green-300"
-                                    : quizSubmitted &&
-                                        selectedAnswers[index] === option &&
-                                        option !== q.correct_answer
-                                      ? "bg-red-50 border border-red-300"
-                                      : ""
-                                }`}
-                              >
-                                <input
-                                  type="radio"
-                                  disabled={quizSubmitted}
-                                  name={`question-${index}`}
-                                  value={option}
-                                  checked={selectedAnswers[index] === option}
-                                  onChange={() =>
-                                    setSelectedAnswers({
-                                      ...selectedAnswers,
-                                      [index]: option,
-                                    })
-                                  }
-                                  className="mr-2"
-                                />
-                                {option}. {q.options[option]}
-                              </label>
-                            ))}
-                          </div>
-                        ))}
+                      <div className="prose-content whitespace-pre-wrap leading-relaxed text-[15px]">
+                        {getActiveContent()}
+                      </div>
 
-                        <button
-                          onClick={submitQuiz}
-                          disabled={quizSubmitted}
-                          className="
-            bg-[#1E3A5F]
-            text-white
-            px-6
-            py-3
-            rounded-xl
-          "
-                        >
-                          Submit Quiz
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
+                      {activeTab !== "quiz" && getSpeakableText() && (
+                        <div className="mt-6 pt-6 border-t border-border">
+                          <AudioPlayer
+                            text={getSpeakableText()}
+                            status={speech.status}
+                            volume={speech.volume}
+                            rate={speech.rate}
+                            onToggle={speech.toggle}
+                            onStop={speech.stop}
+                            onVolumeChange={speech.setVolume}
+                            onRateChange={speech.setRate}
+                            label={`Narrate ${activeTab === "answer" ? "Answer" : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}`}
+                          />
+                        </div>
+                      )}
+                    </Card>
+                  )}
 
-                <div className="bg-white border border-slate-200 rounded-3xl p-6">
-                  <h2 className="text-xl font-semibold mb-4">Sources</h2>
+                  {activeTab === "quiz" && (
+                    <QuizPanel
+                      quiz={quiz}
+                      selectedAnswers={selectedAnswers}
+                      setSelectedAnswers={setSelectedAnswers}
+                      quizSubmitted={quizSubmitted}
+                      onSubmit={submitQuiz}
+                      score={score}
+                    />
+                  )}
 
-                  <div className="text-slate-500">
-                    Document:{" "}
-                    {
-                      documents.find((d) => d.id === Number(selectedDocument))
-                        ?.filename
-                    }
-                  </div>
-                </div>
-              </>
-            )}
+                  <Card className="bg-surface/60">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+                      <FileText size={16} className="text-accent" />
+                      Sources
+                    </div>
+                    <p className="mt-2 text-sm text-ink-muted">
+                      Source:{" "}
+                      <span className="font-medium text-ink">
+                        {source === "document"
+                          ? selectedDoc?.filename || "None selected"
+                          : `Class ${curriculum.selectedClass} · ${curriculum.selectedSubject} · ${curriculum.selectedChapter}`}
+                      </span>
+                    </p>
+                  </Card>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
-          {hasResponse && (
-            <div>
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 sticky top-24">
-                <h2 className="text-xl font-semibold mb-6">Learning Tools</h2>
-
-                <div
-                  className="
-    mt-8
-    flex
-    flex-wrap
-    items-center
-    gap-3
-    p-4
-    rounded-2xl
-    bg-white/70
-    backdrop-blur-md
-    border
-    border-slate-200
-  "
-                >
-                  <button
-                    onClick={handleQuiz}
-                    className={`
-px-4
-py-2.5
-rounded-full
-text-sm
-font-medium
-transition-all
-duration-300
-border
-${loading ? "opacity-50 cursor-not-allowed" : "hover:-translate-y-1"}
-bg-slate-50
-border-slate-200
-hover:border-[#1E3A5F]
-hover:text-[#1E3A5F]
-`}
-                  >
-                    <Brain size={16} />
-                    Generate Quiz
-                  </button>
-
-                  <button
-                    onClick={handleSummary}
-                    className={`
-px-4
-py-2.5
-rounded-full
-text-sm
-font-medium
-transition-all
-duration-300
-border
-${loading ? "opacity-50 cursor-not-allowed" : "hover:-translate-y-1"}
-bg-slate-50
-border-slate-200
-hover:border-[#1E3A5F]
-hover:text-[#1E3A5F]
-`}
-                  >
-                    <FileText size={16} />
-                    Summarize
-                  </button>
-
-                  <button
-                    onClick={handleSimplify}
-                    className={`
-px-4
-py-2.5
-rounded-full
-text-sm
-font-medium
-transition-all
-duration-300
-border
-${loading ? "opacity-50 cursor-not-allowed" : "hover:-translate-y-1"}
-bg-slate-50
-border-slate-200
-hover:border-[#1E3A5F]
-hover:text-[#1E3A5F]
-`}
-                  >
-                    <BookOpen size={16} />
-                    Simplify
-                  </button>
-
-                  <button
-                    onClick={handleHindi}
-                    className={`
-px-4
-py-2.5
-rounded-full
-text-sm
-font-medium
-transition-all
-duration-300
-border
-${loading ? "opacity-50 cursor-not-allowed" : "hover:-translate-y-1"}
-bg-slate-50
-border-slate-200
-hover:border-[#1E3A5F]
-hover:text-[#1E3A5F]
-`}
-                  >
-                    <Languages size={16} />
-                    Hindi
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      isSpeaking ? stopAudio() : speakText(answer)
-                    }
-                    className={`
-px-4
-py-2.5
-rounded-full
-text-sm
-font-medium
-transition-all
-duration-300
-border
-${loading ? "opacity-50 cursor-not-allowed" : "hover:-translate-y-1"}
-bg-slate-50
-border-slate-200
-hover:border-[#1E3A5F]
-hover:text-[#1E3A5F]
-`}
-                  >
-                    <Volume2 size={16} />
-                    {isSpeaking ? "Stop Audio" : "Read Aloud"}
-                  </button>
-                </div>
-              </div>
-            </div>
+          {(source === "document" ? activeDocument : curriculum.selectedChapter) && (
+            <LearningTools
+              onQuiz={handleQuiz}
+              onSummary={handleSummary}
+              onSimplify={handleSimplify}
+              onHindi={handleHindi}
+              quizLoading={quizLoading}
+              summaryLoading={summaryLoading}
+              simplifyLoading={simplifyLoading}
+              hindiLoading={hindiLoading}
+              hasAnswer={Boolean(answer.trim())}
+              hasQuestion={Boolean(question.trim())}
+            />
           )}
         </div>
       </div>
