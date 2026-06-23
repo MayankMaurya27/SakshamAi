@@ -621,6 +621,105 @@ def _get_ordered_document_chunks(
     return [(c.chunk_index, c.chunk_text, c.faiss_id) for c in records]
 
 
+def _hybrid_retrieve_document(
+    question: str,
+    db: Session,
+    document_id: int,
+    records: list,
+    results: list,
+    search_terms: list[str],
+    k: int,
+) -> list[ChunkContext]:
+    """
+    Hybrid retrieval for uploaded documents: semantic + BM25 + RRF + optional reranker.
+    """
+    from ai.bm25_store import ChapterBM25
+
+    candidate_k = max(settings.retrieval_candidate_count, k * 2)
+    semantic_ranked = [faiss_id for faiss_id, _, _ in results]
+
+    ranked_lists = [semantic_ranked]
+    if settings.bm25_enabled and records:
+        faiss_ids = [r.faiss_id for r in records if r.faiss_id is not None]
+        documents = [r.chunk_text for r in records if r.faiss_id is not None]
+        if faiss_ids and documents:
+            bm25_index = ChapterBM25(faiss_ids, documents)
+            bm25_hits = bm25_index.search(question, top_k=candidate_k)
+            if bm25_hits:
+                ranked_lists.append([faiss_id for faiss_id, _, _ in bm25_hits])
+
+    fused = reciprocal_rank_fusion(ranked_lists, k=settings.rrf_k)
+    fused_ids = [faiss_id for faiss_id, _ in fused]
+
+    if search_terms:
+        candidates = [
+            (
+                r.chunk_index,
+                r.chunk_text,
+                r.faiss_id,
+                {"match_type": "phrase", "document_id": document_id},
+            )
+            for r in records
+            if r.chunk_text and not _is_low_quality_chunk(r.chunk_text)
+        ]
+        seen_ids = set(fused_ids)
+        phrase_contexts = _prepend_phrase_matched_chunks(
+            [],
+            candidates,
+            search_terms,
+            set(),
+            max_boost=2,
+        )
+        for ctx in phrase_contexts:
+            if ctx.faiss_id not in seen_ids:
+                fused_ids.insert(0, ctx.faiss_id)
+                seen_ids.add(ctx.faiss_id)
+
+    chunk_by_faiss = {r.faiss_id: r for r in records}
+    rerank_candidates: list[tuple[int, str]] = []
+    for faiss_id in fused_ids[:candidate_k]:
+        chunk = chunk_by_faiss.get(faiss_id)
+        if chunk is None or not chunk.chunk_text or _is_low_quality_chunk(chunk.chunk_text):
+            continue
+        rerank_candidates.append((faiss_id, chunk.chunk_text))
+
+    if settings.rerank_enabled and len(rerank_candidates) > k:
+        reranked = get_reranker().rerank(question, rerank_candidates, top_k=k)
+    else:
+        reranked = [
+            (faiss_id, 1.0, text)
+            for faiss_id, text in rerank_candidates[:k]
+        ]
+
+    contexts: list[ChunkContext] = []
+    for faiss_id, score, text in reranked:
+        chunk = chunk_by_faiss.get(faiss_id)
+        meta = {
+            "source": "user_document",
+            "document_id": document_id,
+            "chunk_index": chunk.chunk_index if chunk else 0,
+            "match_type": "hybrid",
+        }
+        contexts.append(
+            ChunkContext(
+                text=text,
+                score=score,
+                faiss_id=faiss_id,
+                metadata=meta,
+            )
+        )
+
+    logger.info(
+        "Hybrid document retrieval: %d results (semantic=%d, bm25=%s, rerank=%s, document_id=%s)",
+        len(contexts),
+        len(semantic_ranked),
+        len(ranked_lists) > 1,
+        settings.rerank_enabled,
+        document_id,
+    )
+    return contexts
+
+
 def retrieve_document_context(
     question: str,
     db: Session,
@@ -696,11 +795,31 @@ def retrieve_document_context(
             )
         )
 
-    contexts: list[ChunkContext] = []
-    seen_keys: set[str] = set()
     use_keyword_only = _has_strong_keyword_match(
         keyword_contexts
     ) and _should_use_keyword_only_retrieval(content_refs, question)
+
+    if (
+        settings.hybrid_retrieval_enabled
+        and not use_keyword_only
+        and not activity_refs
+        and document_id is not None
+    ):
+        records = chunk_repo.get_by_document_id(document_id)
+        contexts = _hybrid_retrieve_document(
+            question,
+            db,
+            document_id,
+            records,
+            results,
+            search_terms,
+            k,
+        )
+        if contexts:
+            return contexts
+
+    contexts: list[ChunkContext] = []
+    seen_keys: set[str] = set()
 
     semantic_items: list[tuple[int, float, str, dict]] = []
     for faiss_id, score, meta in results:
