@@ -1,97 +1,45 @@
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
+import { ArrowRight, Sparkles } from "lucide-react";
+
+const nodes = [
+  {
+    title: "Learn",
+    desc: "Understand concepts clearly",
+  },
+  {
+    title: "Quiz",
+    desc: "Practice and test knowledge",
+  },
+  {
+    title: "Notes",
+    desc: "Quick revision material",
+  },
+  {
+    title: "Accessibility",
+    desc: "Support for every learner",
+  },
+  {
+    title: "Curriculum AI",
+    desc: "Aligned with school syllabus",
+  },
+  {
+    title: "Offline AI",
+    desc: "Works without cloud dependency",
+  },
+];
 
 export default function HeroSection() {
-  const headlines = [
-    "Understand Better.",
-    "Think Deeper.",
-    "Practice Smarter.",
-    "Build Confidence.",
-    "Keep Learning.",
-  ];
-
-  const placeholders = [
-    "Ask a question...",
-    "Upload your notes...",
-    "Generate a quiz...",
-    "Create a revision sheet...",
-    "Learn in your language...",
-  ];
-
-  const [currentHeadline, setCurrentHeadline] = useState(0);
-  const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
-
-  useEffect(() => {
-    const headlineInterval = setInterval(() => {
-      setCurrentHeadline(
-        (prev) => (prev + 1) % headlines.length
-      );
-    }, 3000);
-
-    return () => clearInterval(headlineInterval);
-  }, []);
-
-  useEffect(() => {
-    const placeholderInterval = setInterval(() => {
-      setCurrentPlaceholder(
-        (prev) => (prev + 1) % placeholders.length
-      );
-    }, 2500);
-
-    return () => clearInterval(placeholderInterval);
-  }, []);
-
   return (
-    <section className="relative overflow-hidden">
-
-      {/* Background Glow */}
-
-      <div
-        className="
-          absolute
-          inset-0
-          -z-10
-          overflow-hidden
-        "
-      >
-        <div
-          className="
-            absolute
-            top-20
-            left-1/2
-            -translate-x-1/2
-            h-[500px]
-            w-[500px]
-            rounded-full
-            bg-blue-200/30
-            blur-[140px]
-          "
-        />
-
-        <div
-          className="
-            absolute
-            bottom-0
-            right-0
-            h-[350px]
-            w-[350px]
-            rounded-full
-            bg-green-200/20
-            blur-[120px]
-          "
-        />
-
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 pt-20 pb-28">
+    <section className="relative min-h-screen flex items-center">
+      <div className="max-w-7xl mx-auto px-6 py-24 w-full">
 
         {/* Badge */}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
+          transition={{ duration: 0.5 }}
+          className="flex justify-center"
         >
           <div
             className="
@@ -99,202 +47,204 @@ export default function HeroSection() {
               items-center
               gap-2
               rounded-full
-              border
-              border-slate-200
               bg-white/80
               backdrop-blur-md
+              border
+              border-slate-200
               px-5
-              py-2.5
+              py-2
               text-sm
-              font-medium
               text-slate-600
               shadow-sm
             "
           >
-            Offline AI • Curriculum Aware • Accessibility First
+            <Sparkles size={14} />
+            Offline • Accessible • Curriculum Aware
           </div>
         </motion.div>
 
         {/* Heading */}
 
-        <div className="mt-14 text-center">
-
-          <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.15 }}
+          className="text-center mt-10"
+        >
+          <h1
             className="
-              text-6xl
-              md:text-8xl
+              text-5xl
+              md:text-7xl
+              lg:text-8xl
               font-black
               tracking-tight
               text-[#1E3A5F]
             "
           >
-            Let's
-          </motion.h1>
+            Saksham AI
+          </h1>
 
-          <div className="h-[90px] md:h-[120px] mt-4">
+          <p
+            className="
+              mt-5
+              text-lg
+              md:text-xl
+              text-slate-600
+              max-w-2xl
+              mx-auto
+            "
+          >
+            Learning Without Barriers
+          </p>
+        </motion.div>
 
-            <AnimatePresence mode="wait">
+        {/* Ecosystem */}
 
+        <div className="mt-20 max-w-4xl mx-auto">
+
+          <div
+            className="
+              grid
+              grid-cols-1
+              sm:grid-cols-2
+              lg:grid-cols-3
+              gap-5
+            "
+          >
+            {nodes.map((node, index) => (
               <motion.div
-                key={headlines[currentHeadline]}
+                key={node.title}
                 initial={{
                   opacity: 0,
-                  y: 25,
+                  y: 30,
                 }}
                 animate={{
                   opacity: 1,
                   y: 0,
                 }}
-                exit={{
-                  opacity: 0,
-                  y: -25,
-                }}
                 transition={{
-                  duration: 0.45,
+                  delay: index * 0.08,
+                }}
+                whileHover={{
+                  y: -6,
+                  scale: 1.03,
                 }}
                 className="
-                  text-4xl
-                  md:text-7xl
-                  font-bold
-                  text-[#256D5A]
+                  group
+                  bg-white/70
+                  backdrop-blur-md
+                  border
+                  border-slate-200
+                  rounded-3xl
+                  p-6
+                  text-center
+                  shadow-sm
+                  hover:shadow-xl
+                  transition-all
                 "
               >
-                {headlines[currentHeadline]}
+                <h3
+                  className="
+                    text-xl
+                    font-bold
+                    text-[#1E3A5F]
+                  "
+                >
+                  {node.title}
+                </h3>
+
+                <p
+                  className="
+                    mt-3
+                    text-sm
+                    text-slate-600
+                  "
+                >
+                  {node.desc}
+                </p>
               </motion.div>
-
-            </AnimatePresence>
-
+            ))}
           </div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              delay: 0.2,
-            }}
-            className="
-              mt-6
-              max-w-3xl
-              mx-auto
-              text-lg
-              md:text-xl
-              text-slate-600
-              leading-relaxed
-            "
-          >
-            An accessible learning workspace
-            designed to help students understand
-            concepts, strengthen knowledge and
-            learn with confidence.
-          </motion.p>
 
         </div>
 
-        {/* Search Box */}
+        {/* Mission */}
 
         <motion.div
           initial={{
             opacity: 0,
-            y: 25,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            delay: 0.5,
+          }}
+          className="
+            mt-16
+            text-center
+          "
+        >
+          <p
+            className="
+              text-slate-600
+              max-w-3xl
+              mx-auto
+              leading-relaxed
+            "
+          >
+            Saksham AI combines curriculum-aware learning,
+            accessibility support, offline intelligence,
+            summaries, quizzes, and multilingual assistance
+            into one learning ecosystem designed for every student.
+          </p>
+        </motion.div>
+
+        {/* CTA */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 20,
           }}
           animate={{
             opacity: 1,
             y: 0,
           }}
           transition={{
-            delay: 0.3,
-          }}
-          className="mt-14"
-        >
-
-          <div
-            className="
-              max-w-4xl
-              mx-auto
-              bg-white/90
-              backdrop-blur-md
-              border
-              border-slate-200
-              rounded-[32px]
-              shadow-xl
-              p-4
-            "
-          >
-
-            <input
-              type="text"
-              placeholder={
-                placeholders[currentPlaceholder]
-              }
-              className="
-                w-full
-                bg-transparent
-                px-4
-                py-4
-                text-lg
-                outline-none
-              "
-            />
-
-          </div>
-
-        </motion.div>
-
-        {/* Quick Actions */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          transition={{
-            delay: 0.4,
+            delay: 0.6,
           }}
           className="
-            mt-8
+            mt-12
             flex
-            flex-wrap
             justify-center
-            gap-3
           "
         >
-
-          {[
-            "Understand",
-            "Practice",
-            "Revise",
-            "Quiz",
-            "Accessibility",
-          ].map((item) => (
-            <button
-              key={item}
-              className="
-                rounded-full
-                bg-white
-                border
-                border-slate-200
-                px-5
-                py-2.5
-                text-sm
-                font-medium
-                shadow-sm
-                hover:shadow-md
-                hover:-translate-y-1
-                transition-all
-              "
-            >
-              {item}
-            </button>
-          ))}
-
+          <button
+            onClick={() => {
+              window.location.href = "/learn";
+            }}
+            className="
+              flex
+              items-center
+              gap-2
+              px-8
+              py-4
+              rounded-2xl
+              bg-[#1E3A5F]
+              text-white
+              font-semibold
+              shadow-lg
+              hover:-translate-y-1
+              transition-all
+            "
+          >
+            Enter Workspace
+            <ArrowRight size={18} />
+          </button>
         </motion.div>
 
       </div>
-
     </section>
   );
 }

@@ -1,163 +1,243 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Brain,
   BookOpen,
+  Accessibility,
   FileText,
-  CheckCircle,
 } from "lucide-react";
 
-export default function WorkspacePreview() {
-  return (
-    <section className="py-28">
+const tabs = [
+  {
+    id: "learn",
+    icon: BookOpen,
+    title: "Learn",
+    heading: "AI-Powered Learning",
+    description:
+      "Ask questions from uploaded notes and receive curriculum-aware explanations adapted to the student's level.",
+  },
+  {
+    id: "quiz",
+    icon: Brain,
+    title: "Quiz",
+    heading: "Smart Assessment",
+    description:
+      "Generate quizzes instantly and evaluate understanding through interactive practice.",
+  },
+  {
+    id: "accessibility",
+    icon: Accessibility,
+    title: "Accessibility",
+    heading: "Learning For Everyone",
+    description:
+      "Support beginner learners, dyslexic learners and visually impaired students with adaptive content.",
+  },
+  {
+    id: "revision",
+    icon: FileText,
+    title: "Revision",
+    heading: "Quick Revision",
+    description:
+      "Generate summaries, notes and revision material for faster learning.",
+  },
+];
 
+export default function WorkspacePreview() {
+  const [active, setActive] = useState(tabs[0]);
+
+  return (
+    <section
+      id="workspace-preview"
+      className="py-20"
+    >
       <div className="max-w-7xl mx-auto px-6">
 
         <div className="text-center">
 
-          <p className="uppercase tracking-[0.3em] text-sm text-slate-500">
+          <p className="uppercase tracking-[0.35em] text-sm text-slate-500">
             Learning Workspace
           </p>
 
-          <h2 className="mt-4 text-5xl font-bold text-[#1E3A5F]">
-            Designed Around Understanding
+          <h2 className="mt-4 text-4xl md:text-6xl font-bold text-[#1E3A5F]">
+            Explore The Platform
           </h2>
+
+          <p className="mt-6 max-w-3xl mx-auto text-slate-600">
+            A unified learning environment designed for
+            understanding, practice, revision and accessibility.
+          </p>
 
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="
-            mt-20
-            bg-white
-            border
-            border-slate-200
-            rounded-[40px]
-            shadow-2xl
-            overflow-hidden
-          "
-        >
+        {/* Tabs */}
 
-          <div className="border-b px-8 py-5 bg-slate-50">
+        <div className="flex flex-wrap justify-center gap-4 mt-14">
 
-            <div className="flex gap-2">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
 
-              <div className="w-3 h-3 rounded-full bg-red-400" />
-              <div className="w-3 h-3 rounded-full bg-yellow-400" />
-              <div className="w-3 h-3 rounded-full bg-green-400" />
-
-            </div>
-
-          </div>
-
-          <div className="grid lg:grid-cols-[280px_1fr]">
-
-            <div className="border-r p-6 bg-slate-50">
-
-              <h3 className="font-bold text-lg mb-6">
-                Learning Tools
-              </h3>
-
-              <div className="space-y-4">
-
-                <div className="flex gap-3 items-center">
-                  <BookOpen size={20} />
-                  Explain
-                </div>
-
-                <div className="flex gap-3 items-center">
-                  <Brain size={20} />
-                  Quiz
-                </div>
-
-                <div className="flex gap-3 items-center">
-                  <FileText size={20} />
-                  Revision
-                </div>
-
-              </div>
-
-            </div>
-
-            <div className="p-8">
-
-              <div className="bg-slate-100 rounded-2xl p-4">
-                What is Photosynthesis?
-              </div>
-
-              <div className="mt-6 bg-blue-50 rounded-2xl p-6">
-
-                <h4 className="font-bold text-lg">
-                  Explanation
-                </h4>
-
-                <p className="mt-3 text-slate-600">
-                  Plants convert sunlight,
-                  water and carbon dioxide
-                  into food and energy.
-                </p>
-
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-5 mt-6">
-
-                <div className="bg-green-50 p-5 rounded-2xl">
-
-                  <h4 className="font-semibold">
-                    Key Concepts
-                  </h4>
-
-                  <ul className="mt-3 space-y-2">
-
-                    <li>Sunlight</li>
-                    <li>Chlorophyll</li>
-                    <li>Energy</li>
-
-                  </ul>
-
-                </div>
-
-                <div className="bg-yellow-50 p-5 rounded-2xl">
-
-                  <h4 className="font-semibold">
-                    Quick Quiz
-                  </h4>
-
-                  <p className="mt-3">
-                    Test understanding instantly.
-                  </p>
-
-                </div>
-
-              </div>
-
+            return (
               <button
-                className="
-                  mt-6
+                key={tab.id}
+                onClick={() => setActive(tab)}
+                className={`
                   flex
                   items-center
-                  gap-2
-                  bg-[#1E3A5F]
-                  text-white
+                  gap-3
                   px-5
                   py-3
-                  rounded-xl
+                  rounded-full
+                  transition-all
+                  border
+                  ${
+                    active.id === tab.id
+                      ? "bg-[#1E3A5F] text-white border-[#1E3A5F]"
+                      : "bg-white/70 text-slate-700 border-slate-200"
+                  }
+                `}
+              >
+                <Icon size={18} />
+                {tab.title}
+              </button>
+            );
+          })}
+
+        </div>
+
+        {/* Showcase */}
+
+        <AnimatePresence mode="wait">
+
+          <motion.div
+            key={active.id}
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            exit={{
+              opacity: 0,
+              y: -20,
+            }}
+            transition={{
+              duration: 0.35,
+            }}
+            className="
+              mt-12
+              bg-white/80
+              backdrop-blur-md
+              border
+              border-slate-200
+              rounded-[40px]
+              overflow-hidden
+              shadow-xl
+            "
+          >
+
+            <div className="grid lg:grid-cols-2">
+
+              {/* Left */}
+
+              <div className="p-10">
+
+                <div className="text-sm uppercase tracking-widest text-slate-500">
+                  {active.title}
+                </div>
+
+                <h3
+                  className="
+                    mt-4
+                    text-4xl
+                    font-bold
+                    text-[#1E3A5F]
+                  "
+                >
+                  {active.heading}
+                </h3>
+
+                <p
+                  className="
+                    mt-6
+                    text-lg
+                    leading-relaxed
+                    text-slate-600
+                  "
+                >
+                  {active.description}
+                </p>
+
+                <div className="mt-10 space-y-4">
+
+                  <div className="flex gap-3">
+                    <div className="w-2 h-2 rounded-full bg-[#1E3A5F] mt-2" />
+                    Curriculum Aware
+                  </div>
+
+                  <div className="flex gap-3">
+                    <div className="w-2 h-2 rounded-full bg-[#1E3A5F] mt-2" />
+                    Personalized Learning
+                  </div>
+
+                  <div className="flex gap-3">
+                    <div className="w-2 h-2 rounded-full bg-[#1E3A5F] mt-2" />
+                    Offline Ready
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* Right */}
+
+              <div
+                className="
+                  bg-gradient-to-br
+                  from-slate-50
+                  to-slate-100
+                  min-h-[420px]
+                  flex
+                  items-center
+                  justify-center
+                  p-10
                 "
               >
-                <CheckCircle size={18} />
-                Save Revision Card
-              </button>
+
+                {/* Replace this later with real screenshots */}
+
+                <div
+                  className="
+                    w-full
+                    h-[320px]
+                    rounded-[28px]
+                    border-2
+                    border-dashed
+                    border-slate-300
+                    flex
+                    items-center
+                    justify-center
+                    text-slate-400
+                    text-center
+                    text-lg
+                    font-medium
+                  "
+                >
+                  {active.title} Screenshot
+                  <br />
+                  (Replace Later)
+                </div>
+
+              </div>
 
             </div>
 
-          </div>
+          </motion.div>
 
-        </motion.div>
+        </AnimatePresence>
 
       </div>
-
     </section>
   );
 }

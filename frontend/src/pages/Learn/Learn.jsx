@@ -39,6 +39,7 @@ export default function Learn() {
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
+  const [activeTab, setActiveTab] = useState("answer");
   useEffect(() => {
     loadInitialData();
   }, []);
@@ -172,6 +173,7 @@ export default function Learn() {
       });
 
       setSummary(response.data?.data?.summary || "No summary generated.");
+      setActiveTab("summary");
     } catch (error) {
       console.error(error);
       alert("Failed to generate summary");
@@ -200,6 +202,7 @@ export default function Learn() {
         response.data?.data?.simplified_answer ||
           "No simplified answer generated.",
       );
+      setActiveTab("simplify");
     } catch (error) {
       console.error(error);
       alert("Failed to simplify explanation");
@@ -224,6 +227,7 @@ export default function Learn() {
       setHindiText(
         response.data?.data?.hindi_text || "No translation generated.",
       );
+      setActiveTab("hindi");
     } catch (error) {
       console.error(error.response?.data);
       console.error(error);
@@ -251,6 +255,7 @@ export default function Learn() {
       });
 
       setQuiz(response.data?.data?.questions || []);
+      setActiveTab("quiz");
 
       setSelectedAnswers({});
       setScore(null);
@@ -416,169 +421,198 @@ export default function Learn() {
             {hasResponse && (
               <>
                 <div className="bg-white border border-slate-200 rounded-3xl p-6">
-                  <h2 className="text-xl font-semibold mb-4">Explanation</h2>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <button
+                      onMouseEnter={() => setActiveTab("answer")}
+                      onClick={() => setActiveTab("answer")}
+                      className={`
+px-5
+py-2.5
+rounded-full
+font-medium
+transition-all
+duration-300
+${
+  activeTab === "answer"
+    ? "bg-[#1E3A5F] text-white shadow-lg scale-105"
+    : "bg-white border border-slate-200 text-slate-600 hover:border-[#1E3A5F] hover:text-[#1E3A5F]"
+}
+`}
+                    >
+                      Answer
+                    </button>
 
+                    {summary && (
+                      <button
+                        onMouseEnter={() => setActiveTab("summary")}
+                        onClick={() => setActiveTab("summary")}
+                        className={`
+px-5
+py-2.5
+rounded-full
+font-medium
+transition-all
+duration-300
+${
+  activeTab === "summary"
+    ? "bg-[#1E3A5F] text-white shadow-lg scale-105"
+    : "bg-white border border-slate-200 text-slate-600 hover:border-[#1E3A5F] hover:text-[#1E3A5F]"
+}
+`}
+                      >
+                        Summary
+                      </button>
+                    )}
+
+                    {simplifiedText && (
+                      <button
+                        onMouseEnter={() => setActiveTab("simplify")}
+                        onClick={() => setActiveTab("simplify")}
+                        className={`
+px-5
+py-2.5
+rounded-full
+font-medium
+transition-all
+duration-300
+${
+  activeTab === "simplify"
+    ? "bg-[#1E3A5F] text-white shadow-lg scale-105"
+    : "bg-white border border-slate-200 text-slate-600 hover:border-[#1E3A5F] hover:text-[#1E3A5F]"
+}
+`}
+                      >
+                        Simplified
+                      </button>
+                    )}
+
+                    {hindiText && (
+                      <button
+                        onMouseEnter={() => setActiveTab("hindi")}
+                        onClick={() => setActiveTab("hindi")}
+                        className={`
+px-5
+py-2.5
+rounded-full
+font-medium
+transition-all
+duration-300
+${
+  activeTab === "hindi"
+    ? "bg-[#1E3A5F] text-white shadow-lg scale-105"
+    : "bg-white border border-slate-200 text-slate-600 hover:border-[#1E3A5F] hover:text-[#1E3A5F]"
+}
+`}
+                      >
+                        Hindi
+                      </button>
+                    )}
+
+                    {quiz.length > 0 && (
+                      <button
+                        onClick={() => setActiveTab("quiz")}
+                        className={`px-4 py-2 rounded-xl transition-all ${
+                          activeTab === "quiz"
+                            ? "bg-[#1E3A5F] text-white"
+                            : "bg-slate-100"
+                        }`}
+                      >
+                        Quiz
+                      </button>
+                    )}
+                  </div>
                   {loading ? (
                     <div className="text-slate-500">Generating answer...</div>
                   ) : (
-                    <div className="whitespace-pre-wrap leading-8 text-slate-700">
-                      {answer}
-                    </div>
+                    <>
+                      {activeTab === "answer" && (
+                        <div className="whitespace-pre-wrap leading-8 text-slate-700">
+                          {answer}
+                        </div>
+                      )}
+
+                      {activeTab === "summary" && (
+                        <div className="whitespace-pre-wrap leading-8 text-slate-700">
+                          {summaryLoading ? "Generating summary..." : summary}
+                        </div>
+                      )}
+
+                      {activeTab === "simplify" && (
+                        <div className="whitespace-pre-wrap leading-8 text-slate-700">
+                          {simplifyLoading ? "Simplifying..." : simplifiedText}
+                        </div>
+                      )}
+
+                      {activeTab === "hindi" && (
+                        <div className="whitespace-pre-wrap leading-8 text-slate-700">
+                          {hindiLoading ? "Translating..." : hindiText}
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
 
-                {summary && (
-                  <div className="bg-white border border-slate-200 rounded-3xl p-6">
-                    <h2 className="text-xl font-semibold mb-4">Summary</h2>
-
-                    {summaryLoading ? (
+                {activeTab === "quiz" && (
+                  <div>
+                    {quiz.length === 0 ? (
                       <div className="text-slate-500">
-                        Generating summary...
+                        Generate a quiz using the Quiz tool.
                       </div>
                     ) : (
-                      <div className="whitespace-pre-wrap leading-8 text-slate-700">
-                        {summary}
-                      </div>
-                    )}
-                  </div>
-                )}
+                      <>
+                        {quiz.map((q, index) => (
+                          <div key={index} className="mb-8">
+                            <p className="font-medium mb-4">
+                              {index + 1}. {q.question}
+                            </p>
 
-                {simplifiedText && (
-                  <div className="bg-white border border-slate-200 rounded-3xl p-6">
-                    <h2 className="text-xl font-semibold mb-4">
-                      Simplified Explanation
-                    </h2>
-
-                    {simplifyLoading ? (
-                      <div className="text-slate-500">Simplifying...</div>
-                    ) : (
-                      <div className="whitespace-pre-wrap leading-8 text-slate-700">
-                        {simplifiedText}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {hindiText && (
-                  <div className="bg-white border border-slate-200 rounded-3xl p-6">
-                    <h2 className="text-xl font-semibold mb-4">
-                      Hindi Explanation
-                    </h2>
-
-                    {hindiLoading ? (
-                      <div className="text-slate-500">Translating...</div>
-                    ) : (
-                      <div className="whitespace-pre-wrap leading-8 text-slate-700">
-                        {hindiText}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {quiz.length > 0 && (
-                  <div className="bg-white border border-slate-200 rounded-3xl p-6">
-                    <h2 className="text-xl font-semibold mb-6">Quiz</h2>
-
-                    {quiz.map((q, index) => (
-                      <div key={index} className="mb-8">
-                        <p className="font-medium mb-4">
-                          {index + 1}. {q.question}
-                        </p>
-
-                        {["A", "B", "C", "D"].map((option) => (
-                          <label
-                            key={option}
-                            className={`block mb-2 p-2 rounded-lg ${
-                              quizSubmitted && option === q.correct_answer
-                                ? "bg-green-50 border border-green-300"
-                                : quizSubmitted &&
-                                    selectedAnswers[index] === option &&
-                                    option !== q.correct_answer
-                                  ? "bg-red-50 border border-red-300"
-                                  : ""
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              disabled={quizSubmitted}
-                              name={`question-${index}`}
-                              value={option}
-                              checked={selectedAnswers[index] === option}
-                              onChange={() =>
-                                setSelectedAnswers({
-                                  ...selectedAnswers,
-                                  [index]: option,
-                                })
-                              }
-                              className="mr-2"
-                            />
-                            {option}. {q.options[option]}
-                            {quizSubmitted && q.correct_answer === option && (
-                              <span className="ml-2 text-green-600 font-medium">
-                                ✓ Correct Answer
-                              </span>
-                            )}
-                            {quizSubmitted &&
-                              selectedAnswers[index] === option &&
-                              option !== q.correct_answer && (
-                                <span className="ml-2 text-red-600 font-medium">
-                                  ✗ Your Choice
-                                </span>
-                              )}
-                          </label>
+                            {["A", "B", "C", "D"].map((option) => (
+                              <label
+                                key={option}
+                                className={`block mb-2 p-2 rounded-lg ${
+                                  quizSubmitted && option === q.correct_answer
+                                    ? "bg-green-50 border border-green-300"
+                                    : quizSubmitted &&
+                                        selectedAnswers[index] === option &&
+                                        option !== q.correct_answer
+                                      ? "bg-red-50 border border-red-300"
+                                      : ""
+                                }`}
+                              >
+                                <input
+                                  type="radio"
+                                  disabled={quizSubmitted}
+                                  name={`question-${index}`}
+                                  value={option}
+                                  checked={selectedAnswers[index] === option}
+                                  onChange={() =>
+                                    setSelectedAnswers({
+                                      ...selectedAnswers,
+                                      [index]: option,
+                                    })
+                                  }
+                                  className="mr-2"
+                                />
+                                {option}. {q.options[option]}
+                              </label>
+                            ))}
+                          </div>
                         ))}
-                      </div>
-                    ))}
-
-                    <button
-                      onClick={submitQuiz}
-                      disabled={quizSubmitted}
-                      className={`
-        bg-[#1E3A5F]
-        text-white
-        px-6
-        py-3
-        rounded-xl
-        ${quizSubmitted ? "opacity-50 cursor-not-allowed" : ""}
-      `}
-                    >
-                      Submit Quiz
-                    </button>
-
-                    {score !== null && (
-                      <div className="mt-4 font-semibold">
-                        <div className="mt-6 p-4 rounded-2xl bg-slate-50">
-                          <h3 className="font-semibold">Quiz Result</h3>
-
-                          <p className="mt-2">
-                            Score: {score}/{quiz.length}
-                          </p>
-
-                          <p className="text-slate-500 mt-1">
-                            {Math.round((score / quiz.length) * 100)}% Accuracy
-                          </p>
-                        </div>
 
                         <button
-                          onClick={() => {
-                            setQuiz([]);
-                            setScore(null);
-                            setQuizSubmitted(false);
-                            setSelectedAnswers({});
-                            handleQuiz();
-                            setQuizSubmitted(false);
-                          }}
+                          onClick={submitQuiz}
+                          disabled={quizSubmitted}
                           className="
-    mt-4
-    border
-    px-4                              
-    py-2
-    rounded-xl
-  "
+            bg-[#1E3A5F]
+            text-white
+            px-6
+            py-3
+            rounded-xl
+          "
                         >
-                          Generate New Quiz
+                          Submit Quiz
                         </button>
-                      </div>
+                      </>
                     )}
                   </div>
                 )}
@@ -603,36 +637,106 @@ export default function Learn() {
               <div className="bg-white border border-slate-200 rounded-3xl p-6 sticky top-24">
                 <h2 className="text-xl font-semibold mb-6">Learning Tools</h2>
 
-                <div className="space-y-4">
+                <div
+                  className="
+    mt-8
+    flex
+    flex-wrap
+    items-center
+    gap-3
+    p-4
+    rounded-2xl
+    bg-white/70
+    backdrop-blur-md
+    border
+    border-slate-200
+  "
+                >
                   <button
                     onClick={handleQuiz}
-                    className="w-full flex items-center gap-3 border rounded-2xl px-4 py-4 hover:bg-slate-50"
+                    className={`
+px-4
+py-2.5
+rounded-full
+text-sm
+font-medium
+transition-all
+duration-300
+border
+${loading ? "opacity-50 cursor-not-allowed" : "hover:-translate-y-1"}
+bg-slate-50
+border-slate-200
+hover:border-[#1E3A5F]
+hover:text-[#1E3A5F]
+`}
                   >
-                    <Brain size={20} />
+                    <Brain size={16} />
                     Generate Quiz
                   </button>
 
                   <button
                     onClick={handleSummary}
-                    className="w-full flex items-center gap-3 border rounded-2xl px-4 py-4 hover:bg-slate-50"
+                    className={`
+px-4
+py-2.5
+rounded-full
+text-sm
+font-medium
+transition-all
+duration-300
+border
+${loading ? "opacity-50 cursor-not-allowed" : "hover:-translate-y-1"}
+bg-slate-50
+border-slate-200
+hover:border-[#1E3A5F]
+hover:text-[#1E3A5F]
+`}
                   >
-                    <FileText size={20} />
+                    <FileText size={16} />
                     Summarize
                   </button>
 
                   <button
                     onClick={handleSimplify}
-                    className="w-full flex items-center gap-3 border rounded-2xl px-4 py-4 hover:bg-slate-50"
+                    className={`
+px-4
+py-2.5
+rounded-full
+text-sm
+font-medium
+transition-all
+duration-300
+border
+${loading ? "opacity-50 cursor-not-allowed" : "hover:-translate-y-1"}
+bg-slate-50
+border-slate-200
+hover:border-[#1E3A5F]
+hover:text-[#1E3A5F]
+`}
                   >
-                    <BookOpen size={20} />
+                    <BookOpen size={16} />
                     Simplify
                   </button>
 
                   <button
                     onClick={handleHindi}
-                    className="w-full flex items-center gap-3 border rounded-2xl px-4 py-4 hover:bg-slate-50"
+                    className={`
+px-4
+py-2.5
+rounded-full
+text-sm
+font-medium
+transition-all
+duration-300
+border
+${loading ? "opacity-50 cursor-not-allowed" : "hover:-translate-y-1"}
+bg-slate-50
+border-slate-200
+hover:border-[#1E3A5F]
+hover:text-[#1E3A5F]
+`}
                   >
-                    <Languages size={20} />
+                    <Languages size={16} />
                     Hindi
                   </button>
 
@@ -640,9 +744,23 @@ export default function Learn() {
                     onClick={() =>
                       isSpeaking ? stopAudio() : speakText(answer)
                     }
-                    className="w-full flex items-center gap-3 border rounded-2xl px-4 py-4 hover:bg-slate-50"
+                    className={`
+px-4
+py-2.5
+rounded-full
+text-sm
+font-medium
+transition-all
+duration-300
+border
+${loading ? "opacity-50 cursor-not-allowed" : "hover:-translate-y-1"}
+bg-slate-50
+border-slate-200
+hover:border-[#1E3A5F]
+hover:text-[#1E3A5F]
+`}
                   >
-                    <Volume2 size={20} />
+                    <Volume2 size={16} />
                     {isSpeaking ? "Stop Audio" : "Read Aloud"}
                   </button>
                 </div>

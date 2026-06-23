@@ -1,153 +1,142 @@
 import { motion } from "framer-motion";
+import {
+  BookOpen,
+  WifiOff,
+  Accessibility,
+  Languages,
+  Brain,
+} from "lucide-react";
 
-const journey = [
+const pillars = [
   {
-    step: "01",
-    title: "Ask",
-    description: "Start with any doubt, concept or topic from your curriculum.",
+    icon: BookOpen,
+    title: "Curriculum Aware",
+    description:
+      "Aligned with school curriculum and educational content rather than generic internet answers.",
   },
   {
-    step: "02",
-    title: "Understand",
-    description: "Receive explanations adapted to your learning level.",
+    icon: WifiOff,
+    title: "Offline First",
+    description:
+      "Designed to function even in low-connectivity environments.",
   },
   {
-    step: "03",
-    title: "Practice",
-    description: "Generate quizzes and reinforce your understanding.",
+    icon: Accessibility,
+    title: "Accessible Learning",
+    description:
+      "Supports beginner learners, dyslexic learners and visually impaired students.",
   },
   {
-    step: "04",
-    title: "Revise",
-    description: "Turn concepts into summaries and revision material.",
+    icon: Languages,
+    title: "Multilingual Support",
+    description:
+      "Learning experiences can be adapted into different languages.",
   },
   {
-    step: "05",
-    title: "Grow",
-    description: "Build confidence through continuous learning.",
+    icon: Brain,
+    title: "Personalized Understanding",
+    description:
+      "Explanations adapt to different learning levels and needs.",
   },
 ];
 
 export default function LearningJourney() {
   return (
-    <section className="py-32 relative">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="learning-journey" className="py-20">
+
+      <div className="max-w-7xl mx-auto px-6">
+
         <div className="text-center">
-          <p className="uppercase tracking-[0.3em] text-slate-500 text-sm">
-            Learning Journey
+
+          <p className="uppercase tracking-[0.35em] text-sm text-slate-500">
+            Why Saksham AI
           </p>
 
-          <h2 className="mt-5 text-5xl font-bold text-[#1E3A5F]">
-            Every Question Has A Path
+          <h2 className="mt-4 text-4xl md:text-6xl font-bold text-[#1E3A5F]">
+            Built For Real Learning
           </h2>
+
+          <p className="mt-6 max-w-3xl mx-auto text-slate-600 text-lg">
+            Saksham AI is designed specifically for education,
+            accessibility and curriculum-aware learning rather than
+            general-purpose conversation.
+          </p>
+
         </div>
 
-        <div className="mt-24 relative">
-          <div
+        <div className="mt-20">
+
+  {pillars.map((pillar, index) => (
+    <motion.div
+      key={pillar.title}
+      initial={{
+        opacity: 0,
+        y: 40,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{ once: true }}
+      transition={{
+        delay: index * 0.1,
+      }}
+      className="
+        py-12
+        border-b
+        border-slate-200
+      "
+    >
+
+      <div className="grid lg:grid-cols-[120px_1fr] gap-8 items-start">
+
+        <div
+          className="
+            text-5xl
+            md:text-6xl
+            font-black
+            text-slate-200
+          "
+        >
+          {String(index + 1).padStart(2, "0")}
+        </div>
+
+        <div>
+
+          <h3
             className="
-    absolute
-    left-1/2
-    top-10
-    bottom-10
-    w-[3px]
-    bg-gradient-to-b
-    from-slate-200
-    via-[#1E3A5F]
-    to-slate-200
-    -translate-x-1/2
-    hidden md:block
-  "
-          />
+              text-3xl
+              md:text-5xl
+              font-bold
+              text-[#1E3A5F]
+            "
+          >
+            {pillar.title}
+          </h3>
 
-          <div className="space-y-16">
-            {journey.map((item, index) => (
-              <motion.div
-                key={item.step}
-                initial={{
-                  opacity: 0,
-                  y: 50,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                viewport={{
-                  once: true,
-                }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.15,
-                }}
-                className={`
-                  flex
-                  items-center
-                  gap-10
-                  ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}
-                `}
-              >
-                <div className="flex-1">
-                  <div
-                    className="
-                      bg-white
-                      border
-                      border-slate-200
-                      rounded-[28px]
-                      p-8
-                      shadow-lg
-                    "
-                  >
-                    <span className="text-sm text-slate-500">{item.step}</span>
+          <p
+            className="
+              mt-4
+              max-w-3xl
+              text-lg
+              text-slate-600
+              leading-relaxed
+            "
+          >
+            {pillar.description}
+          </p>
 
-                    <h3
-                      className="
-                        mt-2
-                        text-3xl
-                        font-bold
-                        text-[#1E3A5F]
-                      "
-                    >
-                      {item.title}
-                    </h3>
+        </div>
 
-                    <p
-                      className="
-                        mt-4
-                        text-slate-600
-                        leading-relaxed
-                      "
-                    >
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
+      </div>
 
-                <div
-  className="
-    hidden
-    md:flex
-    w-16
-    h-16
-    rounded-full
-    bg-[#1E3A5F]
-    text-white
-    shadow-xl
-    items-center
-    justify-center
-    font-bold
-    text-lg
-    shrink-0
-    z-10
-  "
->
-  {item.step}
+    </motion.div>
+  ))}
+
 </div>
 
-                <div className="flex-1" />
-              </motion.div>
-            ))}
-          </div>
-        </div>
       </div>
+
     </section>
   );
 }

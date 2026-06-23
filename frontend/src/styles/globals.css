@@ -6,20 +6,68 @@
   --accent: #d4a017;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background:
     radial-gradient(
-      circle at top center,
-      rgba(30,58,95,0.08),
-      transparent 35%
+      circle at 20% 20%,
+      rgba(16, 185, 129, 0.05),
+      transparent 40%
     ),
     radial-gradient(
-      circle at bottom right,
-      rgba(37,109,90,0.06),
-      transparent 30%
+      circle at 80% 70%,
+      rgba(30, 58, 95, 0.06),
+      transparent 40%
     ),
     #f8fafc;
 
   color: #0f172a;
   font-family: Inter, sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background-image:
+    linear-gradient(
+      rgba(30, 58, 95, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(30, 58, 95, 0.025) 1px,
+      transparent 1px
+    );
+
+  background-size: 48px 48px;
+
+  pointer-events: none;
+  z-index: -30;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(30, 58, 95, 0.25);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(30, 58, 95, 0.4);
 }
