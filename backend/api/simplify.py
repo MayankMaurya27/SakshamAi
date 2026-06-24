@@ -33,7 +33,7 @@ def simplify_explanation(
             subject=request.subject,
             chapter=request.chapter,
             topic=request.topic,
-            mode=LearningMode.SIMPLIFY,
+            mode=LearningMode.BEGINNER,
             accessibility_profile=request.accessibility_profile,
         )
         data = with_accessibility(

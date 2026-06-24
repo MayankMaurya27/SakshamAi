@@ -10,7 +10,7 @@ const profiles = [
     id: "beginner",
     title: "Beginner Learners",
     description:
-      "Concepts simplified with clear examples, step-by-step explanations, and guided learning support.",
+      "Direct, structured curriculum answers aligned with your syllabus for precise and accurate learning.",
     example: "Plants use sunlight, water, and air to make their food.",
   },
   {

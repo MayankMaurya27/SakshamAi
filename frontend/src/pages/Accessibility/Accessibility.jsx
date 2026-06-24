@@ -26,12 +26,12 @@ const profiles = [
     icon: User,
     title: "Beginner Learners",
     description:
-      "Concepts are simplified into easy-to-understand explanations with examples and guided learning support. Perfect for students new to a topic or building foundational understanding.",
+      "Delivers direct, structured, and curriculum-accurate textbook answers. Perfect for standard syllabus-aligned study, keeping explanations precise and clear.",
     features: [
-      "Step-by-step explanations",
-      "Real-world examples",
-      "Guided learning flow",
-      "Clear, simple language",
+      "Syllabus-aligned answers",
+      "Structured explanations",
+      "Direct factual context",
+      "Curriculum focus",
     ],
     example: {
       question: "What is photosynthesis?",

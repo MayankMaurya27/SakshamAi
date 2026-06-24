@@ -16,7 +16,7 @@ def resolve_mode(
         return base_mode
 
     profile_map = {
-        AccessibilityProfile.BEGINNER: LearningMode.BEGINNER,
+        AccessibilityProfile.BEGINNER: base_mode,
         AccessibilityProfile.DYSLEXIA: LearningMode.DYSLEXIA,
         AccessibilityProfile.VISUAL: LearningMode.VISUAL,
     }

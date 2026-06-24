@@ -11,8 +11,9 @@ def test_resolve_mode_no_profile():
 
 
 def test_resolve_mode_beginner():
-    """Beginner profile should override to BEGINNER mode."""
-    assert resolve_mode(LearningMode.LEARN, AccessibilityProfile.BEGINNER) == LearningMode.BEGINNER
+    """Beginner profile should return base mode."""
+    assert resolve_mode(LearningMode.LEARN, AccessibilityProfile.BEGINNER) == LearningMode.LEARN
+    assert resolve_mode(LearningMode.SIMPLIFY, AccessibilityProfile.BEGINNER) == LearningMode.SIMPLIFY
 
 
 def test_resolve_mode_dyslexia():
