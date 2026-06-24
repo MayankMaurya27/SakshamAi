@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { Link } from "react-router-dom";
 import {
   FileText,
   Sparkles,
@@ -129,10 +130,20 @@ export default function Summary() {
         )}
 
         <div className="grid md:grid-cols-2 gap-5 mt-10">
-          <Card className="h-full">
+          <Card
+            hover
+            onClick={() => setSource("saksham")}
+            className={`h-full cursor-pointer transition-all duration-300 ${
+              source === "saksham"
+                ? "!border-accent !bg-accent/10 shadow-glow scale-[1.01]"
+                : "border-border hover:!border-accent/30"
+            }`}
+          >
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <BookOpen className="text-primary" size={22} />
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 ${
+                source === "saksham" ? "bg-accent/20" : "bg-primary/10"
+              }`}>
+                <BookOpen className={source === "saksham" ? "text-accent" : "text-primary"} size={22} />
               </div>
 
               <div>
@@ -147,10 +158,20 @@ export default function Summary() {
             </div>
           </Card>
 
-          <Card className="h-full">
+          <Card
+            hover
+            onClick={() => setSource("document")}
+            className={`h-full cursor-pointer transition-all duration-300 ${
+              source === "document"
+                ? "!border-accent !bg-accent/10 shadow-glow scale-[1.01]"
+                : "border-border hover:!border-accent/30"
+            }`}
+          >
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <FileText className="text-primary" size={22} />
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 ${
+                source === "document" ? "bg-accent/20" : "bg-primary/10"
+              }`}>
+                <FileText className={source === "document" ? "text-accent" : "text-primary"} size={22} />
               </div>
 
               <div>
@@ -248,6 +269,19 @@ export default function Summary() {
                 : "Generate Summary"}
             </Button>
           </div>
+
+          {source === "document" && documents.length === 0 && (
+            <div className="mt-6 flex items-center gap-2 text-sm text-primary bg-primary/10 border border-primary/20 rounded-xl px-4 py-3">
+              <AlertCircle size={16} className="shrink-0 text-primary" />
+              <span>
+                No documents found. Please upload a PDF document in the{" "}
+                <Link to="/upload" className="underline font-medium hover:text-primary-light">
+                  Upload section
+                </Link>{" "}
+                first.
+              </span>
+            </div>
+          )}
         </Card>
 
         {summary && (
