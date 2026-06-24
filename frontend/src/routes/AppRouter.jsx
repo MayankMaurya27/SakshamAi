@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { LoadingState } from "../components/ui/Spinner";
 
+const Summary = lazy(() => import("../pages/Summary/Summary"));
 const Home = lazy(() => import("../pages/Home/Home"));
 const Learn = lazy(() => import("../pages/Learn/Learn"));
 const Quiz = lazy(() => import("../pages/Quiz/Quiz"));
@@ -25,6 +26,7 @@ export default function AppRouter() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/learn" element={<Learn />} />
+          <Route path="/summary" element={<Summary />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/dashboard" element={<Dashboard />} />

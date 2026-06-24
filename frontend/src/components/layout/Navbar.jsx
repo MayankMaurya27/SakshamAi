@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Menu, X, ArrowRight, BookMarked } from "lucide-react";
 import Logo from "../brand/Logo";
+import { label } from "framer-motion/client";
 
 const navItems = [
-  { to: "/learn", label: "Learn" },
-  { to: "/quiz", label: "Quiz" },
-  { to: "/upload", label: "Notes" },
-  { to: "/dashboard", label: "Dashboard" },
   { to: "/accessibility", label: "Accessibility" },
+  { to: "/dashboard", label: "Dashboard" },
+  { to: "/upload", label: "Notes" },
+  { to: "/learn", label: "Learn" },
+  { to: "/summary", label: "Summary"},
+  { to: "/quiz", label: "Quiz" },
 ];
 
 export default function Navbar() {

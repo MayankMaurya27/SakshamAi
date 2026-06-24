@@ -57,7 +57,7 @@ export function useCurriculum(initialClass = null) {
   const [subjects, setSubjects] = useState([]);
   const [chapters, setChapters] = useState([]);
   const [selectedClass, setSelectedClass] = useState(initialClass || "");
-  const [selectedSubject, setSelectedSubject] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("Science");
   const [selectedChapter, setSelectedChapter] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -104,7 +104,11 @@ export function useCurriculum(initialClass = null) {
         if (!active) return;
         setError(null);
         setSubjects(list);
-        setSelectedSubject(list[0] || "");
+       if (list.includes("Science")) {
+  setSelectedSubject("Science");
+} else {
+  setSelectedSubject(list[0] || "");
+}
         if (list.length === 0) setLoading(false);
       })
       .catch((err) => {

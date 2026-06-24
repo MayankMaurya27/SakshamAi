@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Brain,
   BookOpen,
-  Trophy,
+  
   Target,
   ChevronRight,
   Sparkles,
@@ -41,12 +41,8 @@ const quizModes = [
     description: "Focus on a specific topic or chapter.",
     count: 8,
   },
-  {
-    icon: Trophy,
-    title: "Challenge Mode",
-    description: "Mixed questions with increasing difficulty.",
-    count: 10,
-  },
+  
+  
 ];
 
 export default function Quiz() {
@@ -210,8 +206,8 @@ export default function Quiz() {
             />
           </div>
         </Card>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mt-10">
+<div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
+        
           {quizModes.map((mode, i) => {
             const Icon = mode.icon;
             const isActive = activeMode === mode.title;

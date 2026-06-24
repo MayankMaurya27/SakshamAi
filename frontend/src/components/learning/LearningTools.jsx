@@ -1,6 +1,5 @@
 import {
   Brain,
-  FileText,
   BookOpen,
   Languages,
 } from "lucide-react";
@@ -13,13 +12,6 @@ const tools = [
     desc: "5 MCQs from chapter",
     icon: Brain,
     action: "quiz",
-  },
-  {
-    id: "summary",
-    label: "Summarize",
-    desc: "Chapter revision notes",
-    icon: FileText,
-    action: "summary",
   },
   {
     id: "simplify",
@@ -42,11 +34,9 @@ const tools = [
 
 export default function LearningTools({
   onQuiz,
-  onSummary,
   onSimplify,
   onHindi,
   quizLoading,
-  summaryLoading,
   simplifyLoading,
   hindiLoading,
   hasAnswer,
@@ -54,14 +44,12 @@ export default function LearningTools({
 }) {
   const handlers = {
     quiz: onQuiz,
-    summary: onSummary,
     simplify: onSimplify,
     hindi: onHindi,
   };
 
   const loadings = {
     quiz: quizLoading,
-    summary: summaryLoading,
     simplify: simplifyLoading,
     hindi: hindiLoading,
   };

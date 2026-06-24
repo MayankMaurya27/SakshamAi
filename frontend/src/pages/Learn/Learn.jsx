@@ -18,7 +18,6 @@ import { useDocuments, useCurriculum } from "../../hooks/useLearning";
 import { useSpeechPlayer } from "../../hooks/useSpeechPlayer";
 import {
   askQuestion,
-  generateSummary,
   simplifyExplanation,
   localizeHindi,
   generateQuiz,
@@ -28,7 +27,6 @@ import useProgressStore from "../../store/progressStore";
 
 const TABS = [
   { id: "answer", label: "Answer" },
-  { id: "summary", label: "Summary" },
   { id: "simplify", label: "Simplified" },
   { id: "hindi", label: "Hindi" },
   { id: "quiz", label: "Quiz" },
@@ -47,7 +45,7 @@ const SOURCES = [
 
 const LOADING_MESSAGES = {
   answer: "Generating answer...",
-  summary: "Generating summary...",
+ 
   simplify: "Simplifying...",
   hindi: "Translating...",
 };
@@ -82,8 +80,7 @@ export default function Learn() {
   const [hasResponse, setHasResponse] = useState(false);
   const [error, setError] = useState("");
 
-  const [summary, setSummary] = useState("");
-  const [summaryLoading, setSummaryLoading] = useState(false);
+ 
   const [simplifiedText, setSimplifiedText] = useState("");
   const [simplifyLoading, setSimplifyLoading] = useState(false);
   const [hindiText, setHindiText] = useState("");
@@ -146,28 +143,7 @@ export default function Learn() {
     }
   };
 
-  const handleSummary = async () => {
-    if (source === "document" && !activeDocument) {
-      setError("Please upload or select a document first.");
-      return;
-    }
-    try {
-      setSummaryLoading(true);
-      setError("");
-      const result = await generateSummary({
-        ...getPayload(),
-        topic: question || curriculum.selectedChapter,
-        regenerate: false,
-      });
-      setSummary(result);
-      setActiveTab("summary");
-      setHasResponse(true);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setSummaryLoading(false);
-    }
-  };
+  
 
   const handleSimplify = async () => {
     if (!question.trim() && !answer.trim()) {
@@ -265,8 +241,6 @@ export default function Learn() {
 
   const getActiveContent = () => {
     switch (activeTab) {
-      case "summary":
-        return summaryLoading ? LOADING_MESSAGES.summary : summary;
       case "simplify":
         return simplifyLoading ? LOADING_MESSAGES.simplify : simplifiedText;
       case "hindi":
@@ -284,7 +258,7 @@ export default function Learn() {
 
   const visibleTabs = TABS.filter((tab) => {
     if (tab.id === "answer") return hasResponse || answer;
-    if (tab.id === "summary") return summary;
+    
     if (tab.id === "simplify") return simplifiedText;
     if (tab.id === "hindi") return hindiText;
     if (tab.id === "quiz") return quiz.length > 0;
@@ -523,11 +497,11 @@ export default function Learn() {
           {(source === "document" ? activeDocument : curriculum.selectedChapter) && (
             <LearningTools
               onQuiz={handleQuiz}
-              onSummary={handleSummary}
+              
               onSimplify={handleSimplify}
               onHindi={handleHindi}
               quizLoading={quizLoading}
-              summaryLoading={summaryLoading}
+              
               simplifyLoading={simplifyLoading}
               hindiLoading={hindiLoading}
               hasAnswer={Boolean(answer.trim())}
