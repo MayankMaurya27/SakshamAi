@@ -67,12 +67,17 @@ export default function Summary() {
     ],
   );
 
-  const handleGenerateSummary = async () => {
+  const handleGenerateSummary = async (regenerate = false) => {
     try {
       setSummaryLoading(true);
       setError("");
 
-      const result = await generateSummary(getPayload());
+      const payload = {
+        ...getPayload(),
+        regenerate: regenerate === true,
+      };
+
+      const result = await generateSummary(payload);
 
       setSummary(result);
     } catch (err) {
@@ -311,7 +316,7 @@ export default function Summary() {
                 <Button
                   variant="secondary"
                   icon={RefreshCw}
-                  onClick={handleGenerateSummary}
+                  onClick={() => handleGenerateSummary(true)}
                 >
                   Regenerate
                 </Button>
