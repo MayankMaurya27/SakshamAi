@@ -50,8 +50,6 @@ FALLBACK_RESPONSE = (
 
 STRICT_LEARN_INSTRUCTIONS = """Instructions:
 Answer using only the provided context.
-Locate the specific paragraph or section in the context that directly discusses the subject of the question. Answer ONLY based on that specific section.
-Do not blend, combine, or mix details (such as founders, locations, or dates) from different paragraphs or other distinct entities mentioned in the context.
 Explain clearly in your own words. Do not copy long passages from the context.
 Keep the answer focused on what the student asked.
 Do not use Aim, Procedure, Observation, or Conclusion headings unless the question asks about a specific activity or figure.
@@ -59,8 +57,6 @@ Do not add extra topics or revision sections."""
 
 GUIDED_LEARN_INSTRUCTIONS = """Instructions:
 Answer using only facts from the context above.
-Locate the specific paragraph or section in the context that directly discusses the subject of the question. Answer ONLY based on that specific section.
-Do not blend, combine, or mix details (such as founders, locations, or dates) from different paragraphs or other distinct entities mentioned in the context.
 Explain clearly in your own words. Do not copy long passages.
 Give a complete answer to the question. Ignore unrelated context.
 Do not use Aim, Procedure, Observation, or Conclusion headings unless the question asks about a specific activity or figure.
