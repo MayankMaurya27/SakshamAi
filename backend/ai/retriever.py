@@ -1049,6 +1049,96 @@ def _hybrid_retrieve_chapter(
     return contexts
 
 
+def _count_term_occurrences(text: str, term: str) -> int:
+    """Count occurrences of a query term (with simple singular/plural variants)."""
+    text_lower = text.lower()
+    term_lower = term.lower().strip(" ?.,!\"'")
+    if not term_lower:
+        return 0
+
+    terms_to_check = [term_lower]
+    if term_lower.endswith("s") and len(term_lower) > 3:
+        terms_to_check.append(term_lower[:-1])
+    elif len(term_lower) > 3:
+        terms_to_check.append(term_lower + "s")
+
+    count = 0
+    for t in set(terms_to_check):
+        matches = re.findall(rf"\b{re.escape(t)}\b", text_lower)
+        count = max(count, len(matches))
+    return count
+
+
+def _apply_social_science_focus_reranking(
+    question: str,
+    contexts: list[ChunkContext],
+    subject: str,
+) -> list[ChunkContext]:
+    """
+    Rerank retrieved contexts for Social Science queries to prioritize entity focus.
+
+    Prevents context blending/hallucinations by boosting chunks that discuss the
+    queried proper nouns/entities frequently and penalizing chunks that only mention
+    the entity once in a list.
+    """
+    if not contexts:
+        return contexts
+
+    sub_lower = (subject or "").lower()
+    is_soc_sci = any(
+        term in sub_lower
+        for term in ("social", "history", "geography", "civics", "political", "economics")
+    )
+    if not is_soc_sci:
+        return contexts
+
+    query_entities = extract_query_terms(question)
+    if not query_entities:
+        return contexts
+
+    reranked_contexts = []
+    for ctx in contexts:
+        text = ctx.text
+        score = ctx.score
+        
+        max_entity_count = 0
+        for entity in query_entities:
+            count = _count_term_occurrences(text, entity)
+            max_entity_count = max(max_entity_count, count)
+
+        is_list_distractor = False
+        if max_entity_count == 1:
+            capitalized_words = set(re.findall(r"\b[A-Z][a-z]{3,}\b", text))
+            for entity in query_entities:
+                capitalized_words.discard(entity.capitalize())
+                capitalized_words.discard(entity.title())
+            if len(capitalized_words) >= 4:
+                is_list_distractor = True
+
+        adjusted_score = score
+        if is_list_distractor:
+            adjusted_score -= 20.0
+        elif max_entity_count >= 3:
+            adjusted_score += 10.0
+        elif max_entity_count == 2:
+            adjusted_score += 5.0
+            
+        reranked_contexts.append(
+            ChunkContext(
+                text=ctx.text,
+                score=adjusted_score,
+                faiss_id=ctx.faiss_id,
+                metadata=ctx.metadata,
+            )
+        )
+
+    reranked_contexts.sort(key=lambda x: x.score, reverse=True)
+    # Guardrail: If even the best chunk is completely unrelated (below -5.0), return empty
+    if reranked_contexts and reranked_contexts[0].score < -5.0:
+        return []
+    return reranked_contexts
+
+
 def retrieve_saksham_context(
     question: str,
     class_level: int,
@@ -1144,7 +1234,7 @@ def retrieve_saksham_context(
             k,
         )
         if contexts:
-            return contexts
+            return _apply_social_science_focus_reranking(question, contexts, subject)
 
     semantic_items: list[tuple[int, float, str, dict]] = []
     for faiss_id, score, meta in results:
@@ -1193,6 +1283,7 @@ def retrieve_saksham_context(
             search_terms,
             seen_keys,
         )[:k]
+    contexts = _apply_social_science_focus_reranking(question, contexts, subject)
 
     if contexts:
         logger.info(
