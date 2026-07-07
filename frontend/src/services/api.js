@@ -3,7 +3,7 @@ import axios from "axios";
 const configuredBaseUrl = import.meta.env.VITE_API_URL?.trim();
 
 const api = axios.create({
-  baseURL: (configuredBaseUrl || "http://localhost:8000").replace(/\/$/, ""),
+  baseURL: (configuredBaseUrl || (typeof window !== "undefined" ? window.location.origin : "http://localhost:8000")).replace(/\/$/, ""),
   timeout: 120000,
 });
 
