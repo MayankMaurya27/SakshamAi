@@ -675,34 +675,24 @@ export function useVoiceAssistant() {
     };
   }, []);
 
-  // Key Event bindings (Spacebar to listen/toggle, Escape to stop)
+  // Key Event bindings (Spacebar to listen, Escape to stop)
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Do not intercept if user is actively typing in a text input or textarea
-      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
-        return;
-      }
-
-      if (!isActive) {
-        if (e.code === "Space") {
-          e.preventDefault();
-          toggleAssistant();
-        }
-        return;
-      }
+      if (!isActive) return;
       
       if (e.code === "Space" && status !== "listening" && status !== "processing" && status !== "speaking") {
         e.preventDefault();
         startListening();
       } else if (e.code === "Escape") {
         e.preventDefault();
-        handleStopCommand();
+        stopSpeaking();
+        stopListening();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isActive, status, startListening, handleStopCommand, toggleAssistant]);
+  }, [isActive, status, startListening, stopSpeaking, stopListening]);
 
   return {
     isActive,
