@@ -11,8 +11,11 @@ services:
       - "8000:8000"
     environment:
       - OLLAMA_HOST=http://host.docker.internal:11434
-      - RERANK_ENABLED=false
+      - RERANK_ENABLED=true
+      - RERANK_MODEL_PATH=/app/data/models/ms-marco-MiniLM-L-6-v2
       - RERANK_LOCAL_FILES_ONLY=true
+      - EMBEDDING_MODEL_PATH=/app/data/models/multilingual-e5-small
+      - EMBEDDING_LOCAL_FILES_ONLY=true
     volumes:
       # Persistent storage for FAISS index, SQLite database, models, and audio files
       - ./backend/data:/app/data
