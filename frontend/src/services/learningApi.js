@@ -80,12 +80,12 @@ export function buildLearningPayload({
   subject,
   chapter,
   topic = "",
-  profile = "beginner",
+  profile = "standard",
   includeAudio = false,
 }) {
   const payload = {
     source,
-    accessibility_profile: profile,
+    accessibility_profile: profile === "standard" || !profile ? null : profile,
     include_audio: includeAudio,
   };
 

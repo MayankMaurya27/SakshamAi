@@ -32,6 +32,12 @@ const SOURCES = [
   { value: "document", label: "Uploaded Document" },
 ];
 
+const PROFILES = [
+  { value: "standard", label: "Standard Summary" },
+  { value: "beginner", label: "Beginner (Simplified)" },
+  { value: "dyslexia", label: "Dyslexic (Bullet blocks)" },
+];
+
 export default function Summary() {
   const { documents, loading: docsLoading, error: docsError } =
     useDocuments();
@@ -41,6 +47,7 @@ export default function Summary() {
 
   const [source, setSource] = useState("saksham");
   const [selectedDocument, setSelectedDocument] = useState("");
+  const [profile, setProfile] = useState("standard");
 
   const [summary, setSummary] = useState("");
   const [summaryLoading, setSummaryLoading] = useState(false);
@@ -57,6 +64,7 @@ export default function Summary() {
         classLevel: curriculum.selectedClass,
         subject: curriculum.selectedSubject,
         chapter: curriculum.selectedChapter,
+        profile,
       }),
     [
       source,
@@ -64,6 +72,7 @@ export default function Summary() {
       curriculum.selectedClass,
       curriculum.selectedSubject,
       curriculum.selectedChapter,
+      profile,
     ],
   );
 
@@ -193,7 +202,7 @@ export default function Summary() {
         </div>
 
         <Card className="mt-8">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <Select
               label="Summary Source"
               value={source}
@@ -255,6 +264,13 @@ export default function Summary() {
                 source === "saksham" ||
                 documents.length === 0
               }
+            />
+
+            <Select
+              label="Summary Mode"
+              value={profile}
+              onChange={(e) => setProfile(e.target.value)}
+              options={PROFILES}
             />
           </div>
 

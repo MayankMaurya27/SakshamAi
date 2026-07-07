@@ -94,13 +94,12 @@ export function useVoiceAssistant() {
   const [chapter, setChapter] = useState(null);
 
   // Phase 2: Active Task and Progress States
-  const [activeTask, setActiveTask] = useState("idle"); // idle, summary, quiz, confirm_question
+  const [activeTask, setActiveTask] = useState("idle"); // idle, summary, quiz
   const [summaryParagraphs, setSummaryParagraphs] = useState([]);
   const [summaryParagraphIdx, setSummaryParagraphIdx] = useState(0);
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [quizQuestionIdx, setQuizQuestionIdx] = useState(0);
   const [quizScore, setQuizScore] = useState(0);
-  const [pendingQuestion, setPendingQuestion] = useState("");
   
   const recognitionRef = useRef(null);
   const synthesisRef = useRef(null);
@@ -166,26 +165,6 @@ export function useVoiceAssistant() {
       recognitionRef.current.stop();
     }
   }, []);
-
-  // Reset slots and states completely back to scratch
-  const handleStopCommand = useCallback(() => {
-    stopSpeaking();
-    stopListening();
-    setIsActive(false);
-    setActiveTask("idle");
-    
-    setClassLevel(null);
-    setSubject(null);
-    setChapter(null);
-    setTranscript("");
-    setLog([]);
-    setSummaryParagraphs([]);
-    setSummaryParagraphIdx(0);
-    setQuizQuestions([]);
-    setQuizQuestionIdx(0);
-    setQuizScore(0);
-    setPendingQuestion("");
-  }, [stopSpeaking, stopListening]);
 
   // Helper to read a specific paragraph of the summary
   const readSummaryParagraph = useCallback((paragraphs, idx) => {
@@ -254,37 +233,6 @@ export function useVoiceAssistant() {
     }
   }, [speakText, readQuizQuestion]);
 
-  // Helper to query RAG once a question is confirmed
-  const runRagQuery = useCallback(async (queryToRun) => {
-    setStatus("processing");
-    addLog(`Querying RAG: "${queryToRun}"`, "process");
-    speakText("Searching the context, please wait.", async () => {
-      try {
-        const response = await api.post("/ask", {
-          question: queryToRun,
-          source: "saksham",
-          class_level: classLevel,
-          subject: subject,
-          chapter: chapter
-        });
-        const { success, data } = response.data;
-        if (!success || !data?.answer) throw new Error("Could not get answer from RAG");
-        
-        const answer = data.answer;
-        speakText(`${answer}. Do you have any other questions? Or say start quiz or read summary.`, () => {
-          startListening();
-        });
-      } catch (e) {
-        audioCues.playError();
-        setStatus("error");
-        addLog(`RAG error: ${e.message}`, "error");
-        speakText("Sorry, I had trouble finding an answer to that question. Please try asking again.", () => {
-          startListening();
-        });
-      }
-    });
-  }, [classLevel, subject, chapter, speakText, startListening, addLog]);
-
   // Handle parsing results and state updates
   const handleParse = useCallback(async (textInput) => {
     if (!textInput?.trim()) return;
@@ -314,8 +262,8 @@ export function useVoiceAssistant() {
       }
       if (["no", "nope", "stop", "cancel", "exit", "finish", "done"].some(v => cleanInput.includes(v))) {
         addLog(`Shortcut: Stop Summary`, "info");
-        speakText("Stopping voice assistant mode. Goodbye!");
-        handleStopCommand();
+        setActiveTask("idle");
+        speakText("Stopping summary reading. Returning to main menu.");
         return;
       }
     }
@@ -336,43 +284,10 @@ export function useVoiceAssistant() {
       }
       if (["stop", "cancel", "exit", "quit"].some(v => cleanInput.includes(v))) {
         addLog(`Shortcut: Stop Quiz`, "info");
-        speakText("Stopping voice assistant mode. Goodbye!");
-        handleStopCommand();
-        return;
-      }
-    }
-
-    // Question Confirmation Loop shortcuts
-    if (activeTask === "confirm_question") {
-      if (["yes", "yeah", "yup", "sure", "ok", "okay", "confirm", "go", "yes please"].some(v => cleanInput.includes(v))) {
-        addLog(`Shortcut: Question Confirmed`, "success");
         setActiveTask("idle");
-        const queryToRun = pendingQuestion;
-        setPendingQuestion("");
-        runRagQuery(queryToRun);
+        speakText("Stopping the quiz. Returning to main menu.");
         return;
       }
-      if (["no", "nope", "repeat", "try again", "change", "wrong", "incorrect", "say again"].some(v => cleanInput.includes(v))) {
-        addLog(`Shortcut: Reject Question (Repeat)`, "info");
-        setActiveTask("idle");
-        setPendingQuestion("");
-        speakText("Okay, let's try again. Please say your question clearly.", () => {
-          startListening();
-        });
-        return;
-      }
-      if (["stop", "cancel", "exit", "quit"].some(v => cleanInput.includes(v))) {
-        addLog(`Shortcut: Stop Confirmation`, "info");
-        speakText("Stopping voice assistant mode. Goodbye!");
-        handleStopCommand();
-        return;
-      }
-      
-      // Fallback dialog guidance
-      speakText("I didn't catch that. Please say yes to confirm your question, or say repeat to ask again.", () => {
-        startListening();
-      });
-      return;
     }
 
     setStatus("processing");
@@ -403,7 +318,8 @@ export function useVoiceAssistant() {
       // State Dialogue flow logic
       if (intent === "stop") {
         speakText("Stopping voice assistant mode. Goodbye!");
-        handleStopCommand();
+        setIsActive(false);
+        setActiveTask("idle");
         return;
       }
       
@@ -516,11 +432,32 @@ export function useVoiceAssistant() {
       }
 
       if (intent === "ask_question" && query) {
-        addLog(`Question entered: "${query}". Requesting confirmation...`, "info");
-        setActiveTask("confirm_question");
-        setPendingQuestion(query);
-        speakText(`You asked: ${query}. Say yes to confirm and search, or say repeat to ask again.`, () => {
-          startListening();
+        setStatus("processing");
+        addLog(`Querying RAG: "${query}"`, "process");
+        speakText("Searching the context, please wait.", async () => {
+          try {
+            const response = await api.post("/ask", {
+              question: query,
+              source: "saksham",
+              class_level: newClass || classLevel,
+              subject: newSubject || subject,
+              chapter: newChapter || chapter
+            });
+            const { success, data } = response.data;
+            if (!success || !data?.answer) throw new Error("Could not get answer from RAG");
+            
+            const answer = data.answer;
+            speakText(`${answer}. Do you have any other questions? Or say start quiz or read summary.`, () => {
+              startListening();
+            });
+          } catch (e) {
+            audioCues.playError();
+            setStatus("error");
+            addLog(`RAG error: ${e.message}`, "error");
+            speakText("Sorry, I had trouble finding an answer to that question. Please try asking again.", () => {
+              startListening();
+            });
+          }
         });
         return;
       }
@@ -549,18 +486,30 @@ export function useVoiceAssistant() {
     quizQuestions,
     quizQuestionIdx,
     quizScore,
-    pendingQuestion,
     readSummaryParagraph,
     readQuizQuestion,
-    handleQuizAnswer,
-    runRagQuery,
-    handleStopCommand
+    handleQuizAnswer
   ]);
 
   // Toggle Assistant Mode
   const toggleAssistant = useCallback(() => {
     if (isActive) {
-      handleStopCommand();
+      stopSpeaking();
+      stopListening();
+      setIsActive(false);
+      setActiveTask("idle");
+      
+      // Reset slots and states completely back to scratch
+      setClassLevel(null);
+      setSubject(null);
+      setChapter(null);
+      setTranscript("");
+      setLog([]);
+      setSummaryParagraphs([]);
+      setSummaryParagraphIdx(0);
+      setQuizQuestions([]);
+      setQuizQuestionIdx(0);
+      setQuizScore(0);
     } else {
       setIsActive(true);
       setActiveTask("idle");
@@ -572,7 +521,7 @@ export function useVoiceAssistant() {
         startListening();
       });
     }
-  }, [isActive, speakText, startListening, handleStopCommand]);
+  }, [isActive, speakText, startListening, stopListening, stopSpeaking]);
 
   const handleParseRef = useRef(handleParse);
   const statusRef = useRef(status);
