@@ -110,3 +110,23 @@ class LocalizeHiRequest(BaseModel):
         elif not self.text or not self.text.strip():
             raise ValueError("text is required when content_type is not quiz.")
         return self
+
+
+class VoiceParseRequest(BaseModel):
+    """Request body for POST /api/voice/parse."""
+
+    transcript: str = Field(..., min_length=1)
+    class_level: int | None = Field(None, ge=6, le=10)
+    subject: str | None = None
+    chapter: str | None = None
+
+
+class VoiceParseResponse(BaseModel):
+    """Response data for POST /api/voice/parse."""
+
+    intent: str
+    class_level: int | None = None
+    subject: str | None = None
+    chapter: str | None = None
+    query: str | None = None
+

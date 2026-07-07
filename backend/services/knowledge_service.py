@@ -365,7 +365,10 @@ def list_chapters(class_level: int, subject: str) -> list[dict[str, str]]:
         }
         for c in _manifest_chapters()
         if c.get("class") == class_level
-        and c.get("subject", "").lower() == subject.lower()
+        and (
+            c.get("subject", "").lower() == subject.lower()
+            or (subject.lower() == "social science" and c.get("subject", "").lower() in {"history", "geography", "political science", "economics", "social science"})
+        )
         and c.get("chapter_id")
     ]
     return sorted(chapters, key=lambda x: x["chapter_title"])
@@ -386,7 +389,15 @@ def get_chapter_from_manifest(
     for chapter in _manifest_chapters():
         if chapter.get("class") != class_level:
             continue
-        if chapter.get("subject", "").lower() != subject.lower():
+            
+        chapter_sub = chapter.get("subject", "").lower()
+        req_sub = subject.lower()
+        if req_sub == "social science" and chapter_sub in {"history", "geography", "political science", "economics", "social science"}:
+            subject_matched = True
+        else:
+            subject_matched = (chapter_sub == req_sub)
+            
+        if not subject_matched:
             continue
         chapter_id = chapter.get("chapter_id", "").lower()
         chapter_title = chapter.get("chapter_title", "").lower()

@@ -18,6 +18,7 @@ from api.saksham import router as saksham_router
 from api.simplify import router as simplify_router
 from api.summary import router as summary_router
 from api.upload import router as upload_router
+from api.voice import router as voice_router
 from api.responses import error_response
 from ai.embeddings import preload_embedding_model
 from config.settings import get_settings
@@ -71,6 +72,7 @@ app.include_router(simplify_router)
 app.include_router(documents_router)
 app.include_router(audio_router)
 app.include_router(saksham_router)
+app.include_router(voice_router)
 
 app.mount("/audio", StaticFiles(directory=str(settings.audio_dir)), name="audio_files")
 app.mount("/static", StaticFiles(directory=str(settings.base_dir / "static")), name="static_files")

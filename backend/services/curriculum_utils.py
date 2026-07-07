@@ -66,7 +66,15 @@ def chapter_matches(meta: dict, class_level: int, subject: str, chapter_ref: str
     """Return True if metadata matches class, subject, and chapter reference."""
     if meta.get("class") != class_level:
         return False
-    if meta.get("subject", "").lower() != subject.lower():
+        
+    chapter_sub = meta.get("subject", "").lower()
+    req_sub = subject.lower()
+    if req_sub == "social science" and chapter_sub in {"history", "geography", "political science", "economics", "social science"}:
+        subject_matched = True
+    else:
+        subject_matched = (chapter_sub == req_sub)
+        
+    if not subject_matched:
         return False
 
     ref = chapter_ref.strip().lower()

@@ -62,3 +62,15 @@ def test_deployable_without_pdf_all_classes():
     assert _is_deployable_without_pdf({"class": 10, "subject": "Economics", "chapter_id": "y"})
     assert not _is_deployable_without_pdf({"class": 6, "subject": "Science", "legacy_json": True})
     assert not _is_deployable_without_pdf({"class": 5, "subject": "Science", "chapter_id": "z"})
+
+
+def test_social_science_mapping():
+    """list_chapters and get_chapter_from_manifest should map Social Science to sub-subjects for class 9."""
+    from services.knowledge_service import get_chapter_from_manifest
+    chapters = list_chapters(9, "Social Science")
+    chapter_ids = {c["chapter_id"] for c in chapters}
+    assert "the_french_revoulution" in chapter_ids
+
+    res = get_chapter_from_manifest(9, "Social Science", "the_french_revoulution")
+    assert res is not None
+    assert res["subject"] == "History"

@@ -10,6 +10,10 @@ import {
   Volume2,
   ArrowRight,
   CheckCircle2,
+  Mic,
+  MicOff,
+  Terminal,
+  VolumeX,
 } from "lucide-react";
 import MainLayout from "../../components/layout/MainLayout";
 import PageHeader from "../../components/ui/PageHeader";
@@ -19,6 +23,7 @@ import Badge from "../../components/ui/Badge";
 import AudioPlayer from "../../components/audio/AudioPlayer";
 import KnowledgeBackground from "../../components/background/KnowledgeBackground";
 import { useSpeechPlayer } from "../../hooks/useSpeechPlayer";
+import { useVoiceAssistant } from "../../hooks/useVoiceAssistant";
 
 const profiles = [
   {
@@ -89,6 +94,7 @@ const DEMO_TEXT =
 
 export default function Accessibility() {
   const speech = useSpeechPlayer();
+  const voice = useVoiceAssistant();
   const [demoProfile, setDemoProfile] = useState(profiles[2]);
 
   return (
@@ -132,6 +138,134 @@ export default function Accessibility() {
             </div>
           </div>
         </Card>
+
+        {/* Voice Assistant Prototyping Dashboard */}
+        <Card className="mt-8 border border-border/80 bg-surface/50">
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="flex-1 flex flex-col justify-between">
+              <div>
+                <Badge variant={voice.isActive ? "accent" : "secondary"}>
+                  {voice.isActive ? "Voice Assistant Active" : "Voice Assistant Disabled"}
+                </Badge>
+                <h3 className="text-xl font-bold text-ink mt-3">
+                  Saksham Voice Assistant (Beta)
+                </h3>
+                <p className="mt-2 text-sm text-ink-muted leading-relaxed">
+                  A conversational tutor helper for visually impaired students. 
+                  Press <strong>Spacebar</strong> to talk when active, and <strong>Escape</strong> to stop.
+                </p>
+                
+                {/* Active Context Slots */}
+                <div className="grid grid-cols-3 gap-4 mt-6">
+                  <div className="p-3 bg-surface rounded-xl border border-border text-center">
+                    <p className="text-xs text-ink-muted font-semibold uppercase tracking-wider">Class</p>
+                    <p className="mt-1 text-sm font-bold text-ink">{voice.classLevel ? `Class ${voice.classLevel}` : "Not Set"}</p>
+                  </div>
+                  <div className="p-3 bg-surface rounded-xl border border-border text-center">
+                    <p className="text-xs text-ink-muted font-semibold uppercase tracking-wider">Subject</p>
+                    <p className="mt-1 text-sm font-bold text-ink truncate">{voice.subject || "Not Set"}</p>
+                  </div>
+                  <div className="p-3 bg-surface rounded-xl border border-border text-center">
+                    <p className="text-xs text-ink-muted font-semibold uppercase tracking-wider">Chapter</p>
+                    <p className="mt-1 text-sm font-bold text-ink truncate">{voice.chapter || "Not Set"}</p>
+                  </div>
+                </div>
+                
+                {/* Active Task Details (Phase 2 UI update) */}
+                {voice.activeTask !== "idle" && (
+                  <div className="mt-4 p-4 rounded-xl border border-accent/20 bg-accent/5">
+                    <div className="flex justify-between items-center mb-2">
+                      <p className="text-xs font-semibold text-accent uppercase tracking-wider">
+                        Active Mode: {voice.activeTask === "summary" ? "Summary Reader" : "Active Quiz"}
+                      </p>
+                      {voice.activeTask === "quiz" && (
+                        <p className="text-xs font-bold text-ink bg-surface border border-border px-2 py-0.5 rounded">
+                          Score: {voice.quizScore} / {voice.quizQuestions.length}
+                        </p>
+                      )}
+                    </div>
+                    {voice.activeTask === "summary" && voice.summaryParagraphs.length > 0 && (
+                      <div>
+                        <p className="text-sm text-ink font-medium italic leading-relaxed bg-surface/40 p-3 rounded-lg border border-border/50">
+                          "{voice.summaryParagraphs[voice.summaryParagraphIdx]}"
+                        </p>
+                        <p className="text-[10px] text-ink-muted mt-2 font-mono">
+                          Paragraph {voice.summaryParagraphIdx + 1} of {voice.summaryParagraphs.length}
+                        </p>
+                      </div>
+                    )}
+                    {voice.activeTask === "quiz" && voice.quizQuestions.length > 0 && (
+                      <div>
+                        <p className="text-sm text-ink font-bold leading-relaxed bg-surface/40 p-3 rounded-lg border border-border/50">
+                          Q{voice.quizQuestionIdx + 1}: {voice.quizQuestions[voice.quizQuestionIdx]?.question}
+                        </p>
+                        <div className="grid grid-cols-2 gap-2 mt-2">
+                          {Object.entries(voice.quizQuestions[voice.quizQuestionIdx]?.options || {}).map(([key, val]) => (
+                            <div key={key} className="text-xs text-ink-muted border border-border p-1.5 rounded-lg bg-surface">
+                              <span className="font-bold text-accent mr-1">{key}:</span> {val}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button 
+                  onClick={voice.toggleAssistant}
+                  variant={voice.isActive ? "secondary" : "primary"}
+                  icon={voice.isActive ? MicOff : Mic}
+                >
+                  {voice.isActive ? "Disable Voice Mode" : "Enable Voice Mode"}
+                </Button>
+                {voice.isActive && (
+                  <Button 
+                    onClick={voice.startListening}
+                    disabled={voice.status === "listening" || voice.status === "processing"}
+                    variant="accent"
+                    icon={Mic}
+                  >
+                    {voice.status === "listening" ? "Listening..." : "Trigger Listen"}
+                  </Button>
+                )}
+                {voice.isActive && (
+                  <Button 
+                    onClick={voice.stopSpeaking}
+                    variant="secondary"
+                    icon={VolumeX}
+                  >
+                    Stop Speaking
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Real-time speech log */}
+            <div className="lg:w-[480px] flex flex-col">
+              <div className="flex items-center gap-2 text-xs font-semibold text-ink-muted uppercase tracking-wider mb-2">
+                <Terminal size={14} className="text-accent" />
+                <span>Assistant Logs</span>
+              </div>
+              <div className="h-48 overflow-y-auto bg-surface rounded-xl border border-border p-4 font-mono text-xs text-ink-muted flex flex-col gap-2">
+                {voice.log.length === 0 ? (
+                  <p className="italic text-ink-muted/50">Enable voice mode to initialize logs...</p>
+                ) : (
+                  voice.log.map((item, idx) => (
+                    <div key={idx} className="flex gap-2 leading-relaxed">
+                      <span className="text-accent shrink-0">[{item.time}]</span>
+                      <span className={item.type === "error" ? "text-red-400" : item.type === "success" ? "text-emerald-400" : ""}>
+                        {item.text}
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </Card>
+
 
         <div className="grid lg:grid-cols-3 gap-6 mt-12">
           {profiles.map((profile, index) => {
