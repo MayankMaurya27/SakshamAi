@@ -11,7 +11,7 @@ services:
       - "8000:8000"
     environment:
       - OLLAMA_HOST=http://host.docker.internal:11434
-      - RERANK_ENABLED=true
+      - RERANK_ENABLED=false
       - RERANK_LOCAL_FILES_ONLY=true
     volumes:
       # Persistent storage for FAISS index, SQLite database, models, and audio files
