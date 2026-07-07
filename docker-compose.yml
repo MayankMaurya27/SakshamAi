@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: saksham-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - RERANK_ENABLED=true
+      - RERANK_LOCAL_FILES_ONLY=true
+    volumes:
+      # Persistent storage for FAISS index, SQLite database, models, and audio files
+      - ./backend/data:/app/data
+    extra_hosts:
+      # Allows backend container to connect to host's Ollama instance on Linux/Mac/Windows
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: saksham-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
