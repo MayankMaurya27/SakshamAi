@@ -77,6 +77,13 @@ app.include_router(voice_router)
 app.mount("/audio", StaticFiles(directory=str(settings.audio_dir)), name="audio_files")
 app.mount("/static", StaticFiles(directory=str(settings.base_dir / "static")), name="static_files")
 
+# Mount and serve compiled React frontend assets (Frontend Bundling)
+import os
+from fastapi.responses import FileResponse
+
+dist_dir = settings.base_dir.parent / "frontend" / "dist"
+if os.path.exists(dist_dir / "index.html"):
+    app.mount("/assets", StaticFiles(directory=str(dist_dir / "assets")), name="react_assets")
 
 @app.get("/dyslexia-demo")
 def dyslexia_demo():
@@ -94,6 +101,16 @@ async def saksham_error_handler(request: Request, exc: SakshamError):
 def health_check():
     """Health check endpoint."""
     return {"success": True, "data": {"status": "healthy"}}
+
+
+# Catch-all route to serve the React SPA index.html for all frontend pages
+if os.path.exists(dist_dir / "index.html"):
+    @app.get("/{catchall:path}")
+    async def serve_react_app(catchall: str):
+        # Skip API endpoints or custom paths that start with audio/static/health
+        if catchall.startswith(("api/", "audio/", "static/", "health")):
+            return error_response("Not Found", status_code=404)
+        return FileResponse(str(dist_dir / "index.html"))
 
 
 if __name__ == "__main__":
