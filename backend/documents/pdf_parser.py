@@ -11,9 +11,48 @@ logger = logging.getLogger(__name__)
 
 
 def _clean_text(text: str) -> str:
-    """Normalize whitespace in extracted text."""
+    """Normalize whitespace and strip common PDF artifacts."""
+    # Remove null bytes
     text = text.replace("\x00", "")
-    text = re.sub(r"\s+", " ", text)
+
+    # Remove common NCERT/textbook page headers and footers
+    text = re.sub(
+        r"(?im)^\s*(?:NCERT|not to be republished|©\s*NCERT|free distribution|"
+        r"downloaded from|www\.\S+|https?://\S+|"
+        r"Rationalised \d{4}-\d{2}|"
+        r"\d{4}-\d{2}\s*$)",
+        "",
+        text,
+    )
+
+    # Remove repeated page numbers (standalone numbers on their own line)
+    text = re.sub(r"(?m)^\s*\d{1,3}\s*$", "", text)
+
+    # Remove figure/image captions like "Fig. 1.2: ...", "Figure 3 ..."
+    text = re.sub(r"(?i)(?:Fig(?:ure)?\.?\s*\d+[\.\d]*\s*:?\s*[^\n]{0,80})", "", text)
+
+    # Normalize common Unicode characters
+    replacements = {
+        "\u2018": "'", "\u2019": "'",  # smart quotes
+        "\u201c": '"', "\u201d": '"',
+        "\u2013": "-", "\u2014": "-",  # dashes
+        "\u2026": "...",  # ellipsis
+        "\u00a0": " ",  # non-breaking space
+        "\ufeff": "",  # BOM
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+
+    # Clean OCR artifacts: isolated single characters, excessive punctuation
+    text = re.sub(r"(?m)^\s*[a-zA-Z]\s*$", "", text)  # lone letters on a line
+    text = re.sub(r"[•·■□▪▸►▶]{2,}", "", text)  # repeated bullet symbols
+
+    # Collapse multiple blank lines into one
+    text = re.sub(r"\n{3,}", "\n\n", text)
+
+    # Normalize remaining whitespace within lines
+    text = re.sub(r"[ \t]+", " ", text)
+
     return text.strip()
 
 

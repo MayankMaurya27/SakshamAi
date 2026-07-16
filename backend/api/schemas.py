@@ -49,7 +49,7 @@ class QuizRequest(BaseModel):
     subject: str | None = None
     chapter: str | None = None
     topic: str | None = None  # backward-compatible alias for chapter
-    question_count: int = Field(default=10, ge=5, le=15)
+    question_count: int = Field(default=10, ge=3, le=15)
     accessibility_profile: AccessibilityProfile | None = None
     include_audio: bool = False
 

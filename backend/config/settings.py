@@ -36,6 +36,10 @@ class Settings(BaseSettings):
     ollama_temperature: float = 0.1
     ollama_num_ctx: int = 8192
 
+    # LLM response cache
+    llm_cache_enabled: bool = True
+    llm_cache_max_size: int = 64
+
     # Embeddings
     embedding_model: str = "intfloat/multilingual-e5-small"
     # Optional absolute path to a bundled model dir (Jetson); overrides HF cache lookup

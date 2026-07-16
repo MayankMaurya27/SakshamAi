@@ -1,8 +1,10 @@
 """Ollama LLM client for local inference."""
 
+import hashlib
 import json
 import logging
 import time
+from collections import OrderedDict
 from typing import Protocol
 
 import httpx
@@ -40,6 +42,12 @@ class OllamaLLM:
         self.model = model or settings.ollama_model
         self.timeout = timeout or settings.ollama_timeout_seconds
         self._client = client or httpx.Client(timeout=self.timeout)
+        # LRU response cache for identical prompts
+        self._cache: OrderedDict[str, str] = OrderedDict()
+        self._cache_max = getattr(settings, "llm_cache_max_size", 64)
+        self._cache_enabled = getattr(settings, "llm_cache_enabled", True)
+        self._cache_hits = 0
+        self._cache_misses = 0
 
     def generate(
         self,
@@ -48,6 +56,21 @@ class OllamaLLM:
         format_json: bool = False,
     ) -> str:
         """Send prompt to Ollama and return generated text."""
+        # --- Cache lookup ---
+        cache_key = ""
+        if self._cache_enabled:
+            key_data = f"{prompt}|{num_predict}|{format_json}"
+            cache_key = hashlib.sha256(key_data.encode()).hexdigest()
+            if cache_key in self._cache:
+                self._cache.move_to_end(cache_key)
+                self._cache_hits += 1
+                logger.info(
+                    "LLM cache hit (hits=%d, misses=%d, size=%d)",
+                    self._cache_hits, self._cache_misses, len(self._cache),
+                )
+                return self._cache[cache_key]
+            self._cache_misses += 1
+
         url = f"{self.base_url}/api/generate"
         options: dict = {
             "temperature": settings.ollama_temperature,
@@ -65,17 +88,29 @@ class OllamaLLM:
         if format_json:
             payload["format"] = "json"
 
+        # Estimate prompt tokens for monitoring
+        est_tokens = int(len(prompt.split()) * 1.3)
+
         start = time.time()
         try:
             response = self._client.post(url, json=payload)
             response.raise_for_status()
             data = response.json()
             result = data.get("response", "").strip()
+            elapsed = time.time() - start
             logger.info(
-                "LLM generation completed in %.2fs (model=%s)",
-                time.time() - start,
+                "LLM generation completed in %.2fs (model=%s, ~%d prompt tokens)",
+                elapsed,
                 self.model,
+                est_tokens,
             )
+
+            # --- Cache store ---
+            if self._cache_enabled and cache_key and result:
+                self._cache[cache_key] = result
+                if len(self._cache) > self._cache_max:
+                    self._cache.popitem(last=False)
+
             return result
         except httpx.ConnectError as exc:
             raise ServiceUnavailableError(

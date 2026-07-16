@@ -2,6 +2,7 @@
 
 import logging
 import re
+from difflib import SequenceMatcher
 
 from config.settings import get_settings
 
@@ -77,12 +78,27 @@ def create_chunks(
 
     while start < len(words):
         end = min(start + words_per_chunk, len(words))
+
+        # Try to break on sentence boundary for cleaner chunks
+        if end < len(words):
+            best_break = end
+            # Look backwards up to 20% of chunk size for a sentence end
+            search_start = max(start, end - max(10, words_per_chunk // 5))
+            for i in range(end, search_start, -1):
+                if i < len(words) and words[i - 1].endswith(('.', '?', '!')):
+                    best_break = i
+                    break
+            end = best_break
+
         chunk_text = " ".join(words[start:end]).strip()
         if chunk_text:
             chunks.append(chunk_text)
         if end >= len(words):
             break
-        start += words_per_chunk - words_overlap
+        start += max(1, end - start - words_overlap)
+
+    # Remove near-duplicate chunks
+    chunks = _deduplicate_chunks(chunks)
 
     logger.info(
         "Created %d chunks from ~%d tokens",
@@ -154,3 +170,37 @@ def truncate_to_tokens(text: str, max_tokens: int) -> str:
     if len(words) <= max_words:
         return text
     return " ".join(words[:max_words])
+
+
+def _deduplicate_chunks(chunks: list[str], threshold: float = 0.85) -> list[str]:
+    """Remove near-duplicate chunks using sequence similarity.
+
+    Chunks with >85% textual similarity are considered duplicates.
+    The first occurrence is always kept.
+    """
+    if len(chunks) <= 1:
+        return chunks
+
+    unique: list[str] = [chunks[0]]
+    for chunk in chunks[1:]:
+        is_dup = False
+        # Only compare against the last few unique chunks for efficiency
+        for prev in unique[-3:]:
+            # Quick length-based pre-filter
+            len_ratio = min(len(chunk), len(prev)) / max(len(chunk), len(prev), 1)
+            if len_ratio < 0.5:
+                continue
+            ratio = SequenceMatcher(None, chunk[:500], prev[:500]).ratio()
+            if ratio >= threshold:
+                is_dup = True
+                break
+        if not is_dup:
+            unique.append(chunk)
+
+    if len(unique) < len(chunks):
+        logger.info(
+            "Removed %d near-duplicate chunks (threshold=%.2f)",
+            len(chunks) - len(unique),
+            threshold,
+        )
+    return unique

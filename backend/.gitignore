@@ -12,6 +12,7 @@ data/models/
 data/quiz_cache/
 data/summary_cache/
 data/localize_cache/
+data/explain_cache/
 data/audio/
 
 # Virtual environment
