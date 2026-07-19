@@ -14,3 +14,6 @@ PRD.md
 Prompt_Specification.md
 Backend_Technical_Specification.md
 AGENTS.md
+
+# Local launcher scripts
+start_edge.sh
