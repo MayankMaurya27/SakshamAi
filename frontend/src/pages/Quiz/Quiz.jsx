@@ -3,11 +3,12 @@ import { motion } from "framer-motion";
 import {
   Brain,
   BookOpen,
-  
   Target,
   ChevronRight,
   Sparkles,
   AlertCircle,
+  Zap,
+  Flame,
 } from "lucide-react";
 import MainLayout from "../../components/layout/MainLayout";
 import PageHeader from "../../components/ui/PageHeader";
@@ -41,8 +42,19 @@ const quizModes = [
     description: "Focus on a specific topic or chapter.",
     count: 8,
   },
-  
-  
+  {
+    icon: Zap,
+    title: "Quick Practice",
+    description: "Fast 3-question warm-up to build momentum.",
+    count: 3,
+  },
+  {
+    icon: Flame,
+    title: "Adaptive Challenge",
+    description: "Difficulty adapts based on your performance history.",
+    count: 10,
+    adaptive: true,
+  },
 ];
 
 export default function Quiz() {
@@ -70,6 +82,16 @@ export default function Quiz() {
       return;
     }
 
+    // Adaptive difficulty: adjust count based on past performance
+    let questionCount = mode.count;
+    if (mode.adaptive) {
+      const avg = getAverageScore();
+      if (avg >= 80) questionCount = 12;      // high performer → more challenge
+      else if (avg >= 50) questionCount = 8;   // medium → standard
+      else if (avg > 0) questionCount = 5;     // struggling → focused practice
+      // avg === 0 means no history, use default
+    }
+
     try {
       setQuizLoading(true);
       setError("");
@@ -84,7 +106,7 @@ export default function Quiz() {
           profile,
         }),
         topic: curriculum.selectedChapter,
-        question_count: mode.count,
+        question_count: questionCount,
       });
       setQuiz(questions);
       setSelectedAnswers({});
@@ -260,6 +282,9 @@ export default function Quiz() {
               quizSubmitted={quizSubmitted}
               onSubmit={submitQuiz}
               score={score}
+              topic={curriculum.selectedChapter}
+              subject={curriculum.selectedSubject}
+              classLevel={curriculum.selectedClass}
             />
           </div>
         )}

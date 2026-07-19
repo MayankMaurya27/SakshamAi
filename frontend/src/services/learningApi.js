@@ -68,6 +68,30 @@ export async function generateQuiz(payload) {
   return questions;
 }
 
+export async function explainQuizAnswer({ question, options, correct_answer, student_answer, topic, subject, class_level }) {
+  const res = await api.post("/quiz/explain", {
+    question,
+    options,
+    correct_answer,
+    student_answer,
+    topic,
+    subject,
+    class_level,
+  });
+  return res.data?.data || null;
+}
+
+export async function explainQuizBatch(questions, studentAnswers, topic, subject, classLevel) {
+  const res = await api.post("/quiz/explain/batch", {
+    questions,
+    student_answers: studentAnswers,
+    topic,
+    subject,
+    class_level: classLevel,
+  });
+  return res.data?.data?.explanations || [];
+}
+
 export async function checkHealth() {
   const res = await api.get("/health");
   return res.data;

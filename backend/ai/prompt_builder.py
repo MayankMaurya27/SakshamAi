@@ -48,6 +48,42 @@ FALLBACK_RESPONSE = (
     "Please upload a relevant document or choose another topic."
 )
 
+EXPLAIN_TEXT_PROMPT = """You are Saksham AI, an educational assistant. Your task is to explain a quiz answer.
+Do NOT output JSON. Write plain text exactly following the markers below.
+
+Question: {question}
+Correct Answer: {correct_answer} ({correct_text})
+Options:
+A: {option_a}
+B: {option_b}
+C: {option_c}
+D: {option_d}
+
+Instructions:
+1. Explain why the correct answer is right. Explain the underlying concept.
+2. For EACH wrong option, explain why it is incorrect by comparing it to the correct answer. NEVER just say "this is incorrect". Explain the misconception.
+3. Provide a relatable real-world example.
+4. Provide a short memory trick.
+
+Format your output EXACTLY like this:
+
+[WHY_CORRECT]
+(Explain why the correct answer is right in 1-2 sentences)
+[WRONG_A]
+(Explain why A is wrong and compare it to the correct concept. Skip if A is correct)
+[WRONG_B]
+(Explain why B is wrong and compare it to the correct concept. Skip if B is correct)
+[WRONG_C]
+(Explain why C is wrong and compare it to the correct concept. Skip if C is correct)
+[WRONG_D]
+(Explain why D is wrong and compare it to the correct concept. Skip if D is correct)
+[EXAMPLE]
+(One relatable real-world example)
+[TRICK]
+(A short mnemonic or memory trick)
+"""
+
+
 STRICT_LEARN_INSTRUCTIONS = """Instructions:
 Answer using only the provided context.
 Explain clearly in your own words. Do not copy long passages from the context.
@@ -92,7 +128,10 @@ Output rules:
 - Number questions starting at 1.
 - Put each option on its own line with labels A., B., C., D.
 - Every question MUST end with a line: Answer: X (where X is A, B, C, or D).
-- Vary the correct answer letter across questions."""
+- Vary the correct answer letter across questions.
+- Do NOT write fill-in-the-blank statements. Write actual questions ending with ?.
+- Do NOT repeat the same question in different wording.
+- Each option must be a short, distinct, plausible answer. Do NOT write long sentences as options."""
 
 QUIZ_JSON_OUTPUT_FORMAT = """Return ONLY a valid JSON object. Do not include any code fences, markdown tags, or prose.
 
@@ -100,6 +139,10 @@ CRITICAL JSON RULES:
 - The "question" field must contain a complete query that ENDS with a question mark (?). Do NOT write statements, fill-in-the-blank prompts, or sentences ending with "...".
 - The "options" field must contain ONLY the four choices (A, B, C, D).
 - Do NOT swap or invert these fields (do not put choices in "question" or the query in "options").
+- Each option must be short (under 50 characters), distinct, and plausible.
+- Do NOT repeat the same concept across multiple questions.
+- Do NOT use irrelevant or absurd wrong options. All wrong options must be plausible.
+- The correct_answer must actually match one of the options.
 
 JSON Format (containing exactly {question_count} question objects in the array):
 {{
@@ -168,10 +211,13 @@ Generate exactly {question_count} multiple-choice questions from the context abo
 
 Question rules:
 - Use ONLY facts from the provided context.
-- Do not copy exercise questions verbatim from the context.
+- Do NOT copy exercise questions verbatim from the context.
 - Cover different parts of the context when possible.
 - Avoid duplicate or near-duplicate questions.
 - For math chapters, write numeric options clearly (for example: 0.2, 1/10, 2.5).
+- Do NOT write irrelevant questions unrelated to the context.
+- Do NOT use absurd or obviously wrong options. All 4 options must be plausible.
+- Each question must test a specific fact or concept from the context.
 
 """ + QUIZ_JSON_OUTPUT_FORMAT,
     LearningMode.SUMMARY: """Context:
@@ -305,6 +351,8 @@ Options:
 - Four distinct answer choices.
 - Only one correct option.
 - Vary correct_answer across A, B, C, and D.
+- Do NOT use absurd or irrelevant wrong options. All options must be plausible science answers.
+- Each option must be short and factual.
 
 """ + QUIZ_JSON_OUTPUT_FORMAT
 
@@ -504,6 +552,8 @@ Options:
 - Four distinct, complete answer choices. No sentence fragments.
 - Only one correct option.
 - Vary correct_answer across A, B, C, and D.
+- Do NOT use absurd or irrelevant wrong options. All options must be plausible social science answers.
+- Each option must be short and factual.
 
 """ + QUIZ_JSON_OUTPUT_FORMAT
 

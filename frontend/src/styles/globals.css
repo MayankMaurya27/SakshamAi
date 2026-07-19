@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Sora:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -283,3 +284,111 @@ body::after {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===== Accessibility Enhancements ===== */
+
+/* Skip navigation link for keyboard/screen reader users */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 9999;
+  padding: 12px 24px;
+  background: var(--color-primary);
+  color: var(--color-void);
+  font-weight: 700;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 16px;
+}
+
+/* Enhanced keyboard focus ring (complements .focus-ring) */
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.15);
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ADHD-friendly focus mode: reduced visual noise */
+.adhd-focus-mode .aurora-orb,
+.adhd-focus-mode body::before,
+.adhd-focus-mode body::after {
+  display: none !important;
+}
+
+.adhd-focus-mode .animate-float,
+.adhd-focus-mode .animate-pulse-glow {
+  animation: none !important;
+}
+
+/* Dyslexia-friendly font toggle support */
+/* Dyslexia-friendly font toggle support (Lexend imported at top of file) */
+.dyslexia-mode {
+  font-family: "Lexend", "OpenDyslexic", system-ui, sans-serif !important;
+  letter-spacing: 0.05em;
+  word-spacing: 0.12em;
+  line-height: 1.8;
+}
+
+.dyslexia-mode p,
+.dyslexia-mode li,
+.dyslexia-mode span {
+  font-size: 1.05rem;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  :root {
+    --color-border: rgba(200, 200, 220, 0.35);
+    --color-border-strong: rgba(200, 200, 220, 0.55);
+    --color-ink-muted: #b0b8c8;
+    --color-surface: rgba(10, 16, 32, 0.85);
+  }
+
+  .glass-panel,
+  .glass-panel-strong {
+    backdrop-filter: none;
+    background: rgba(10, 16, 32, 0.95);
+    border-width: 2px;
+  }
+}
+
+.high-contrast {
+  --color-border: rgba(200, 200, 220, 0.4);
+  --color-border-strong: rgba(200, 200, 220, 0.6);
+  --color-ink: #f5f7ff;
+  --color-ink-muted: #c0c8d8;
+  --color-surface: rgba(10, 16, 32, 0.9);
+}
+
+/* Live region for dynamic content announcements */
+[aria-live="polite"] {
+  position: relative;
+}
+

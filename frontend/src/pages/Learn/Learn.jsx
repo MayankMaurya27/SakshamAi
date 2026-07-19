@@ -14,6 +14,7 @@ import LearningTools from "../../components/learning/LearningTools";
 import QuizPanel from "../../components/learning/QuizPanel";
 import AudioPlayer from "../../components/audio/AudioPlayer";
 import KnowledgeBackground from "../../components/background/KnowledgeBackground";
+import StudyCoach from "../../components/learning/StudyCoach";
 import { useDocuments, useCurriculum } from "../../hooks/useLearning";
 import { useSpeechPlayer } from "../../hooks/useSpeechPlayer";
 import {
@@ -495,18 +496,25 @@ export default function Learn() {
           </div>
 
           {(source === "document" ? activeDocument : curriculum.selectedChapter) && (
-            <LearningTools
-              onQuiz={handleQuiz}
-              
-              onSimplify={handleSimplify}
-              onHindi={handleHindi}
-              quizLoading={quizLoading}
-              
-              simplifyLoading={simplifyLoading}
-              hindiLoading={hindiLoading}
-              hasAnswer={Boolean(answer.trim())}
-              hasQuestion={Boolean(question.trim())}
-            />
+            <div className="space-y-4">
+              <LearningTools
+                onQuiz={handleQuiz}
+                
+                onSimplify={handleSimplify}
+                onHindi={handleHindi}
+                quizLoading={quizLoading}
+                
+                simplifyLoading={simplifyLoading}
+                hindiLoading={hindiLoading}
+                hasAnswer={Boolean(answer.trim())}
+                hasQuestion={Boolean(question.trim())}
+              />
+              <StudyCoach
+                currentChapter={curriculum.selectedChapter}
+                onSimplify={handleSimplify}
+                hasQuestion={Boolean(question.trim())}
+              />
+            </div>
           )}
         </div>
       </div>
