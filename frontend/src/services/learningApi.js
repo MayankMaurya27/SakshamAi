@@ -1,5 +1,29 @@
 import api from "./api";
 
+// Helper to automatically retry slow Edge AI requests that time out via the tunnel (502 Bad Gateway)
+async function callApiWithRetry(apiCall, maxRetries = 15, delayMs = 6000) {
+  let attempt = 0;
+  while (attempt < maxRetries) {
+    try {
+      return await apiCall();
+    } catch (err) {
+      attempt++;
+      const isTimeoutOr502 = !err.response || 
+                             err.response.status === 502 || 
+                             err.response.status === 503 || 
+                             err.response.status === 504 ||
+                             err.code === "ECONNABORTED";
+                             
+      if (isTimeoutOr502 && attempt < maxRetries) {
+        console.warn(`Edge AI generating response... (Tunnel timed out with ${err.response?.status || 'Network Error'}, retrying ${attempt}/${maxRetries} in ${delayMs/1000}s)`);
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
 export async function fetchDocuments() {
   const res = await api.get("/documents");
   return res.data?.data?.documents || [];
@@ -40,27 +64,27 @@ export async function fetchChapters(classLevel, subject) {
 }
 
 export async function askQuestion(payload) {
-  const res = await api.post("/ask", payload);
+  const res = await callApiWithRetry(() => api.post("/ask", payload));
   return res.data?.data?.answer || "No answer received.";
 }
 
 export async function generateSummary(payload) {
-  const res = await api.post("/summary", payload);
+  const res = await callApiWithRetry(() => api.post("/summary", payload));
   return res.data?.data?.summary || "No summary generated.";
 }
 
 export async function simplifyExplanation(payload) {
-  const res = await api.post("/simplify", payload);
+  const res = await callApiWithRetry(() => api.post("/simplify", payload));
   return res.data?.data?.simplified_answer || "No simplified answer generated.";
 }
 
 export async function localizeHindi(payload) {
-  const res = await api.post("/localize/hi", payload);
+  const res = await callApiWithRetry(() => api.post("/localize/hi", payload));
   return res.data?.data?.hindi_text || "No translation generated.";
 }
 
 export async function generateQuiz(payload) {
-  const res = await api.post("/quiz", payload);
+  const res = await callApiWithRetry(() => api.post("/quiz", payload));
   const questions = res.data?.data?.questions;
   if (!Array.isArray(questions) || questions.length === 0) {
     throw new Error("The server returned an empty quiz.");
@@ -69,7 +93,7 @@ export async function generateQuiz(payload) {
 }
 
 export async function explainQuizAnswer({ question, options, correct_answer, student_answer, topic, subject, class_level }) {
-  const res = await api.post("/quiz/explain", {
+  const res = await callApiWithRetry(() => api.post("/quiz/explain", {
     question,
     options,
     correct_answer,
@@ -77,18 +101,18 @@ export async function explainQuizAnswer({ question, options, correct_answer, stu
     topic,
     subject,
     class_level,
-  });
+  }));
   return res.data?.data || null;
 }
 
 export async function explainQuizBatch(questions, studentAnswers, topic, subject, classLevel) {
-  const res = await api.post("/quiz/explain/batch", {
+  const res = await callApiWithRetry(() => api.post("/quiz/explain/batch", {
     questions,
     student_answers: studentAnswers,
     topic,
     subject,
     class_level: classLevel,
-  });
+  }));
   return res.data?.data?.explanations || [];
 }
 
