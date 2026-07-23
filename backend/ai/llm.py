@@ -75,6 +75,8 @@ class OllamaLLM:
         options: dict = {
             "temperature": settings.ollama_temperature,
             "num_ctx": settings.ollama_num_ctx,
+            "num_gpu": 1,
+            "use_mmap": True,
         }
         if num_predict is not None:
             options["num_predict"] = num_predict

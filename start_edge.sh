@@ -41,6 +41,7 @@ if ! grep -q "EMBEDDING_MODEL_PATH" .env; then
     echo "RERANK_MODEL_PATH=/home/codex/SakshamAi/backend/data/models/ms-marco-MiniLM-L-6-v2" >> .env
     echo "EMBEDDING_LOCAL_FILES_ONLY=true" >> .env
     echo "RERANK_LOCAL_FILES_ONLY=true" >> .env
+    echo "OLLAMA_NUM_CTX=2048" >> .env
 fi
 
 # 2.5 Ensure offline models are downloaded
