@@ -80,6 +80,7 @@ class SentenceTransformerEmbeddings:
             self._model = SentenceTransformer(
                 model_path,
                 local_files_only=self.local_files_only,
+                device=settings.embedding_device,
             )
             logger.info(
                 "Loaded embedding model from '%s' in %.2fs (local_files_only=%s)",

@@ -55,6 +55,7 @@ if ! grep -q "EMBEDDING_MODEL_PATH" .env; then
     echo "RERANK_LOCAL_FILES_ONLY=true" >> .env
     echo "OLLAMA_NUM_CTX=1024" >> .env
     echo "RERANK_ENABLED=false" >> .env
+    echo "EMBEDDING_DEVICE=cpu" >> .env
 fi
 
 # 2.5 Ensure offline models are downloaded

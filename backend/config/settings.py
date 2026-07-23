@@ -42,6 +42,7 @@ class Settings(BaseSettings):
 
     # Embeddings
     embedding_model: str = "intfloat/multilingual-e5-small"
+    embedding_device: str = "cpu"
     # Optional absolute path to a bundled model dir (Jetson); overrides HF cache lookup
     embedding_model_path: Path | None = None
     # Use local cache only (required for offline/Jetson — avoids HuggingFace network retries)
