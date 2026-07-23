@@ -1,15 +1,20 @@
 #!/bin/bash
 echo "=== Starting Saksham AI on NVIDIA Jetson Edge ==="
 
-# 1. Check if the pre-installed Ollama service is available on the host Docker gateway
+# 1. Check if the pre-installed Ollama service is available and functional
 echo "Checking for pre-installed Ollama at http://172.17.0.1:11434..."
 OLLAMA_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://172.17.0.1:11434/api/tags || echo "failed")
 
 USE_HOST_OLLAMA=false
 if [ "$OLLAMA_STATUS" = "200" ]; then
-    echo "SUCCESS: Found pre-installed Ollama service on host (http://172.17.0.1:11434)."
-    echo "Using pre-loaded host models (no installation or pull needed)."
-    USE_HOST_OLLAMA=true
+    echo "Testing host Ollama generation capacity..."
+    TEST_GEN=$(curl -s -X POST http://172.17.0.1:11434/api/generate -d '{"model": "llama3.2:1b", "prompt": "hi", "stream": false}' || echo "failed")
+    if echo "$TEST_GEN" | grep -q "response"; then
+        echo "SUCCESS: Host Ollama is active and functional."
+        USE_HOST_OLLAMA=true
+    else
+        echo "WARNING: Host Ollama returned an error during test generation. Falling back to local setup..."
+    fi
 else
     echo "INFO: Pre-installed Ollama not detected at http://172.17.0.1:11434 (Status: $OLLAMA_STATUS)."
     echo "Falling back to local user-space Ollama setup..."
