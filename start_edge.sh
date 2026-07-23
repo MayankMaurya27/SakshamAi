@@ -15,8 +15,10 @@ else
     echo "Falling back to local user-space Ollama setup..."
 fi
 
-# 2. Configure .env file with correct OLLAMA_BASE_URL
+# 2. Configure .env file with correct OLLAMA_BASE_URL and offline model paths
 cd "$HOME/SakshamAi/backend"
+touch .env
+
 if [ "$USE_HOST_OLLAMA" = "true" ]; then
     # Set to the host gateway IP
     if grep -q "OLLAMA_BASE_URL" .env; then
@@ -31,6 +33,20 @@ else
     else
         echo "OLLAMA_BASE_URL=http://localhost:11434" >> .env
     fi
+fi
+
+# Append model paths for offline mode
+if ! grep -q "EMBEDDING_MODEL_PATH" .env; then
+    echo "EMBEDDING_MODEL_PATH=/home/codex/SakshamAi/backend/data/models/multilingual-e5-small" >> .env
+    echo "RERANK_MODEL_PATH=/home/codex/SakshamAi/backend/data/models/ms-marco-MiniLM-L-6-v2" >> .env
+    echo "EMBEDDING_LOCAL_FILES_ONLY=true" >> .env
+    echo "RERANK_LOCAL_FILES_ONLY=true" >> .env
+fi
+
+# 2.5 Ensure offline models are downloaded
+if [ ! -f "data/models/multilingual-e5-small/model.safetensors" ] || [ ! -f "data/models/ms-marco-MiniLM-L-6-v2/model.safetensors" ]; then
+    echo "INFO: Offline models not found. Downloading them now..."
+    python3 scripts/download_models.py
 fi
 
 # 3. Setup Ollama (only if NOT using host Ollama)
