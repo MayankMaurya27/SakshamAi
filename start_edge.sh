@@ -1,6 +1,13 @@
 #!/bin/bash
 echo "=== Starting Saksham AI on NVIDIA Jetson Edge ==="
 
+# 0. Clean up any existing backend or tunnel processes
+echo "Cleaning up old backend and tunnel sessions..."
+pkill -f "uvicorn app:app" || true
+pkill -f "serveo.net" || true
+sleep 1
+
+
 # 1. Check if the pre-installed Ollama service is available and functional
 echo "Checking for pre-installed Ollama at http://172.17.0.1:11434..."
 OLLAMA_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://172.17.0.1:11434/api/tags || echo "failed")
@@ -102,11 +109,10 @@ if [ "$USE_HOST_OLLAMA" = "false" ]; then
     fi
 
     # Start Ollama service in background
-    if ! ps aux | grep -v grep | grep -q "ollama serve"; then
-        echo "Starting local Ollama service..."
-        ollama serve > "$HOME/ollama.log" 2>&1 &
-        sleep 5
-    fi
+    pkill -f "ollama serve" || true
+    echo "Starting local Ollama service..."
+    ollama serve > "$HOME/ollama.log" 2>&1 &
+    sleep 5
 
     # Ensure model is pulled
     if ! ollama list | grep -q "llama3.2:1b"; then
