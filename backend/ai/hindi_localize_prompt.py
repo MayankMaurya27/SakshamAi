@@ -63,6 +63,13 @@ Convert the following English {type_label} into Hinenglish for Indian school stu
 {_class_hint(class_level)}
 {_preserve_terms_block(preserve_terms)}
 {_COMMON_RULES}
+
+Example:
+English text:
+Plants need water, sunlight, and carbon dioxide for photosynthesis.
+Hinenglish output:
+पौधों को प्रकाश संश्लेषण (Photosynthesis) के लिए पानी (Water), सूर्य के प्रकाश (Sunlight) और कार्बन डाइऑक्साइड (Carbon dioxide) की आवश्यकता होती है।
+
 {retry_block}
 English text:
 {english_text.strip()}
@@ -89,6 +96,26 @@ Rules:
 - Keep proper nouns, formulas, and numbers unchanged.
 - Do NOT add or remove options.
 {_class_hint(class_level)}
+
+Example English MCQ JSON:
+{{
+  "question": "What is the process of food making in plants called?",
+  "option_a": "Photosynthesis",
+  "option_b": "Respiration",
+  "option_c": "Transpiration",
+  "option_d": "Translocation",
+  "correct_answer": "A"
+}}
+JSON output:
+{{
+  "question": "पौधों में भोजन बनाने की प्रक्रिया को क्या कहा जाता है?",
+  "option_a": "प्रकाश संश्लेषण (Photosynthesis)",
+  "option_b": "श्वसन (Respiration)",
+  "option_c": "वाष्पोत्सर्जन (Transpiration)",
+  "option_d": "स्थानांतरण (Translocation)",
+  "correct_answer": "A"
+}}
+
 {retry_block}
 English MCQ JSON:
 {{
