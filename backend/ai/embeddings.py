@@ -73,6 +73,10 @@ class SentenceTransformerEmbeddings:
 
     def _load_model(self) -> None:
         if self._model is None:
+            import torch
+            torch.set_num_threads(1)
+            torch.set_num_interop_threads(1)
+
             from sentence_transformers import SentenceTransformer
 
             model_path = self._resolve_model_path()
@@ -97,7 +101,11 @@ class SentenceTransformerEmbeddings:
         """Generate embedding for a single text."""
         self._load_model()
         prefixed = self._prefix(text, is_query)
-        vector = self._model.encode(prefixed, normalize_embeddings=True)
+        vector = self._model.encode(
+            prefixed,
+            normalize_embeddings=True,
+            show_progress_bar=False,
+        )
         return np.array(vector, dtype=np.float32)
 
     def embed_batch(self, texts: list[str], is_query: bool = False) -> np.ndarray:
@@ -106,7 +114,11 @@ class SentenceTransformerEmbeddings:
             return np.array([], dtype=np.float32)
         self._load_model()
         prefixed = [self._prefix(text, is_query) for text in texts]
-        vectors = self._model.encode(prefixed, normalize_embeddings=True)
+        vectors = self._model.encode(
+            prefixed,
+            normalize_embeddings=True,
+            show_progress_bar=False,
+        )
         return np.array(vectors, dtype=np.float32)
 
 
