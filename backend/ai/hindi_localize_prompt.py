@@ -60,21 +60,24 @@ def build_prose_localize_prompt(
 
 Convert the following English {type_label} into Hinenglish for Indian school students.
 
-{_class_hint(class_level)}
-{_preserve_terms_block(preserve_terms)}
-{_COMMON_RULES}
+Use very simple Hindi suitable for Class {class_level} students.
 
-Example:
-English text:
-Plants need water, sunlight, and carbon dioxide for photosynthesis.
-Hinenglish output:
-पौधों को प्रकाश संश्लेषण (Photosynthesis) के लिए पानी (Water), सूर्य के प्रकाश (Sunlight) और कार्बन डाइऑक्साइड (Carbon dioxide) की आवश्यकता होती है।
+Rules:
+- Write explanatory prose in Devanagari (Hindi script).
+- Keep technical terms unchanged in brackets: e.g. प्रकाश (Light), परावर्तन (Reflection).
+- Do NOT mix English and Hindi letters in a single word (e.g. write "बाउंस" or "bounces", NEVER write "बounces").
+- Do NOT add or remove facts. Translate/paraphrase ONLY the given English text.
+- Do NOT include any topics or facts from the example (such as water or growth) in your output.
+
+[Example Input]
+Plants need water for growth.
+[Example Output]
+पौधों को विकास (Growth) के लिए पानी (Water) की आवश्यकता होती है।
 
 {retry_block}
-English text:
+[Target Input]
 {english_text.strip()}
-
-Hinenglish output:"""
+[Target Output]"""
 
 
 def build_quiz_question_localize_prompt(
@@ -94,10 +97,11 @@ Rules:
 - Translate question and options into Devanagari Hindi (Hinenglish).
 - Keep correct_answer exactly as "{question.get('correct_answer', 'A')}" (single letter A/B/C/D).
 - Keep proper nouns, formulas, and numbers unchanged.
+- Do NOT mix English and Hindi letters in a single word (e.g. write "बाउंस" or "bounces", NEVER write "बounces").
 - Do NOT add or remove options.
 {_class_hint(class_level)}
 
-Example English MCQ JSON:
+[Example English MCQ JSON]
 {{
   "question": "What is the process of food making in plants called?",
   "option_a": "Photosynthesis",
@@ -106,7 +110,7 @@ Example English MCQ JSON:
   "option_d": "Translocation",
   "correct_answer": "A"
 }}
-JSON output:
+[Example JSON output]
 {{
   "question": "पौधों में भोजन बनाने की प्रक्रिया को क्या कहा जाता है?",
   "option_a": "प्रकाश संश्लेषण (Photosynthesis)",
@@ -117,7 +121,7 @@ JSON output:
 }}
 
 {retry_block}
-English MCQ JSON:
+[Target English MCQ JSON]
 {{
   "question": {question.get('question', '')!r},
   "option_a": {question.get('option_a', '')!r},
@@ -127,4 +131,4 @@ English MCQ JSON:
   "correct_answer": {question.get('correct_answer', 'A')!r}
 }}
 
-JSON output:"""
+[Target JSON output]"""
