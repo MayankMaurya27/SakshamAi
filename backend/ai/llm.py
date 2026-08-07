@@ -54,11 +54,12 @@ class OllamaLLM:
         prompt: str,
         num_predict: int | None = None,
         format_json: bool = False,
+        bypass_cache: bool = False,
     ) -> str:
         """Send prompt to Ollama and return generated text."""
         # --- Cache lookup ---
         cache_key = ""
-        if self._cache_enabled:
+        if self._cache_enabled and not bypass_cache:
             key_data = f"{prompt}|{num_predict}|{format_json}"
             cache_key = hashlib.sha256(key_data.encode()).hexdigest()
             if cache_key in self._cache:

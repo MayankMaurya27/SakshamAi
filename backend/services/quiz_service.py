@@ -511,6 +511,7 @@ def _generate_questions_for_context(
             prompt,
             num_predict=settings.ollama_num_predict_quiz,
             format_json=True,
+            bypass_cache=(attempt > 1),
         )
         batch = _filter_generated_batch(
             tag_llm_questions(

@@ -141,7 +141,7 @@ def test_generate_questions_for_context_retries_until_enough(monkeypatch):
     calls = {"count": 0}
 
     class PartialMockLLM:
-        def generate(self, prompt: str, num_predict: int | None = None, format_json: bool = False):
+        def generate(self, prompt: str, num_predict: int | None = None, format_json: bool = False, **kwargs):
             calls["count"] += 1
             idx = calls["count"]
             return json.dumps(
