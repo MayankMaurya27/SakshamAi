@@ -1,0 +1,61 @@
+{
+  "questions": [
+    {
+      "question": "What is the main function of the crystalline lens in the human eye?",
+      "options": {
+        "A": "To focus light on the retina",
+        "B": "To regulate pupil size",
+        "C": "To adjust focal length for near and far vision",
+        "D": "To protect the eye from infection"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the purpose of the iris behind the cornea?",
+      "options": {
+        "A": "To regulate pupil size",
+        "B": "To control light entering the eye",
+        "C": "To focus images on the retina",
+        "D": "To protect the eye from external factors"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the focal length of the eye lens that can be modified to change its power?",
+      "options": {
+        "A": "The ciliary muscles",
+        "B": "The crystalline lens",
+        "C": "The iris",
+        "D": "The cornea"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "What is the minimum distance at which objects can be seen most distinctly without strain?",
+      "options": {
+        "A": "25 cm",
+        "B": "10 cm",
+        "C": "50 cm",
+        "D": "Infinity"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the farthest point up to which the eye can see objects clearly?",
+      "options": {
+        "A": "infinity",
+        "B": "25 cm",
+        "C": "100 cm",
+        "D": "200 cm"
+      },
+      "correct_answer": "A"
+    }
+  ],
+  "question_count": 5,
+  "requested_count": 5,
+  "source": "saksham",
+  "class_level": 10,
+  "subject": "Science",
+  "chapter": "The Human Eye and the Colourful World",
+  "chapter_id": "the_human_eye_and_the_colourful_world"
+}

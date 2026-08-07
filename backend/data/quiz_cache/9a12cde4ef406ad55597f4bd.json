@@ -1,0 +1,61 @@
+{
+  "questions": [
+    {
+      "question": "In which state does water exist as ice?",
+      "options": {
+        "A": "Solid",
+        "B": "Liquid",
+        "C": "Gas",
+        "D": "Plasma"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the process of water changing into water vapour called?",
+      "options": {
+        "A": "Condensation",
+        "B": "Evaporation",
+        "C": "Freezing",
+        "D": "Melting"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "What happens when water vapour cools down?",
+      "options": {
+        "A": "It turns into liquid water",
+        "B": "It turns into ice",
+        "C": "It stays as vapour",
+        "D": "It disappears"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "At what temperature does liquid water freeze into ice?",
+      "options": {
+        "A": "100°C",
+        "B": "0°C",
+        "C": "50°C",
+        "D": "25°C"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "Which of the following is the gaseous form of water?",
+      "options": {
+        "A": "Ice",
+        "B": "Water vapour",
+        "C": "Dew",
+        "D": "Frost"
+      },
+      "correct_answer": "B"
+    }
+  ],
+  "question_count": 5,
+  "requested_count": 5,
+  "source": "saksham",
+  "class_level": 6,
+  "subject": "Science",
+  "chapter": "A Journey through States of Water",
+  "chapter_id": "a_journey_through_states_of_water"
+}

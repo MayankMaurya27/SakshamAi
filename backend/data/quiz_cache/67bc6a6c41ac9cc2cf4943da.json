@@ -1,0 +1,61 @@
+{
+  "questions": [
+    {
+      "question": "Who was the leader of the Yadava dynasty?",
+      "options": {
+        "A": "Shahji",
+        "B": "Jijabai",
+        "C": "Chhatrapati Shivaji",
+        "D": "Afzal Khan"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "question": "What were the chief weapons used by the Marathas?",
+      "options": {
+        "A": "Navy and gunpowder",
+        "B": "Raigad Fort",
+        "C": "Postal stamp showing Sant Tukaram",
+        "D": "Sindhudurg Fort"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What was the name of Chhatrapati Shivaji's vision for a sovereign kingdom?",
+      "options": {
+        "A": "Swarajya",
+        "B": "Swarnajya",
+        "C": "Shivajyam",
+        "D": "Shivajya"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What was the main reason why the Marathas wanted to control the traffic in Maharashtra?",
+      "options": {
+        "A": "To increase their territory",
+        "B": "To spread their religion",
+        "C": "To gain more power and wealth",
+        "D": "To protect their people from enemies"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "Who sent Afzal Khan to confront Chhatrapati Shivaji?",
+      "options": {
+        "A": "The Bijapur Sultanate",
+        "B": "The Mughal Empire",
+        "C": "The Deccan sultates",
+        "D": "The Portuguese"
+      },
+      "correct_answer": "A"
+    }
+  ],
+  "question_count": 5,
+  "requested_count": 5,
+  "source": "saksham",
+  "class_level": 8,
+  "subject": "Social Science",
+  "chapter": "The Rise of the Marathas",
+  "chapter_id": "the_rise_of_the_marathas"
+}

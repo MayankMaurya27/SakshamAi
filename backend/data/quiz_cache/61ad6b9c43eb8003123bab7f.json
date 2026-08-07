@@ -1,0 +1,61 @@
+{
+  "questions": [
+    {
+      "question": "What is the property of some metals where sound is produced when struck with an object?",
+      "options": {
+        "A": "Resonance",
+        "B": "Vibratory motion",
+        "C": "Conductivity",
+        "D": "Density"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "What is the source of sound?",
+      "options": {
+        "A": "The air inside the hollow pipe",
+        "B": "The vocal cords in humans",
+        "C": "The tongue, lips, mouth and nasal cavity",
+        "D": "The stomach"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "What is the medium through which sound propagates?",
+      "options": {
+        "A": "Air",
+        "B": "Water",
+        "C": "Vacuum",
+        "D": "Solid"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "Why can't sound propagate in a vacuum?",
+      "options": {
+        "A": "Because it's too loud",
+        "B": "Because there is no medium",
+        "C": "Because air is present",
+        "D": "Because solid objects block the sound"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the name of the village near Shillong where people have a unique tradition called Jingrwai Iawbei?",
+      "options": {
+        "A": "Whistling Village",
+        "B": "Tibetan Village",
+        "C": "Khasi Village",
+        "D": "Meghalaya Village"
+      },
+      "correct_answer": "A"
+    }
+  ],
+  "question_count": 5,
+  "requested_count": 5,
+  "source": "saksham",
+  "class_level": 9,
+  "subject": "Science",
+  "chapter": "Sound",
+  "chapter_id": "sound"
+}

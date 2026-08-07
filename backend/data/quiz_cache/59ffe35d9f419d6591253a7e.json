@@ -1,0 +1,61 @@
+{
+  "questions": [
+    {
+      "question": "Why does the curved surface of a spoon reflect light?",
+      "options": {
+        "A": "It behaves like a curved spherical mirror",
+        "B": "It behaves like a flat mirror",
+        "C": "It absorbs all light falling on it",
+        "D": "It does not reflect light"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the center of the reflecting surface of a spherical mirror called?",
+      "options": {
+        "A": "Center of Curvature",
+        "B": "Pole",
+        "C": "Principal Focus",
+        "D": "Aperture"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "What is the straight line joining the pole and the center of curvature of a spherical mirror?",
+      "options": {
+        "A": "Principal Axis",
+        "B": "Focal Length",
+        "C": "Radius of Curvature",
+        "D": "Normal"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "According to the laws of reflection, the angle of incidence is equal to:",
+      "options": {
+        "A": "The angle of reflection",
+        "B": "The angle of refraction",
+        "C": "Twice the angle of reflection",
+        "D": "Half the angle of reflection"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What type of mirror is commonly used as a rear-view mirror in vehicles?",
+      "options": {
+        "A": "Concave mirror",
+        "B": "Convex mirror",
+        "C": "Plane mirror",
+        "D": "Double concave mirror"
+      },
+      "correct_answer": "B"
+    }
+  ],
+  "question_count": 5,
+  "requested_count": 5,
+  "source": "saksham",
+  "class_level": 10,
+  "subject": "Science",
+  "chapter": "Light – Reflection and Refraction",
+  "chapter_id": "light_reflection_and_refraction"
+}

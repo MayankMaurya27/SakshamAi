@@ -1,0 +1,61 @@
+{
+  "questions": [
+    {
+      "question": "What do plants and animals need to grow?",
+      "options": {
+        "A": "Food",
+        "B": "Water",
+        "C": "Air",
+        "D": "Sweat"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the purpose of stomata in plants?",
+      "options": {
+        "A": "To breathe out air",
+        "B": "To absorb water",
+        "C": "To release waste",
+        "D": "To regulate temperature"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What happens when an insect enters a saucer?",
+      "options": {
+        "A": "The insect gets trapped by hairs.",
+        "B": "The insect gets eaten by other insects.",
+        "C": "The insect gets washed away by water.",
+        "D": "The insect gets blown away by wind."
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the process called when plants respire?",
+      "options": {
+        "A": "Photosynthesis",
+        "B": "Respiration",
+        "C": "Growth",
+        "D": "Decomposition"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "What are living beings that require food for their growth?",
+      "options": {
+        "A": "Animals",
+        "B": "Plants",
+        "C": "Fungi",
+        "D": "Microorganisms"
+      },
+      "correct_answer": "B"
+    }
+  ],
+  "question_count": 5,
+  "requested_count": 5,
+  "source": "saksham",
+  "class_level": 6,
+  "subject": "Science",
+  "chapter": "Living Creatures- Exploring their Characteristics",
+  "chapter_id": "living_creatures_exploring_their_characteristics"
+}

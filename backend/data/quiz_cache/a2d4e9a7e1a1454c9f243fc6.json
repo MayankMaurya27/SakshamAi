@@ -1,0 +1,61 @@
+{
+  "questions": [
+    {
+      "question": "Who protects dharma and dharma protects those who protect it?",
+      "options": {
+        "A": "The ruler",
+        "B": "The people",
+        "C": "The gods",
+        "D": "The media"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "A system of checks and balances where each organ of government can check what the other is doing and restore balance if one organ acts beyond its expected role?",
+      "options": {
+        "A": "Separation of Powers",
+        "B": "Federalism",
+        "C": "Constitutional Monarchy",
+        "D": "Unitary System"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the main purpose of local governments?",
+      "options": {
+        "A": "To provide basic services",
+        "B": "To collect taxes",
+        "C": "To make new laws",
+        "D": "To enforce traffic rules"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the main purpose of a state government?",
+      "options": {
+        "A": "To provide basic services",
+        "B": "To collect taxes",
+        "C": "To protect citizens' rights",
+        "D": "To manage natural resources"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "question": "What is the main purpose of central government?",
+      "options": {
+        "A": "To provide basic services to citizens",
+        "B": "To collect taxes and maintain law and order",
+        "C": "To promote economic development",
+        "D": "To protect national interests"
+      },
+      "correct_answer": "B"
+    }
+  ],
+  "question_count": 5,
+  "requested_count": 5,
+  "source": "saksham",
+  "class_level": 6,
+  "subject": "Social Science",
+  "chapter": "Grassroots Democracy – Part 1 Governance",
+  "chapter_id": "grassroots_democracy_part_1_governance"
+}

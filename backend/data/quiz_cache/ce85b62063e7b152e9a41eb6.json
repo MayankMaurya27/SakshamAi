@@ -1,0 +1,61 @@
+{
+  "questions": [
+    {
+      "question": "What is the SI unit of electric charge?",
+      "options": {
+        "A": "coulomb",
+        "B": "ampere",
+        "C": "milliampere",
+        "D": "microampere"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the SI unit of electric potential difference?",
+      "options": {
+        "A": "Joules",
+        "B": "Coulombs",
+        "C": "Volts",
+        "D": "Watts"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "question": "What is an electric circuit?",
+      "options": {
+        "A": "A path through which electric current flows",
+        "B": "An object that stores energy",
+        "C": "A device that converts mechanical energy into electrical energy",
+        "D": "A container for storing liquids or gases"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the SI unit of electric current?",
+      "options": {
+        "A": "Coulomb",
+        "B": "Amperes",
+        "C": "Volts",
+        "D": "Joules"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "What is a device that helps to maintain a potential difference across a conductor?",
+      "options": {
+        "A": "A thermometer",
+        "B": "An ammeter",
+        "C": "A voltmeter",
+        "D": "A magnetometer"
+      },
+      "correct_answer": "B"
+    }
+  ],
+  "question_count": 5,
+  "requested_count": 5,
+  "source": "saksham",
+  "class_level": 10,
+  "subject": "Science",
+  "chapter": "Electricity",
+  "chapter_id": "electricity"
+}

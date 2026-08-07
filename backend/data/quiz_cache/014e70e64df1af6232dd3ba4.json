@@ -1,0 +1,61 @@
+{
+  "questions": [
+    {
+      "question": "What are the smallest particles that can no longer be divided?",
+      "options": {
+        "A": "Parmanus",
+        "B": "Atoms",
+        "C": "Matter",
+        "D": "Elements"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What is the smallest particle that cannot be divided?",
+      "options": {
+        "A": "Protons",
+        "B": "Neutrons",
+        "C": "Electrons",
+        "D": "Atoms"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "question": "What were the two parmanus groups proposed by Acharya Kanada?",
+      "options": {
+        "A": "dyads",
+        "B": "triads",
+        "C": "combinations of two parmanus",
+        "D": "groups of three parmanus"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "What was the name given to the smallest particles by Thomson?",
+      "options": {
+        "A": "atoms",
+        "B": "parmanus",
+        "C": "dyads",
+        "D": "triads"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question": "What was Thomson's model of an atom?",
+      "options": {
+        "A": "A sphere of positive charge with electrons distributed throughout it",
+        "B": "A pudding with plums embedded in it, called the plum pudding model",
+        "C": "A watermelon",
+        "D": "An imaginary idea rather than from experimental observations"
+      },
+      "correct_answer": "B"
+    }
+  ],
+  "question_count": 5,
+  "requested_count": 5,
+  "source": "saksham",
+  "class_level": 9,
+  "subject": "Science",
+  "chapter": "Journey Inside atoms",
+  "chapter_id": "journey_inside_atoms"
+}
