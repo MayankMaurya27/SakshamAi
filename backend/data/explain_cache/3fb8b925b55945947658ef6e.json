@@ -1,0 +1,17 @@
+{
+  "why_correct": "The concept of reflection states that the angle at which a ray hits a surface is equal to the angle it leaves that surface. This is because light always travels in straight lines and reflects off surfaces at the same angle as it entered, maintaining its original direction.",
+  "easy_explanation": "The concept of reflection states that the angle at which a ray hits a surface is equal to the angle it leaves that surface. This is because light always travels in straight lines and reflects off surfaces at the same angle as it entered, maintaining its original direction.",
+  "why_wrong": {
+    "B": "This option implies that the angle of refraction is involved in this scenario, but it's not directly related to the laws of reflection. Refraction occurs when light passes from one medium to another with a different optical density, whereas reflection involves the change in direction of light at a surface.",
+    "C": "This option suggests that twice the angle of reflection is correct, which is incorrect. The relationship between these angles is not simply doubled; they are equal.",
+    "D": "This option implies that half the angle of reflection is correct, but it's not accurate. Half the angle of incidence would be related to refraction, not reflection."
+  },
+  "real_world_example": "A car driver approaching a roundabout at a high speed will experience a phenomenon called \"car window effect\". When they look out their rearview mirror, they see the road behind them as if it were straight ahead due to the curvature of the road. This is an example where the angle of incidence (driver's line of sight) is equal to the angle of reflection (the road behind them).",
+  "memory_trick": "To remember that the angle of incidence equals the angle of reflection, use the phrase \"I See It Like That\" or \"It's Icy Like That\".",
+  "difficulty": "Medium",
+  "topic": "General Knowledge",
+  "common_misconception": "Students often confuse similar-sounding concepts.",
+  "related_concept": "Review the related section.",
+  "follow_up_question": "Can you explain this concept in your own words?",
+  "study_suggestion": "Great job! Keep practicing."
+}

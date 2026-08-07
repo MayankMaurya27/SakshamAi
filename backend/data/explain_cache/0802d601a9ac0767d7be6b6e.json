@@ -1,0 +1,17 @@
+{
+  "why_correct": "The correct answer is right because the pole, also known as the principal axis, is the line that passes through the center of curvature and the center of reflection for a spherical mirror. This concept is crucial in understanding how mirrors work.",
+  "easy_explanation": "The correct answer is right because the pole, also known as the principal axis, is the line that passes through the center of curvature and the center of reflection for a spherical mirror. This concept is crucial in understanding how mirrors work.",
+  "why_wrong": {
+    "A": "A is incorrect because it refers to the center of curvature, which is not the same as the center of reflection. The center of curvature is the point on the surface where the mirror's radius of curvature meets, whereas the center of reflection is the point where light rays converge after passing through the mirror.",
+    "C": "C is incorrect because the principal focus is actually located at the center of curvature for a parabolic mirror, not a spherical mirror. This concept is important in understanding how parabolic mirrors work.",
+    "D": "D is incorrect because the aperture refers to the opening or size of the mirror, whereas the pole (principal axis) is related to the geometry and optics of the mirror itself. Understanding the relationship between these two concepts is crucial for accurately describing a spherical mirror's properties."
+  },
+  "real_world_example": "A real-world example of using the concept of the pole (principal axis) is in the design of telescopes. The telescope's primary mirror or lens must be aligned with the pole to ensure that light rays converge at the correct point, allowing us to see distant objects clearly.",
+  "memory_trick": "To remember the relationship between the center of curvature and the principal focus, try this trick: \"I'm Curved Like a Pole\" - it helps you recall that the center of curvature is like the pole in terms of its curved shape.",
+  "difficulty": "Medium",
+  "topic": "General Knowledge",
+  "common_misconception": "Students often confuse similar-sounding concepts.",
+  "related_concept": "Review the related section.",
+  "follow_up_question": "Can you explain this concept in your own words?",
+  "study_suggestion": "Great job! Keep practicing."
+}

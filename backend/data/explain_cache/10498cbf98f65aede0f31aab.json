@@ -1,0 +1,17 @@
+{
+  "why_correct": "The correct answer, B (0°C), is right because liquid water freezes into ice when its temperature cools down to 0 degrees Celsius. This is a fundamental concept in physics and chemistry.",
+  "easy_explanation": "The correct answer, B (0°C), is right because liquid water freezes into ice when its temperature cools down to 0 degrees Celsius. This is a fundamental concept in physics and chemistry.",
+  "why_wrong": {
+    "A": "Option A, 100°C, is incorrect because it is the boiling point of water, not the freezing point. At this temperature, water turns into vapor instead of solidifying into ice.",
+    "C": "Option C, 50°C, is incorrect because it is not the temperature at which water freezes. While some materials can freeze at temperatures above 0°C, this is not true for liquid water.",
+    "D": "Option D, 25°C, is incorrect because it is not a reliable reference point for freezing water. The freezing point of water varies depending on atmospheric pressure and other factors."
+  },
+  "real_world_example": "A common example to remember the freezing point of water is that if you leave your cup of hot coffee outside in the cold weather, the ice will form first, and then the coffee will melt back into liquid.",
+  "memory_trick": "To help you remember the correct answer, try associating it with a familiar phrase: \"Cold as ice\"",
+  "difficulty": "Easy",
+  "topic": "General Knowledge",
+  "common_misconception": "Students often confuse similar-sounding concepts.",
+  "related_concept": "Review the related section.",
+  "follow_up_question": "Can you explain this concept in your own words?",
+  "study_suggestion": "Great job! Keep practicing."
+}

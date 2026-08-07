@@ -1,0 +1,17 @@
+{
+  "why_correct": "The straight line joining the pole and the center of curvature of a spherical mirror is called the principal axis. This is because the principal axis is the line that passes through the center of curvature, which is also the point where the light rays converge after reflection.",
+  "easy_explanation": "The straight line joining the pole and the center of curvature of a spherical mirror is called the principal axis. This is because the principal axis is the line that passes through the center of curvature, which is also the point where the light rays converge after reflection.",
+  "why_wrong": {
+    "B": "Focal Length is correct because it is indeed the distance between the focal points of a spherical mirror. However, this concept is related to the focal length, not the principal axis.",
+    "C": "Radius of Curvature is incorrect because it refers to the radius at which the curvature of the mirror changes, whereas the principal axis is the line that passes through the center of curvature.",
+    "D": "Normal is incorrect because a normal is a line perpendicular to a surface, whereas the principal axis is a line passing through the center of curvature. A normal would not be a straight line joining the pole and the center of curvature."
+  },
+  "real_world_example": "A car mirror is an example of a spherical mirror with its principal axis aligned along the road. When you look at the car from behind, the straight line joining the pole (the front of the car) and the center of curvature (the rear of the car) allows you to see the entire road clearly without any distortion.",
+  "memory_trick": "To remember that the principal axis is the line passing through the center of curvature, try saying \"I'm looking at my own reflection\" - this will help you visualize the concept.",
+  "difficulty": "Medium",
+  "topic": "General Knowledge",
+  "common_misconception": "Students often confuse similar-sounding concepts.",
+  "related_concept": "Review the related section.",
+  "follow_up_question": "Can you explain this concept in your own words?",
+  "study_suggestion": "Great job! Keep practicing."
+}

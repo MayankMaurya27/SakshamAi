@@ -1,0 +1,17 @@
+{
+  "why_correct": "The correct answer is right because water in its gaseous state, also known as water vapour, is a naturally occurring substance that surrounds us. It's essential for life and plays a crucial role in many natural processes.",
+  "easy_explanation": "The correct answer is right because water in its gaseous state, also known as water vapour, is a naturally occurring substance that surrounds us. It's essential for life and plays a crucial role in many natural processes.",
+  "why_wrong": {
+    "A": "This option is incorrect because ice is the solid form of water, not the gaseous form. Ice is formed when liquid water freezes into a crystalline structure. This misconception arises from the fact that we often think of \"solid\" as being rigid and unchanging, but ice is actually a frozen state.",
+    "C": "This option is incorrect because dew is actually a type of precipitation that occurs when water vapor in the air condenses onto tiny particles, such as dust or pollen. Dew forms when the air cools to its dew point, causing the water vapor to condense into droplets. This misconception arises from a misunderstanding of how dew forms.",
+    "D": "This option is incorrect because frost is actually a solid form of water that occurs when supercooled water droplets freeze onto surfaces. Frost forms when the air temperature cools to its freezing point, causing the water droplets to freeze into small, transparent ice crystals. This misconception comes from a lack of understanding about the different stages of ice formation."
+  },
+  "real_world_example": "A relatable real-world example is the process of evaporation at the beach on a hot summer day. As the sun heats up the sand and water, it causes the water molecules to gain energy and turn into water vapour, rising into the air as gas.",
+  "memory_trick": "To remember that water can exist in multiple states (solid, liquid, and gas), use the acronym \"H2O\" which stands for Hydrate, Water.",
+  "difficulty": "Easy",
+  "topic": "General Knowledge",
+  "common_misconception": "Students often confuse similar-sounding concepts.",
+  "related_concept": "Review the related section.",
+  "follow_up_question": "Can you explain this concept in your own words?",
+  "study_suggestion": "Great job! Keep practicing."
+}

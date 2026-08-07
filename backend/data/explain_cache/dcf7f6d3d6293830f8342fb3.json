@@ -1,0 +1,17 @@
+{
+  "why_correct": "The process of water changing into water vapour is called evaporation. This occurs when the temperature and humidity levels are high enough to allow the molecules on the surface of the water to gain energy and escape into the air as gas, resulting in a change from liquid to gas.",
+  "easy_explanation": "The process of water changing into water vapour is called evaporation. This occurs when the temperature and humidity levels are high enough to allow the molecules on the surface of the water to gain energy and escape into the air as gas, resulting in a change from liquid to gas.",
+  "why_wrong": {
+    "A": "This option is incorrect because condensation is actually the process by which water vapour changes back into liquid water. When the air cools down, the water vapour in the air condenses onto tiny particles in the atmosphere, forming droplets of water that we see as clouds or precipitation.",
+    "C": "This option is incorrect because freezing refers to the process by which water turns into ice. While water can freeze at very low temperatures, this is not the same as evaporating from a liquid state.",
+    "D": "This option is correct because melting refers to the process by which water changes from a solid (ice) back into a liquid state. However, in the context of evaporation, we are specifically talking about the transition from liquid to gas, not from solid to liquid."
+  },
+  "real_world_example": "A real-world example of evaporation is when you take a hot shower and watch as the mirror fogs up - this is an example of water evaporating from the surface of the water in the mirror into the air as water vapour.",
+  "memory_trick": "To remember the difference between evaporation and condensation, try to recall the acronym \"ECC\" - Evaporation Causes Clouds. This can help you associate each process with its correct concept.",
+  "difficulty": "Medium",
+  "topic": "General Knowledge",
+  "common_misconception": "Students often confuse similar-sounding concepts.",
+  "related_concept": "Review the related section.",
+  "follow_up_question": "Can you explain this concept in your own words?",
+  "study_suggestion": "Great job! Keep practicing."
+}

@@ -1,0 +1,17 @@
+{
+  "why_correct": "A (It behaves like a curved spherical mirror)",
+  "easy_explanation": "A (It behaves like a curved spherical mirror)",
+  "why_wrong": {
+    "B": "A flat mirror reflects light by bending it back to its original direction, but it doesn't change the angle of incidence. A curved mirror, on the other hand, changes the angle of incidence and reflection due to its curved surface. This is why a spoon's curved surface can reflect light more efficiently than a flat one.",
+    "C": "A spoon does not absorb all light falling on it; in fact, it reflects most of it back into the air. The curved surface of the spoon is designed to focus light onto a small area, making it an effective tool for cooking and eating.",
+    "D": "A spoon doesn't do anything when it's not being used. While it may be sitting idle on a table or in a drawer, its curved surface is still reflecting light back into the air."
+  },
+  "real_world_example": "You can use this same principle to reflect light from a candle flame onto a white wall by holding your hand near the flame and moving it slowly towards the wall. The curved shape of your hand will cause the light to bounce off and hit the wall, creating a reflected image.",
+  "memory_trick": "To remember that a spoon's curved surface is like a \"curved mirror\", try saying \"I see me\" - it's a fun way to associate with the concept!",
+  "difficulty": "Easy",
+  "topic": "General Knowledge",
+  "common_misconception": "Students often confuse similar-sounding concepts.",
+  "related_concept": "Review the related section.",
+  "follow_up_question": "Can you explain this concept in your own words?",
+  "study_suggestion": "Great job! Keep practicing."
+}

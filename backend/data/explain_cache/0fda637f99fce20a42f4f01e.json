@@ -1,0 +1,17 @@
+{
+  "why_correct": "A convex mirror is the correct answer because it can produce a wider field of view than a plane mirror, making it easier to see what's behind you. This is due to its curvature, which allows it to spread out light rays and create a larger image.",
+  "easy_explanation": "A convex mirror is the correct answer because it can produce a wider field of view than a plane mirror, making it easier to see what's behind you. This is due to its curvature, which allows it to spread out light rays and create a larger image.",
+  "why_wrong": {
+    "A": "A concave mirror would actually provide a narrower field of view, making it less suitable for rear-view mirrors in vehicles. Concave mirrors are typically used for magnifying or focusing images, not for creating a wide-angle view.",
+    "C": "A plane mirror would not provide enough curvature to produce the necessary wide-angle view for a rear-view mirror in vehicles. Plane mirrors are typically used for small-scale applications or for creating a magnified image, but they are not suitable for large-scale views like those required by rear-view mirrors.",
+    "D": "Double concave mirrors can be used as rear-view mirrors, but they would still provide a narrower field of view than a single convex mirror. Double concave mirrors work by combining two concave mirrors to create a wider field of view, but this is not the same as using a single convex mirror."
+  },
+  "real_world_example": "A typical example of a rear-view mirror in a vehicle is the one installed on the driver's side or passenger's side door. This mirror uses a convex lens to provide a wide-angle view of what's behind the vehicle.",
+  "memory_trick": "To remember that convex mirrors are better suited for creating a wider field of view, try this trick: \"Convex = Wide Angle View\".",
+  "difficulty": "Medium",
+  "topic": "General Knowledge",
+  "common_misconception": "Students often confuse similar-sounding concepts.",
+  "related_concept": "Review the related section.",
+  "follow_up_question": "Can you explain this concept in your own words?",
+  "study_suggestion": "Great job! Keep practicing."
+}

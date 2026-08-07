@@ -1,0 +1,17 @@
+{
+  "why_correct": "When water vapour cools down, it releases its energy and transforms from a gas state to a liquid state. This process is known as condensation.",
+  "easy_explanation": "When water vapour cools down, it releases its energy and transforms from a gas state to a liquid state. This process is known as condensation.",
+  "why_wrong": {
+    "B": "This option implies that cooling water vapour results in its freezing into ice, which is incorrect. The correct process is condensation, where the energy released by cooling causes the water vapour to change state from gas to liquid.",
+    "C": "This option suggests that cooling water vapour remains as vapour, which is also incorrect. When water vapour cools down, it transforms into a liquid state, not stays as vapour.",
+    "D": "This option implies that cooling water vapour disappears, which is not true. The correct process is condensation, where the energy released by cooling causes the water vapour to change state from gas to liquid."
+  },
+  "real_world_example": "A common example of this process is when you breathe onto a cold window on a chilly day. As the warm air meets the cold surface, it cools down and turns into droplets of water, forming condensation on the glass.",
+  "memory_trick": "To remember that cooling water vapour transforms from gas to liquid, try saying \"I turn into liquid\" - it's a simple way to recall this concept!",
+  "difficulty": "Easy",
+  "topic": "General Knowledge",
+  "common_misconception": "Students often confuse similar-sounding concepts.",
+  "related_concept": "Review the related section.",
+  "follow_up_question": "Can you explain this concept in your own words?",
+  "study_suggestion": "Great job! Keep practicing."
+}

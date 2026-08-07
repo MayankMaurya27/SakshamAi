@@ -1,0 +1,17 @@
+{
+  "why_correct": "Water exists as ice in its solid state because it has a specific temperature and pressure at which the molecules slow down and come together to form a crystal lattice structure, resulting in a rigid and fixed shape. This is in contrast to other states of matter like liquid water, where molecules are free to move and flow.",
+  "easy_explanation": "Water exists as ice in its solid state because it has a specific temperature and pressure at which the molecules slow down and come together to form a crystal lattice structure, resulting in a rigid and fixed shape. This is in contrast to other states of matter like liquid water, where molecules are free to move and flow.",
+  "why_wrong": {
+    "B": "Water does not exist as ice in its liquid state because it has a specific temperature above 0°C (32°F) at which the molecules start moving faster and break apart into individual molecules. This is known as the melting point of water.",
+    "C": "Water exists as ice in its solid state because it has a specific pressure below atmospheric pressure at which the molecules slow down and come together to form a crystal lattice structure. This is due to the intermolecular forces between water molecules, such as hydrogen bonding, that hold them together.",
+    "D": "Water does not exist as ice in its liquid state because it has a specific temperature above 0°C (32°F) at which the molecules start moving faster and break apart into individual molecules. This is known as the melting point of water."
+  },
+  "real_world_example": "In everyday life, we can see this when we pour water from one container to another - it freezes in its liquid state but then turns back into ice when it reaches a certain temperature.",
+  "memory_trick": "To remember that water exists as ice in its solid state, you can use the phrase \"ice is solid\" or \"solid ice\".",
+  "difficulty": "Easy",
+  "topic": "General Knowledge",
+  "common_misconception": "Students often confuse similar-sounding concepts.",
+  "related_concept": "Review the related section.",
+  "follow_up_question": "Can you explain this concept in your own words?",
+  "study_suggestion": "Great job! Keep practicing."
+}
