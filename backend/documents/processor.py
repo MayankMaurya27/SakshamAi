@@ -144,41 +144,24 @@ def process_upload(
         ]
         ChunkRepository(db).create_batch(document.id, chunk_records)
 
-        from services.summary_service import save_document_summary_from_chunks
-
-        summary_result = save_document_summary_from_chunks(
-            document.id,
-            chunks,
-            db,
-            title=safe_filename,
-        )
-
-        truncated_text = truncate_to_tokens(text, MAX_AUTO_ANALYSIS_TOKENS)
-        analysis_prompt = build_prompt(
-            LearningMode.AUTO_ANALYSIS,
-            document_text=truncated_text,
-        )
-        llm_response = get_llm().generate(analysis_prompt)
-        analysis = _parse_auto_analysis(llm_response)
-
-        questions = _normalize_questions(analysis.get("questions", []))
-        if questions:
-            QuizRepository(db).create_batch(document.id, questions)
-
+        # Performance/stability optimization on edge platform (Jetson):
+        # Instead of calling the slow local LLM synchronously to generate summary and quiz questions
+        # during upload (which takes 3+ minutes and times out the tunnel with 502), we skip
+        # the generation here. The summary and quiz questions will be generated lazily
+        # on-demand when the student visits those sections.
         logger.info(
-            "Processed upload: document_id=%d, pages=%d, chunks=%d, quizzes=%d",
+            "Processed upload: document_id=%d, pages=%d, chunks=%d (lazy summary/quiz enabled)",
             document.id,
             page_count,
             len(chunks),
-            len(questions),
         )
 
         return {
             "document_id": document.id,
-            "summary": summary_result.get("summary", ""),
-            "format_version": summary_result.get("format_version"),
+            "summary": "",
+            "format_version": "v1",
             "key_concepts": [],
-            "quiz_count": len(questions),
+            "quiz_count": 0,
         }
     except Exception:
         if document is not None:
