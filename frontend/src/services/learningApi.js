@@ -1,7 +1,7 @@
 import api from "./api";
 
 // Helper to automatically retry slow Edge AI requests that time out via the tunnel (502 Bad Gateway)
-async function callApiWithRetry(apiCall, maxRetries = 15, delayMs = 6000) {
+async function callApiWithRetry(apiCall, maxRetries = 40, delayMs = 6000) {
   let attempt = 0;
   while (attempt < maxRetries) {
     try {
