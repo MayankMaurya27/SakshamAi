@@ -58,7 +58,15 @@ TMPDIR=$HOME/pip_tmp python3 -m pip install --cache-dir=$HOME/pip_cache --user -
 TMPDIR=$HOME/pip_tmp python3 -m pip install --cache-dir=$HOME/pip_cache --user --upgrade --force-reinstall fastapi==0.115.6 starlette uvicorn
 ```
 
-### Step 3: Launch the Servers & Establish Tunnel
+### Step 3: Compile the React Frontend
+Since the compiled static frontend directory (`dist`) is gitignored to keep clone times fast, you must compile the React assets natively on the Jetson container:
+```bash
+cd ~/SakshamAi/frontend
+npm install
+npm run build
+```
+
+### Step 4: Launch the Servers & Establish Tunnel
 Run the automated startup script:
 ```bash
 cd ~/SakshamAi && bash start_edge.sh
