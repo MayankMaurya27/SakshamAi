@@ -134,14 +134,14 @@ fi
 
 # 5. Expose the port using tunnel
 echo "Creating public HTTP tunnel..."
-echo "Trying pinggy.io (Port 443)..."
-ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no -p 443 -R 80:localhost:8000+ssl@a.pinggy.io || {
-    echo "pinggy.io failed. Trying Serveo (Port 443)..."
+echo "Trying localhost.run..."
+ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no -R 80:localhost:8000 nokey@localhost.run || {
+    echo "localhost.run failed. Trying Serveo (Port 443)..."
     ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no -p 443 -R 80:localhost:8000 serveo.net
 } || {
-    echo "Serveo (Port 443) failed. Trying localhost.run..."
-    ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no -R 80:localhost:8000 nokey@localhost.run
-} || {
-    echo "localhost.run failed. Trying Serveo (Port 22)..."
+    echo "Serveo (Port 443) failed. Trying Serveo (Port 22)..."
     ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no -R 80:localhost:8000 serveo.net
+} || {
+    echo "Serveo failed. Trying pinggy.io (Port 443)..."
+    ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no -p 443 -R 80:localhost:8000 ssl@a.pinggy.io
 }
