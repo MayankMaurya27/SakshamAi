@@ -64,30 +64,64 @@ Run the automated startup script:
 cd ~/SakshamAi && bash start_edge.sh
 ```
 
----
-
 ## 🌐 How the Tunnel Handshake Works
 
-When you run `start_edge.sh`, it automatically spins up the backend and tries to create a secure HTTPS tunnel:
-1. **pinggy.io (Port 443)**: Attempted first (highly stable, bypasses port 22 firewall blocks).
-2. **Serveo (Port 443)**: Secondary choice if pinggy is down.
-3. **localhost.run (Port 22)**: Third fallback (anonymous connection).
-4. **Serveo (Port 22)**: Final default fallback.
+When you run `start_edge.sh`, it automatically spins up the backend and tries to create a secure HTTPS tunnel in the following priority order:
+1. **localhost.run (Port 22)**: Attempted first (highly stable anonymous SSH tunnel, returns a `.lhr.life` link).
+2. **Serveo (Port 443)**: Secondary fallback if localhost.run is down (bypasses port 22 firewall blocks).
+3. **Serveo (Port 22)**: Third fallback (standard port).
+4. **pinggy.io (Port 443)**: Final fallback (returns a `.pinggy.link` or `.pinggy.es` link).
 
-Copy the public HTTPS link generated at the end (e.g., `https://xxxx.lhr.life` or `https://xxxx.pinggy.link`), open it in your browser, and you are ready to demo!
+Copy the public HTTPS link generated at the end (e.g., `https://xxxx.lhr.life`), open it in your browser, and you are ready to demo!
 
 ---
 
-## 🛠️ Troubleshooting
+## 🛠️ Troubleshooting (When Odd Things Happen)
 
 ### 1. `OSError: [Errno 28] No space left on device`
-*   **Cause**: The `/tmp` mount is full.
-*   **Fix**: Prefix your pip commands with `TMPDIR=$HOME/pip_tmp` and `--cache-dir=$HOME/pip_cache` as shown in Step 2.
+*   **Symptom**: `pip install` crashes with disk space errors.
+*   **Cause**: The ephemeral `/tmp` system directory has run out of space.
+*   **Fix**: Create local folders in your home folder and route pip there:
+    ```bash
+    mkdir -p ~/pip_tmp ~/pip_cache
+    TMPDIR=$HOME/pip_tmp python3 -m pip install --cache-dir=$HOME/pip_cache --user ...
+    ```
 
 ### 2. `TypeError: Router.__init__() got an unexpected keyword argument 'on_startup'`
-*   **Cause**: FastAPI and Starlette library version mismatch in the python environment.
-*   **Fix**: Run the force-reinstall command from Step 2 to align the versions.
+*   **Symptom**: FastAPI server crashes immediately on startup.
+*   **Cause**: Conflicting FastAPI/Starlette versions in the python environment.
+*   **Fix**: Force reinstall the aligned versions in user-space:
+    ```bash
+    TMPDIR=$HOME/pip_tmp python3 -m pip install --cache-dir=$HOME/pip_cache --user --upgrade --force-reinstall fastapi==0.115.6 starlette uvicorn
+    ```
 
 ### 3. Public link doesn't open / times out
-*   **Cause**: The public tunnel server is overloaded or blocked.
-*   **Fix**: Stop the script (`Ctrl + C`) and restart it. The script will try a different tunnel server from the list.
+*   **Symptom**: Tunnel starts but requests time out or the link won't open in the browser.
+*   **Cause**: Tunnel server rate-limiting, network glitch, or port forwarding collision.
+*   **Fix**: Press `Ctrl + C` to stop the script, then simply run `bash start_edge.sh` again. The script will automatically try a different fallback tunnel.
+
+### 4. `Address already in use` or Port 8000 is blocked
+*   **Symptom**: FastAPI fails to start because port 8000 is occupied by a hung process from a previous session.
+*   **Fix**: Kill all orphaned python/uvicorn server tasks:
+    ```bash
+    pkill -f "uvicorn app:app"
+    pkill -f "python3"
+    ```
+
+### 5. `Error: could not connect to ollama server`
+*   **Symptom**: Ollama commands fail with connection errors on startup.
+*   **Fix**: The local Ollama server process is either not started or starting slowly. Run:
+    ```bash
+    pkill -f "ollama serve"
+    ollama serve > "$HOME/ollama.log" 2>&1 &
+    sleep 5
+    ```
+
+### 6. Git commands ask for Password/Credentials again
+*   **Symptom**: `git pull` prompts for your password every time.
+*   **Fix**: Tell git to remember your credentials locally in the home folder:
+    ```bash
+    git config --global credential.helper store
+    git pull  # Enter token one final time, it will be remembered forever
+    ```
+
